@@ -65,3 +65,7 @@ infra/.data/
 
 # OS junk
 $RECYCLE.BIN/
+
+# Kotlin sessions
+.kotlin/
+android/.kotlin/

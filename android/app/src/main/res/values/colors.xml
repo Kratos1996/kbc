@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- KBC cinematic palette -->
+    <color name="kbc_deep_blue">#0A1A4F</color>
+    <color name="kbc_royal_purple">#1F1147</color>
+    <color name="kbc_gold">#FFD700</color>
+    <color name="kbc_gold_dark">#B8860B</color>
+    <color name="kbc_white">#FFFFFF</color>
+    <color name="kbc_off_white">#F5F5F5</color>
+    <color name="kbc_black">#000000</color>
+    <color name="kbc_red">#E53935</color>
+    <color name="kbc_green">#43A047</color>
+    <color name="kbc_surface">#0F1B3D</color>
+    <color name="kbc_surface_variant">#1B2454</color>
+</resources>
