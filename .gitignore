@@ -1,0 +1,67 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.npm/
+.yarn/
+.pnp.*
+
+# Build
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Prisma
+server/prisma/migrations/dev.db*
+
+# Android
+android/.gradle/
+android/local.properties
+android/captures/
+android/.externalNativeBuild/
+android/.cxx/
+android/app/build/
+android/app/release/
+android/app/debug/
+*.apk
+*.aab
+*.ap_
+*.dex
+keystore.properties
+*.jks
+*.keystore
+google-services.json
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Logs
+logs/
+*.log
+
+# Docker
+infra/.data/
+
+# OS junk
+$RECYCLE.BIN/

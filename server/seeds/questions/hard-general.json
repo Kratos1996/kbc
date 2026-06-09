@@ -1,0 +1,62 @@
+[
+  {
+    "question": "What is the capital of Burkina Faso?",
+    "options": ["Bamako", "Ouagadougou", "Niamey", "Conakry"],
+    "correctIndex": 1,
+    "difficulty": 3,
+    "category": "geography",
+    "explanation": "Ouagadougou has been the capital since 1919."
+  },
+  {
+    "question": "Which element has atomic number 79?",
+    "options": ["Platinum", "Mercury", "Gold", "Lead"],
+    "correctIndex": 2,
+    "difficulty": 3,
+    "category": "science",
+    "explanation": "Gold (Au) has atomic number 79."
+  },
+  {
+    "question": "Who was the first Emperor of the Maurya Empire?",
+    "options": ["Bindusara", "Ashoka", "Chandragupta Maurya", "Brihadratha"],
+    "correctIndex": 2,
+    "difficulty": 3,
+    "category": "history",
+    "explanation": "Chandragupta Maurya founded the empire c. 322 BCE."
+  },
+  {
+    "question": "What is the value of e (Euler's number) to 5 decimal places?",
+    "options": ["2.71828", "2.71821", "2.71818", "2.71838"],
+    "correctIndex": 0,
+    "difficulty": 3,
+    "category": "math"
+  },
+  {
+    "question": "Which author wrote 'The Master and Margarita'?",
+    "options": ["Fyodor Dostoevsky", "Mikhail Bulgakov", "Leo Tolstoy", "Anton Chekhov"],
+    "correctIndex": 1,
+    "difficulty": 3,
+    "category": "literature"
+  },
+  {
+    "question": "What is the rarest blood type?",
+    "options": ["A-", "B-", "AB-", "AB+"],
+    "correctIndex": 2,
+    "difficulty": 3,
+    "category": "science",
+    "explanation": "AB- is found in less than 1% of the population."
+  },
+  {
+    "question": "In which year did the Titanic sink?",
+    "options": ["1910", "1912", "1914", "1916"],
+    "correctIndex": 1,
+    "difficulty": 3,
+    "category": "history"
+  },
+  {
+    "question": "How many bones are in the adult human body?",
+    "options": ["204", "206", "208", "210"],
+    "correctIndex": 1,
+    "difficulty": 3,
+    "category": "science"
+  }
+]

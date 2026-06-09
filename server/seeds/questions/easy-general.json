@@ -1,0 +1,60 @@
+[
+  {
+    "question": "What is the capital of Australia?",
+    "options": ["Sydney", "Melbourne", "Canberra", "Perth"],
+    "correctIndex": 2,
+    "difficulty": 1,
+    "category": "geography",
+    "explanation": "Canberra was chosen as a compromise between rivals Sydney and Melbourne."
+  },
+  {
+    "question": "Which planet is known as the Red Planet?",
+    "options": ["Venus", "Mars", "Jupiter", "Saturn"],
+    "correctIndex": 1,
+    "difficulty": 1,
+    "category": "science",
+    "explanation": "Mars appears red due to iron oxide (rust) on its surface."
+  },
+  {
+    "question": "Who wrote the play 'Romeo and Juliet'?",
+    "options": ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"],
+    "correctIndex": 1,
+    "difficulty": 1,
+    "category": "literature"
+  },
+  {
+    "question": "How many players are there in a standard cricket team?",
+    "options": ["9", "10", "11", "12"],
+    "correctIndex": 2,
+    "difficulty": 1,
+    "category": "sports"
+  },
+  {
+    "question": "Which country gifted the Statue of Liberty to the USA?",
+    "options": ["United Kingdom", "Germany", "France", "Spain"],
+    "correctIndex": 2,
+    "difficulty": 1,
+    "category": "history"
+  },
+  {
+    "question": "In which year did World War II end?",
+    "options": ["1943", "1944", "1945", "1946"],
+    "correctIndex": 2,
+    "difficulty": 1,
+    "category": "history"
+  },
+  {
+    "question": "What is the largest ocean on Earth?",
+    "options": ["Atlantic", "Indian", "Arctic", "Pacific"],
+    "correctIndex": 3,
+    "difficulty": 1,
+    "category": "geography"
+  },
+  {
+    "question": "What is H2O commonly known as?",
+    "options": ["Salt", "Sugar", "Water", "Oxygen"],
+    "correctIndex": 2,
+    "difficulty": 1,
+    "category": "science"
+  }
+]

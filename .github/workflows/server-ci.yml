@@ -1,0 +1,43 @@
+name: server-ci
+
+on:
+  push:
+    paths:
+      - "server/**"
+  pull_request:
+    paths:
+      - "server/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root_secret
+          MYSQL_DATABASE: kbc
+          MYSQL_USER: kbc
+          MYSQL_PASSWORD: kbc_secret
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -u root -proot_secret"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+    env:
+      DATABASE_URL: mysql://kbc:kbc_secret@localhost:3306/kbc
+      JWT_ACCESS_SECRET: ci_test_access_secret_min_16
+      JWT_REFRESH_SECRET: ci_test_refresh_secret_min_16
+      NODE_ENV: test
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20", cache: "npm", cache-dependency-path: server/package-lock.json }
+      - run: npm ci || npm install
+      - run: npx prisma generate
+      - run: npx tsc --noEmit
+      - run: npm run lint
+      - run: npm test -- --passWithNoTests

@@ -1,0 +1,268 @@
+// KBC Crorepati Quiz - Prisma schema
+// Database: MySQL 8 (utf8mb4)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ============== Users & Auth ==============
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  username     String   @unique
+  passwordHash String   @map("password_hash")
+  displayName  String?  @map("display_name")
+  avatarUrl    String?  @map("avatar_url")
+  coins        Int      @default(0)
+  premiumUntil DateTime? @map("premium_until")
+  isPremium    Boolean  @default(false) @map("is_premium")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  refreshTokens    RefreshToken[]
+  games            Game[]
+  dailySubmissions DailySubmission[]
+  friendshipsA     Friendship[] @relation("FriendshipRequester")
+  friendshipsB     Friendship[] @relation("FriendshipAddressee")
+  multiplayerPlayers MultiplayerPlayer[]
+  iapReceipts      IapReceipt[]
+  leaderboardEntries LeaderboardEntry[]
+
+  @@index([username])
+  @@index([email])
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  tokenHash String   @map("token_hash")
+  expiresAt DateTime @map("expires_at")
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([tokenHash])
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+// ============== Questions & Categories ==============
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  icon      String?
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  questions Question[]
+
+  @@map("categories")
+}
+
+model Question {
+  id           String   @id @default(uuid())
+  text         String   @db.Text
+  optionA      String   @map("option_a") @db.Text
+  optionB      String   @map("option_b") @db.Text
+  optionC      String   @map("option_c") @db.Text
+  optionD      String   @map("option_d") @db.Text
+  correctOption Int     @map("correct_option") // 0..3
+  difficulty   Int      // 1=easy, 2=medium, 3=hard
+  categoryId   String   @map("category_id")
+  explanation  String?  @db.Text
+  source       String?  // "kbc-native" | "opentdb" | custom
+  isApproved   Boolean  @default(true) @map("is_approved")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  category       Category        @relation(fields: [categoryId], references: [id])
+  gameAnswers    GameAnswer[]
+  dailyQuestions DailyQuestion[]
+
+  @@index([categoryId, difficulty, isApproved])
+  @@index([difficulty])
+  @@map("questions")
+}
+
+// ============== Games ==============
+
+model Game {
+  id           String   @id @default(uuid())
+  userId       String   @map("user_id")
+  mode         String   // classic | quick | category | daily | practice
+  currentLevel Int      @default(0) @map("current_level") // 0..14 for classic
+  score        Int      @default(0)
+  status       String   @default("in_progress") // in_progress | won | lost | quit
+  categoryId   String?  @map("category_id")
+  startedAt    DateTime @default(now()) @map("started_at")
+  endedAt      DateTime? @map("ended_at")
+
+  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  answers  GameAnswer[]
+  lifelines LifelineUse[]
+
+  @@index([userId, status])
+  @@index([mode, status])
+  @@map("games")
+}
+
+model GameAnswer {
+  id           String   @id @default(uuid())
+  gameId       String   @map("game_id")
+  questionId   String   @map("question_id")
+  chosenOption Int      @map("chosen_option") // -1 if timed out
+  isCorrect    Boolean  @default(false) @map("is_correct")
+  timeMs       Int      @default(0) @map("time_ms")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  game     Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@index([gameId])
+  @@map("game_answers")
+}
+
+model LifelineUse {
+  id        String   @id @default(uuid())
+  gameId    String   @map("game_id")
+  type      String   // fifty_fifty | audience | phone | expert | flip
+  payload   Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@index([gameId])
+  @@map("lifeline_uses")
+}
+
+// ============== Daily Challenge ==============
+
+model DailyChallenge {
+  id         String   @id @default(uuid())
+  date       DateTime @db.Date @unique
+  bonusCoins Int      @default(100) @map("bonus_coins")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  questions    DailyQuestion[]
+  submissions  DailySubmission[]
+
+  @@map("daily_challenges")
+}
+
+model DailyQuestion {
+  id          String @id @default(uuid())
+  dailyId     String @map("daily_id")
+  questionId  String @map("question_id")
+  orderIndex  Int    @map("order_index")
+
+  daily    DailyChallenge @relation(fields: [dailyId], references: [id], onDelete: Cascade)
+  question Question        @relation(fields: [questionId], references: [id])
+
+  @@unique([dailyId, orderIndex])
+  @@map("daily_questions")
+}
+
+model DailySubmission {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  dailyId   String   @map("daily_id")
+  score     Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user  User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  daily DailyChallenge  @relation(fields: [dailyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, dailyId])
+  @@map("daily_submissions")
+}
+
+// ============== Leaderboard ==============
+
+model LeaderboardEntry {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  scope     String   // global | weekly | monthly | friends
+  period    String   // 2024-W40, 2024-10, all-time
+  score     Int      @default(0)
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, scope, period])
+  @@index([scope, period, score])
+  @@map("leaderboard_entries")
+}
+
+// ============== Friends & Multiplayer ==============
+
+model Friendship {
+  id          String   @id @default(uuid())
+  requesterId String   @map("requester_id")
+  addresseeId String   @map("addressee_id")
+  status      String   @default("pending") // pending | accepted | blocked
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  requester User @relation("FriendshipRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  addressee User @relation("FriendshipAddressee", fields: [addresseeId], references: [id], onDelete: Cascade)
+
+  @@unique([requesterId, addresseeId])
+  @@index([addresseeId, status])
+  @@map("friendships")
+}
+
+model MultiplayerMatch {
+  id        String   @id @default(uuid())
+  mode      String   // live_1v1 | async
+  status    String   @default("waiting") // waiting | in_progress | finished | cancelled
+  inviteCode String? @unique @map("invite_code")
+  startedAt DateTime? @map("started_at")
+  endedAt   DateTime? @map("ended_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  players MultiplayerPlayer[]
+
+  @@index([status])
+  @@map("multiplayer_matches")
+}
+
+model MultiplayerPlayer {
+  id        String   @id @default(uuid())
+  matchId   String   @map("match_id")
+  userId    String   @map("user_id")
+  score     Int      @default(0)
+  rank      Int?
+  joinedAt  DateTime @default(now()) @map("joined_at")
+
+  match MultiplayerMatch @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  user  User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([matchId, userId])
+  @@map("multiplayer_players")
+}
+
+// ============== IAP ==============
+
+model IapReceipt {
+  id            String   @id @default(uuid())
+  userId        String   @map("user_id")
+  productId     String   @map("product_id")
+  purchaseToken String   @unique @map("purchase_token")
+  verifiedAt    DateTime? @map("verified_at")
+  expiresAt     DateTime? @map("expires_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, productId])
+  @@map("iap_receipts")
+}

@@ -1,0 +1,30 @@
+# Drop *.json files into this folder and run `npm run seed` to import.
+# Two formats are auto-detected (see docs/dataset-format.md):
+
+# 1. KBC-native (array):
+# [
+#   {
+#     "id": "kbc-001",
+#     "question": "What is the capital of India?",
+#     "options": ["Mumbai", "New Delhi", "Kolkata", "Chennai"],
+#     "correctIndex": 1,
+#     "difficulty": 1,
+#     "category": "general",
+#     "explanation": "New Delhi has been the capital since 1947."
+#   }
+# ]
+
+# 2. OpenTriviaDB (response_code + results[]):
+# {
+#   "response_code": 0,
+#   "results": [
+#     {
+#       "category": "General Knowledge",
+#       "type": "multiple",
+#       "difficulty": "easy",
+#       "question": "...",
+#       "correct_answer": "...",
+#       "incorrect_answers": ["...", "...", "..."]
+#     }
+#   ]
+# }

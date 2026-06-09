@@ -1,0 +1,63 @@
+[
+  {
+    "question": "What is the chemical symbol for gold?",
+    "options": ["Ag", "Au", "Fe", "Cu"],
+    "correctIndex": 1,
+    "difficulty": 2,
+    "category": "science",
+    "explanation": "Au comes from the Latin 'aurum'."
+  },
+  {
+    "question": "Who painted the Mona Lisa?",
+    "options": ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Michelangelo"],
+    "correctIndex": 2,
+    "difficulty": 2,
+    "category": "general",
+    "explanation": "Leonardo da Vinci painted it between 1503-1519."
+  },
+  {
+    "question": "What is the longest river in the world?",
+    "options": ["Amazon", "Nile", "Yangtze", "Mississippi"],
+    "correctIndex": 1,
+    "difficulty": 2,
+    "category": "geography",
+    "explanation": "The Nile is approximately 6,650 km long."
+  },
+  {
+    "question": "Which country won the first FIFA World Cup in 1930?",
+    "options": ["Argentina", "Brazil", "Uruguay", "Italy"],
+    "correctIndex": 2,
+    "difficulty": 2,
+    "category": "sports",
+    "explanation": "Uruguay beat Argentina 4-2 in the final."
+  },
+  {
+    "question": "What is the smallest prime number greater than 10?",
+    "options": ["11", "13", "17", "19"],
+    "correctIndex": 0,
+    "difficulty": 2,
+    "category": "math"
+  },
+  {
+    "question": "In which century was the French Revolution?",
+    "options": ["16th", "17th", "18th", "19th"],
+    "correctIndex": 2,
+    "difficulty": 2,
+    "category": "history",
+    "explanation": "The French Revolution began in 1789."
+  },
+  {
+    "question": "What is the hardest natural substance on Earth?",
+    "options": ["Gold", "Iron", "Diamond", "Platinum"],
+    "correctIndex": 2,
+    "difficulty": 2,
+    "category": "science"
+  },
+  {
+    "question": "Who wrote '1984'?",
+    "options": ["Aldous Huxley", "George Orwell", "Ray Bradbury", "Isaac Asimov"],
+    "correctIndex": 1,
+    "difficulty": 2,
+    "category": "literature"
+  }
+]
