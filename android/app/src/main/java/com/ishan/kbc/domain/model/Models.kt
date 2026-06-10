@@ -31,12 +31,15 @@ data class GameState(
     val status: GameStatus = GameStatus.InProgress,
     val score: Int = 0,
     val lastAnswerCorrect: Boolean? = null,
+    val selectedOption: Int? = null,
     val revealedCorrectOption: Int? = null,
-    val lifelinesRemaining: Set<LifelineType> = LifelineType.values().toSet(),
+    val lifelinesRemaining: Set<LifelineType> = LifelineType.entries.toSet(),
     val eliminatedOptions: Set<Int> = emptySet(),
     val audiencePoll: Map<Int, Int>? = null,
     val expertAnswer: Int? = null,
     val phoneAFriendAnswer: Int? = null,
+    val timeRemaining: Int = 30,
+    val answered: Boolean = false,
 )
 
 enum class LifelineType(val apiValue: String) {

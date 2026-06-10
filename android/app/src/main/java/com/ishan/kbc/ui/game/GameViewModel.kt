@@ -1,7 +1,9 @@
 package com.ishan.kbc.ui.game
 
+import android.os.CountDownTimer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ishan.kbc.audio.SoundManager
 import com.ishan.kbc.data.remote.KbcApi
 import com.ishan.kbc.data.remote.dto.AnswerRequest
 import com.ishan.kbc.data.remote.dto.StartGameRequest
@@ -17,13 +19,23 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val QUESTION_TIME_SEC = 30
+
 @HiltViewModel
 class GameViewModel @Inject constructor(
     private val api: KbcApi,
+    private val soundManager: SoundManager,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(GameState())
     val state: StateFlow<GameState> = _state.asStateFlow()
+
+    private var timer: CountDownTimer? = null
+
+    override fun onCleared() {
+        super.onCleared()
+        timer?.cancel()
+    }
 
     fun startGame() {
         viewModelScope.launch {
@@ -36,29 +48,40 @@ class GameViewModel @Inject constructor(
                         prize = resp.prize,
                         safeZone = resp.safeZone,
                         question = resp.question.toDomain(),
+                        timeRemaining = QUESTION_TIME_SEC,
                     )
+                    startTimer()
                 }
         }
     }
 
     fun selectOption(index: Int) {
         val s = _state.value
+        if (s.status != GameStatus.InProgress || s.answered) return
         val gid = s.gameId ?: return
         val q = s.question ?: return
-        if (s.status != GameStatus.InProgress) return
+        timer?.cancel()
+        soundManager.playLock()
+        _state.update { it.copy(timeRemaining = 0, answered = true, selectedOption = index) }
+        val elapsed = QUESTION_TIME_SEC - s.timeRemaining
         viewModelScope.launch {
-            runCatching { api.answer(gid, AnswerRequest(q.id, index, timeMs = 0)) }
+            runCatching { api.answer(gid, AnswerRequest(q.id, index, timeMs = elapsed.coerceAtLeast(1) * 1000)) }
                 .onSuccess { ans ->
+                    if (ans.correct) soundManager.playCorrect() else soundManager.playWrong()
                     _state.update {
                         it.copy(
                             lastAnswerCorrect = ans.correct,
                             revealedCorrectOption = ans.correctOption,
                             score = ans.score ?: it.score,
                             status = when (ans.gameStatus) {
-                                "won" -> GameStatus.Won
+                                "won" -> {
+                                    soundManager.playFanfare()
+                                    GameStatus.Won
+                                }
                                 "lost" -> GameStatus.Lost
                                 else -> GameStatus.InProgress
                             },
+                            timeRemaining = 0,
                         )
                     }
                 }
@@ -67,6 +90,7 @@ class GameViewModel @Inject constructor(
 
     fun nextQuestion() {
         val gid = _state.value.gameId ?: return
+        timer?.cancel()
         viewModelScope.launch {
             runCatching { api.currentQuestion(gid) }
                 .onSuccess { resp ->
@@ -77,13 +101,17 @@ class GameViewModel @Inject constructor(
                             safeZone = resp.safeZone,
                             question = resp.question.toDomain(),
                             lastAnswerCorrect = null,
+                            selectedOption = null,
                             revealedCorrectOption = null,
                             eliminatedOptions = emptySet(),
                             audiencePoll = null,
                             expertAnswer = null,
                             phoneAFriendAnswer = null,
+                            timeRemaining = QUESTION_TIME_SEC,
+                            answered = false,
                         )
                     }
+                    startTimer()
                 }
         }
     }
@@ -93,6 +121,7 @@ class GameViewModel @Inject constructor(
         if (type !in s.lifelinesRemaining) return
         val gid = s.gameId ?: return
         val qid = s.question?.id ?: return
+        soundManager.playLock()
         viewModelScope.launch {
             runCatching { api.useLifeline(gid, com.ishan.kbc.data.remote.dto.LifelineRequest(type.apiValue, qid)) }
                 .onSuccess { resp ->
@@ -142,10 +171,24 @@ class GameViewModel @Inject constructor(
 
     fun quit() {
         val gid = _state.value.gameId ?: return
+        timer?.cancel()
         viewModelScope.launch {
             runCatching { api.quit(gid) }
             _state.update { it.copy(status = GameStatus.Quit) }
         }
+    }
+
+    private fun startTimer() {
+        timer?.cancel()
+        timer = object : CountDownTimer((QUESTION_TIME_SEC * 1000).toLong(), 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                _state.update { it.copy(timeRemaining = (millisUntilFinished / 1000).toInt()) }
+            }
+            override fun onFinish() {
+                _state.update { it.copy(timeRemaining = 0, status = GameStatus.Lost, answered = true) }
+                soundManager.playWrong()
+            }
+        }.start()
     }
 }
 

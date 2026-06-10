@@ -3,32 +3,50 @@ package com.ishan.kbc.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
 private val DarkColors = darkColorScheme(
-    primary = Gold,
-    onPrimary = DeepBlue,
-    secondary = GoldDark,
-    onSecondary = DeepBlue,
-    background = DeepBlue,
+    // Primary - Royal Purple
+    primary = Primary,
+    onPrimary = OnPrimary,
+    primaryContainer = PrimaryContainer,
+    onPrimaryContainer = OnPrimaryContainer,
+    inversePrimary = InversePrimary,
+
+    // Secondary - Vibrant Gold
+    secondary = Secondary,
+    onSecondary = OnSecondary,
+    secondaryContainer = SecondaryContainer,
+    onSecondaryContainer = OnSecondaryContainer,
+
+    // Tertiary
+    tertiary = Tertiary,
+    onTertiary = OnTertiary,
+    tertiaryContainer = TertiaryContainer,
+    onTertiaryContainer = OnTertiaryContainer,
+
+    // Surfaces
+    background = Background,
     onBackground = OnSurface,
-    surface = Surface,
+    surface = SurfaceContainer,
     onSurface = OnSurface,
     surfaceVariant = SurfaceVariant,
-    onSurfaceVariant = OnSurfaceMuted,
-    error = ErrorRed,
-    onError = OnSurface,
-)
+    onSurfaceVariant = OnSurfaceVariant,
+    surfaceDim = SurfaceDim,
+    surfaceBright = SurfaceBright,
+    surfaceContainerLowest = SurfaceContainerLowest,
+    surfaceContainerLow = SurfaceContainerLow,
+    surfaceContainerHigh = SurfaceContainerHigh,
+    surfaceContainerHighest = SurfaceContainerHighest,
 
-private val LightColors = lightColorScheme(
-    primary = Gold,
-    onPrimary = DeepBlue,
-    secondary = GoldDark,
-    background = DeepBlue,
-    surface = Surface,
-    onSurface = OnSurface,
-    error = ErrorRed,
+    // Other
+    outline = Outline,
+    outlineVariant = OutlineVariant,
+    error = Error,
+    onError = OnError,
+    errorContainer = ErrorContainer,
+    onErrorContainer = OnErrorContainer,
+    surfaceTint = SurfaceTint,
 )
 
 @Composable
@@ -36,8 +54,9 @@ fun KbcTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
+    // App is dark-only per design
     MaterialTheme(
-        colorScheme = if (darkTheme) DarkColors else LightColors,
+        colorScheme = DarkColors,
         typography = KbcTypography,
         content = content,
     )

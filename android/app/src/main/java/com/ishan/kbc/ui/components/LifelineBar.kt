@@ -28,7 +28,7 @@ fun LifelineBar(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.padding(vertical = 8.dp),
     ) {
-        LifelineType.values().forEach { type ->
+        LifelineType.entries.forEach { type ->
             val enabled = type in available
             val bg = if (enabled) Gold else SurfaceVariant
             val fg = if (enabled) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant

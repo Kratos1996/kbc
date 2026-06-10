@@ -3,8 +3,12 @@
     <string name="app_name">KBC Crorepati</string>
 
     <!-- Auth -->
-    <string name="login_title">Welcome to KBC</string>
-    <string name="register_title">Create your account</string>
+    <string name="login_title">Sign In</string>
+    <string name="register_title">Sign Up</string>
+    <string name="login_tagline">Play. Learn. Win Crores.</string>
+    <string name="login_forgot_password">Forgot password?</string>
+    <string name="login_via_otp">Sign in with OTP →</string>
+    <string name="login_or_continue_with">or continue with</string>
     <string name="cta_login">Sign in</string>
     <string name="cta_register">Create account</string>
     <string name="cta_play">Play</string>
@@ -32,20 +36,38 @@
     <string name="msg_wrong_answer">Wrong answer</string>
     <string name="msg_correct">Correct! ₹%1$s secured</string>
     <string name="msg_crorepati">You are a Crorepati!</string>
+    <string name="game_level">Level %1$d / %2$d</string>
+    <string name="game_prize">₹%1$d</string>
     <string name="msg_lifeline_50_50">50:50</string>
     <string name="msg_lifeline_audience">Audience Poll</string>
     <string name="msg_lifeline_phone">Phone a Friend</string>
     <string name="msg_lifeline_expert">Ask the Expert</string>
     <string name="msg_lifeline_flip">Flip the Question</string>
+    <string name="quit_title">Quit Game?</string>
+    <string name="quit_body">You have ₹%1$d at Level %2$d. Walk away now?</string>
+    <string name="quit_warning">Your game will end and you\'ll keep your current winnings.</string>
+    <string name="cta_quit_confirm">Yes, quit</string>
+    <string name="winner_prize">₹%1$d won!</string>
+    <string name="winner_score">Score: %1$d</string>
 
     <!-- Hub -->
     <string name="hub_daily">Daily Challenge</string>
+    <string name="hub_arena">Arena</string>
+    <string name="hub_fff">Fastest Finger</string>
+    <string name="hub_achievements">Achievements</string>
+    <string name="hub_match_history">History</string>
+    <string name="hub_tournament">Tournament</string>
     <string name="hub_leaderboard">Leaderboard</string>
     <string name="hub_multiplayer">Multiplayer</string>
     <string name="hub_shop">Shop</string>
     <string name="hub_profile">Profile</string>
     <string name="hub_settings">Settings</string>
-    <string name="hub_subtitle">Crorepati Quiz</string>
+    <string name="hub_subtitle">Grand Quiz Arena</string>
+    <string name="home_welcome">Welcome back, Mastermind</string>
+    <string name="home_subtitle">You\'re only 3 levels away from the Daily Grand Finale.</string>
+    <string name="home_rank">Global Rank</string>
+    <string name="home_winrate">Win Rate</string>
+    <string name="home_streak">Day Streak</string>
 
     <!-- Daily -->
     <string name="daily_title">Daily Challenge</string>
@@ -111,6 +133,65 @@
     <string name="shop_buy_failed">Could not complete purchase</string>
     <string name="shop_premium_tier_monthly">Premium · Monthly</string>
     <string name="shop_premium_tier_yearly">Premium · Yearly</string>
+
+    <!-- Post Game -->
+    <string name="post_quit">Game Quit</string>
+    <string name="post_prize">Prize Won</string>
+    <string name="post_level_reached">Level %1$d</string>
+    <string name="post_play_again">PLAY AGAIN</string>
+
+    <!-- Fastest Finger First -->
+    <string name="fff_submit">SUBMIT</string>
+    <string name="fff_retry">TRY AGAIN</string>
+    <string name="fff_competitors">12,405 competitors live</string>
+
+    <!-- Tournament -->
+    <string name="tournament_desc">Ascend the ladder and prove your mastery. The arena calls for its next legend in the season\'s ultimate showdown.</string>
+    <string name="tournament_prize_pool">TOTAL PRIZE POOL</string>
+    <string name="tournament_starts">Starts In</string>
+    <string name="tournament_days">Days</string>
+    <string name="tournament_hrs">Hrs</string>
+    <string name="tournament_min">Min</string>
+    <string name="tournament_sec">Sec</string>
+    <string name="tournament_requirements">Entry Requirements</string>
+    <string name="tournament_breakdown">Championship Breakdown</string>
+    <string name="tournament_entry_method">SELECT ENTRY METHOD</string>
+    <string name="tournament_register">Register Now</string>
+    <string name="tournament_registered">Registered!</string>
+    <string name="tournament_ends">Registration ends 1 hour before event start time.</string>
+    <string name="tournament_logistics">Event Logistics</string>
+
+    <!-- Match History -->
+    <string name="match_history_title">Match History</string>
+    <string name="match_history_subtitle">Your journey through the arena. Review your conquests, analyze your defeats, and track your ascending fortune.</string>
+    <string name="match_history_prize">PRIZE EARNED</string>
+    <string name="match_history_breakdown">VIEW BREAKDOWN</string>
+    <string name="match_history_stats">History Statistics</string>
+    <string name="match_history_win_rate">Win Rate</string>
+    <string name="match_history_earnings">Total Earnings</string>
+    <string name="match_history_ultimate_prize">Ultimate Prize</string>
+
+    <!-- Achievements -->
+    <string name="achievement_title">Achievement Gallery</string>
+    <string name="achievement_subtitle">Showcase your intellectual dominance and prestige across the grand arena of knowledge.</string>
+    <string name="achievement_mastery">Total Mastery</string>
+    <string name="achievement_milestones">Recent Milestones</string>
+    <string name="achievement_back">Back to Gallery</string>
+
+    <!-- Pre-Show Countdown -->
+    <string name="preshow_title">PRE-SHOW COUNTDOWN</string>
+    <string name="preshow_desc">The arena is pulsing with energy. Prepare your strategy for the upcoming Midnight Gauntlet.</string>
+    <string name="preshow_join">JOIN LOBBY</string>
+    <string name="preshow_jackpot">CURRENT JACKPOT</string>
+    <string name="preshow_growing">GROWING REAL-TIME</string>
+    <string name="preshow_spotlight">Lobby Spotlight</string>
+    <string name="preshow_joined">Joined</string>
+    <string name="preshow_view_lobby">VIEW FULL LOBBY</string>
+    <string name="preshow_params">MATCH PARAMETERS</string>
+    <string name="preshow_rounds">Rounds</string>
+    <string name="preshow_time">Time Limit</string>
+    <string name="preshow_difficulty">Difficulty</string>
+    <string name="preshow_lifelines">AVAILABLE LIFELINES</string>
 
     <!-- Common -->
     <string name="error_generic">Something went wrong. Please try again.</string>
