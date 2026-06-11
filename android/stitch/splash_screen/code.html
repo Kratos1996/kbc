@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Radiance Arena - KBC Splash</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&amp;family=JetBrains+Mono:wght@500&amp;family=Inter:wght@400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;family=Sora:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(209, 188, 255, 0.4)) brightness(1); }
+            50% { filter: drop-shadow(0 0 50px rgba(209, 188, 255, 0.8)) brightness(1.2); }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .animate-pulse-glow {
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        .gold-shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255, 219, 60, 0.6), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .glass-panel {
+            background: rgba(30, 32, 32, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(209, 188, 255, 0.1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#e7deff",
+                        "primary": "#d1bcff",
+                        "inverse-primary": "#7212ff",
+                        "tertiary": "#cbbff6",
+                        "secondary": "#fff9ef",
+                        "error": "#ffb4ab",
+                        "surface-container": "#1e2020",
+                        "on-primary": "#3c0090",
+                        "surface-dim": "#121414",
+                        "primary-fixed": "#e9ddff",
+                        "surface-bright": "#37393a",
+                        "tertiary-fixed-dim": "#cbbff6",
+                        "on-tertiary": "#332957",
+                        "surface-container-low": "#1a1c1c",
+                        "on-primary-container": "#ddcdff",
+                        "background": "#121414",
+                        "on-secondary-fixed-variant": "#544600",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-container": "#d9ceff",
+                        "on-surface": "#e2e2e2",
+                        "on-tertiary-fixed": "#1d1440",
+                        "primary-container": "#7000ff",
+                        "on-secondary": "#3a3000",
+                        "primary-fixed-dim": "#d1bcff",
+                        "on-tertiary-fixed-variant": "#49406f",
+                        "surface-container-highest": "#333535",
+                        "surface-variant": "#333535",
+                        "outline-variant": "#4a4457",
+                        "error-container": "#93000a",
+                        "on-background": "#e2e2e2",
+                        "secondary-fixed-dim": "#e9c400",
+                        "surface-tint": "#d1bcff",
+                        "on-primary-fixed-variant": "#5700c9",
+                        "secondary-container": "#ffdb3c",
+                        "inverse-on-surface": "#2f3131",
+                        "secondary-fixed": "#ffe16d",
+                        "on-surface-variant": "#ccc3da",
+                        "outline": "#958da3",
+                        "on-secondary-fixed": "#221b00",
+                        "on-secondary-container": "#725f00",
+                        "surface-container-lowest": "#0c0f0f",
+                        "inverse-surface": "#e2e2e2",
+                        "surface-container-high": "#282a2b",
+                        "surface": "#121414",
+                        "on-error": "#690005",
+                        "on-primary-fixed": "#23005b",
+                        "tertiary-container": "#5f5585"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "margin-desktop": "64px",
+                        "container-max-width": "1200px",
+                        "gutter": "16px",
+                        "margin-mobile": "20px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Sora"],
+                        "headline-lg": ["Sora"],
+                        "headline-lg-mobile": ["Sora"],
+                        "label-md": ["JetBrains Mono"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Splash Screen Container -->
+<main class="relative h-screen w-screen flex flex-col items-center justify-center overflow-hidden">
+<!-- Animated Background Depth Layer 1 (The Void) -->
+<div class="absolute inset-0 bg-gradient-to-br from-surface-container-lowest via-[#0c002b] to-surface-container-lowest z-0"></div>
+<!-- Ambient Atmosphere Particles (Simulated) -->
+<div class="absolute inset-0 z-10 pointer-events-none">
+<div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 blur-[120px] rounded-full animate-pulse"></div>
+<div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-primary-container/10 blur-[150px] rounded-full animate-pulse" style="animation-delay: 2s;"></div>
+</div>
+<!-- Logo Content Area -->
+<section class="relative z-20 flex flex-col items-center justify-center px-margin-mobile">
+<!-- Hexagonal Outer Ring Glow -->
+<div class="absolute w-[320px] h-[320px] md:w-[480px] md:h-[480px] rounded-full bg-primary/5 blur-3xl"></div>
+<!-- Main Logo with "Rotating" Glow simulation -->
+<div class="relative group">
+<img alt="KBC Quiz Logo" class="w-64 h-64 md:w-80 md:h-80 object-contain animate-pulse-glow z-30 transition-transform duration-1000 group-hover:scale-105" id="main-logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClSIwv9suK9hf3Hu6ZDA2oBw9TUK5O4Q8FA7RtOgiXk9-flM_PbRGy4BpDb6OHYl9hTO2gfOmES6EaNKHvirE_zf-CzoFg14l060EEoY0o_jRJ8l4sYklWUaPijgA5vWooX2meGb4X6yidQVtoBB2cl9DFZMojWlRYfvQJEZ67D1cTPP1xOfAzXP2ieEP1Ar8PRhFYTLqyaoNB0N7MnSKkxZWRAC0XbMbExoXjNVbhFlC4hPPVK_LKIiPkmmiSekEju1SD1kpdHrFK"/>
+<!-- Inner Ledge/Shadowing to give 3D depth -->
+<div class="absolute inset-0 rounded-full shadow-[inset_0_4px_12px_rgba(255,255,255,0.1)] pointer-events-none"></div>
+</div>
+</section>
+<!-- Loading & Tagline Area (Bottom Anchored) -->
+<section class="absolute bottom-24 flex flex-col items-center gap-12 z-30 w-full px-margin-mobile">
+<!-- Tagline -->
+<div class="text-center">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-secondary-fixed tracking-[0.15em] drop-shadow-[0_2px_10px_rgba(255,225,109,0.3)]">
+                    Play. Learn. Win Crores.
+                </h1>
+</div>
+<!-- Minimalist Loading Bar -->
+<div class="w-64 md:w-80 h-1.5 bg-surface-container rounded-full overflow-hidden relative shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+<!-- Shimmering Progress Fill -->
+<div class="absolute left-0 top-0 h-full bg-secondary-container transition-all duration-300 ease-out" id="loading-fill" style="width: 0%;">
+<div class="absolute inset-0 gold-shimmer"></div>
+</div>
+</div>
+<!-- Loading Status Label -->
+<div class="font-label-md text-on-surface-variant/60 tracking-widest uppercase">
+                Synchronizing Arena...
+            </div>
+</section>
+<!-- Glass Overlay Vignette -->
+<div class="absolute inset-0 pointer-events-none ring-[40px] md:ring-[80px] ring-inset ring-background opacity-80 z-40"></div>
+</main>
+<!-- Invisible footer shell as per constraints (though suppressed for splash intent) -->
+<!-- Navigation shell suppressed for splash screen focus -->
+<script>
+        // Progress Bar Simulation logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const fill = document.getElementById('loading-fill');
+            const logo = document.getElementById('main-logo');
+            let progress = 0;
+
+            const updateProgress = () => {
+                if (progress < 100) {
+                    // Random increment for organic loading feel
+                    progress += Math.random() * 2;
+                    if (progress > 100) progress = 100;
+                    
+                    fill.style.width = `${progress}%`;
+                    
+                    // Subtle dynamic logo scale based on progress
+                    const scaleFactor = 1 + (progress / 1000);
+                    logo.style.transform = `scale(${scaleFactor})`;
+
+                    requestAnimationFrame(() => {
+                        setTimeout(updateProgress, 30);
+                    });
+                } else {
+                    // Completion logic (Simulated delay before redirect/transition)
+                    setTimeout(() => {
+                        fill.classList.remove('bg-secondary-container');
+                        fill.classList.add('bg-primary');
+                        document.body.style.opacity = '0';
+                        document.body.style.transition = 'opacity 1s ease-in-out';
+                    }, 500);
+                }
+            };
+
+            updateProgress();
+        });
+
+        // Atmospheric parallax on mouse move
+        document.addEventListener('mousemove', (e) => {
+            const logo = document.getElementById('main-logo');
+            const moveX = (e.clientX - window.innerWidth / 2) / 50;
+            const moveY = (e.clientY - window.innerHeight / 2) / 50;
+            
+            logo.style.filter = `drop-shadow(${moveX}px ${moveY}px 30px rgba(209, 188, 255, 0.6))`;
+        });
+    </script>
+</body></html>

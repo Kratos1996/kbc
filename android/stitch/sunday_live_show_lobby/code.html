@@ -1,0 +1,413 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Quiz Arena - Sunday Live Show</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&amp;family=Inter:wght@400;500&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#e9c400",
+                    "on-tertiary-fixed": "#1d1440",
+                    "surface": "#121414",
+                    "on-tertiary": "#332957",
+                    "on-secondary-fixed-variant": "#544600",
+                    "on-primary-container": "#ddcdff",
+                    "primary-fixed-dim": "#d1bcff",
+                    "on-tertiary-fixed-variant": "#49406f",
+                    "surface-container-high": "#282a2b",
+                    "inverse-on-surface": "#2f3131",
+                    "surface-container-low": "#1a1c1c",
+                    "on-secondary-container": "#725f00",
+                    "surface-container-lowest": "#0c0f0f",
+                    "tertiary-container": "#5f5585",
+                    "on-error": "#690005",
+                    "surface-container-highest": "#333535",
+                    "on-error-container": "#ffdad6",
+                    "inverse-primary": "#7212ff",
+                    "outline": "#958da3",
+                    "on-primary-fixed-variant": "#5700c9",
+                    "on-background": "#e2e2e2",
+                    "on-primary": "#3c0090",
+                    "outline-variant": "#4a4457",
+                    "error-container": "#93000a",
+                    "inverse-surface": "#e2e2e2",
+                    "secondary-container": "#ffdb3c",
+                    "surface-bright": "#37393a",
+                    "primary-container": "#7000ff",
+                    "on-primary-fixed": "#23005b",
+                    "on-tertiary-container": "#d9ceff",
+                    "on-surface-variant": "#ccc3da",
+                    "surface-tint": "#d1bcff",
+                    "error": "#ffb4ab",
+                    "tertiary-fixed": "#e7deff",
+                    "primary-fixed": "#e9ddff",
+                    "on-secondary": "#3a3000",
+                    "surface-variant": "#333535",
+                    "secondary-fixed": "#ffe16d",
+                    "background": "#121414",
+                    "on-surface": "#e2e2e2",
+                    "on-secondary-fixed": "#221b00",
+                    "surface-container": "#1e2020",
+                    "tertiary-fixed-dim": "#cbbff6",
+                    "tertiary": "#cbbff6",
+                    "secondary": "#fff9ef",
+                    "primary": "#d1bcff",
+                    "surface-dim": "#121414"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-max-width": "1200px",
+                    "margin-mobile": "20px",
+                    "unit": "8px",
+                    "gutter": "16px",
+                    "margin-desktop": "64px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Sora"],
+                    "headline-lg-mobile": ["Sora"],
+                    "body-md": ["Inter"],
+                    "label-md": ["JetBrains Mono"],
+                    "headline-xl": ["Sora"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .hexagon-clip {
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+        }
+        .premium-3d-button {
+            position: relative;
+            background: linear-gradient(180deg, #ffe16d 0%, #e9c400 100%);
+            box-shadow: 0 4px 0 #544600, 0 10px 20px rgba(0, 0, 0, 0.4);
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .premium-3d-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #544600, 0 5px 10px rgba(0, 0, 0, 0.4);
+        }
+        .glowing-border {
+            border: 2px solid transparent;
+            background: linear-gradient(135deg, rgba(209, 188, 255, 0.1), rgba(233, 196, 0, 0.1)) padding-box,
+                        linear-gradient(135deg, #7212ff, #e9c400) border-box;
+            box-shadow: 0 0 15px rgba(233, 196, 0, 0.3);
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .float-anim { animation: float 6s ease-in-out infinite; }
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            background: rgba(18, 20, 20, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+<style>
+@keyframes shine {
+  0% { left: -100%; }
+  20% { left: 100%; }
+  100% { left: 100%; }
+}
+@keyframes soft-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 4px 0 #544600, 0 10px 20px rgba(0, 0, 0, 0.4); }
+  50% { transform: scale(1.02); box-shadow: 0 6px 12px rgba(233, 196, 0, 0.4), 0 10px 25px rgba(0, 0, 0, 0.5); }
+}
+.animate-shine {
+  position: relative;
+  overflow: hidden;
+}
+.animate-shine::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transform: rotate(30deg);
+  animation: shine 4s infinite;
+}
+.animate-soft-pulse {
+  animation: soft-pulse 2s ease-in-out infinite;
+}
+</style></head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col font-body-md overflow-x-hidden">
+<!-- Full-Bleed Studio Background -->
+<div class="fixed inset-0 z-0">
+<!-- STITCH_SHADER_START:ANIMATION_26 class="absolute inset-0 w-full h-full opacity-60" -->
+<div class="absolute inset-0 w-full h-full opacity-60" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_26" style="display:block;width:100%;height:100%" width="510" height="1150"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_26');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+varying vec2 v_texCoord;
+
+void main() {
+    vec2 uv = v_texCoord;
+    vec3 color1 = vec3(0.07, 0.0, 0.15); // Deep Purple
+    vec3 color2 = vec3(0.0, 0.05, 0.2); // Deep Blue
+    
+    // Animated flowing noise
+    float noise = sin(uv.x * 3.0 + u_time * 0.5) * cos(uv.y * 3.0 + u_time * 0.3);
+    noise += sin(uv.y * 5.0 - u_time * 0.8) * cos(uv.x * 2.0 + u_time * 0.2);
+    
+    vec3 baseColor = mix(color1, color2, uv.y + noise * 0.2);
+    
+    // Add "God rays" / Beam effects
+    float beam = pow(abs(sin(uv.x * 2.0 + u_time * 0.1)), 10.0);
+    baseColor += beam * vec3(0.2, 0.3, 0.5) * (1.0 - uv.y);
+    
+    // Vignette
+    float dist = distance(uv, vec2(0.5));
+    baseColor *= 1.2 - dist;
+
+    gl_FragColor = vec4(baseColor, 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_26 -->
+<div class="absolute inset-0 bg-gradient-to-b from-transparent via-surface/40 to-surface"></div>
+</div>
+<!-- TopAppBar -->
+<header class="fixed top-0 z-50 w-full h-20 px-margin-mobile flex justify-between items-center bg-surface/80 backdrop-blur-xl dark:bg-surface-container-low/80 border-b border-primary/20 bg-surface-container-lowest/40 shadow-[0px_4px_20px_rgba(114,18,255,0.3)]">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full border-2 border-secondary-fixed-dim overflow-hidden shadow-[0_0_10px_rgba(233,196,0,0.5)]">
+<img alt="Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfXSXDXF3G1eVaooGuyVUIxE_N4nmQmriL1gycOjAimUAxnVz77AKs8XYzMqsijwqlMRJ6HLn922baM7O66OKeHjiJEKg5F7FyV5Xahavmf_FYfX9YXBjd3sidLp3_5cvd27aG10X3_jhEkt4-Hz25MQkewxxAM8BAS8DETUiXc04pyjT2A3SG0B8PjlDDzJqOGUt-8mvdza27hFBL9Zd7HDb3YvH3bo73qlnwCrAxYDekDKPtNT1JfCHZbdJtcF0yie4ZUmo6En71">
+</div>
+<h1 class="text-headline-lg-mobile font-headline-lg-mobile font-black tracking-tighter text-secondary-fixed-dim uppercase">QUIZ ARENA</h1>
+</div>
+<div class="flex items-center bg-primary-container/20 px-4 py-1.5 rounded-full border border-primary/30">
+<span class="material-symbols-outlined text-secondary-fixed-dim text-sm mr-2" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="text-label-md font-label-md text-primary tracking-wide">₹1,25,000</span>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="relative z-10 flex-grow pt-24 pb-28 px-margin-mobile max-w-container-max-width mx-auto w-full">
+<!-- Countdown Section -->
+<section class="mb-8 flex flex-col items-center">
+<div class="relative w-full max-w-xs">
+<div class="glowing-border hexagon-clip bg-surface-container-lowest/80 backdrop-blur-md p-6 flex flex-col items-center justify-center float-anim animate-shine">
+<p class="text-label-md font-label-md text-on-surface-variant uppercase tracking-[0.2em] mb-2">Next Live Show In</p>
+<div class="text-headline-xl font-headline-xl text-secondary-fixed-dim drop-shadow-[0_0_8px_rgba(233,196,0,0.8)]" id="countdown">02:06:50</div>
+</div>
+</div>
+</section>
+<!-- Featured Match Card -->
+<section class="mb-10">
+<div class="relative group overflow-hidden rounded-xl border border-primary/30 shadow-[0_20px_50px_rgba(114,18,255,0.2)]">
+<div class="aspect-[16/9] w-full relative">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A grand cinematic arena stage for a futuristic game show. The stage features a circular platform with intricate glowing blue and gold circuits, surrounded by massive LED screens displaying nebulae and starfields. Dynamic stage lights beam upwards into a dark, atmospheric ceiling. The overall vibe is high-stakes, prestigious, and technologically advanced with deep purple and golden highlights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmOWGLcLpekTX-qe5qZfRFmxsPTtORfE6qRN-ZhT5eHcx7yWmCb2TRUYvi0ZtQ6TqAcDhQtoF_KYiW9h-MhIY61XejK3XP5pKNGR4Rvi2gRJWUu47AiJHdI9tx91LLK51aaz0blYLrqSLYkjLBDsk7wQoae5O62Rv_x89FOzha-ULRS9x3o_02AWzhGV_Ela3_0gSogy8QkLswmX_aNjIH2Snpljbhf1vUbWQ2FVE15q4YimnQaTV0EFmUMcyqehCB_5NzOJgJOqrl">
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-6 w-full">
+<div class="flex items-center gap-2 mb-2">
+<span class="inline-block w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+<span class="text-label-md font-label-md text-on-primary-container bg-primary-container/60 backdrop-blur-md px-2 py-0.5 rounded">SUNDAY SPECIAL</span>
+</div>
+<h2 class="text-headline-lg font-headline-lg text-secondary-fixed-dim mb-4 leading-tight drop-shadow-md">GRAND CELESTIAL FINALE</h2>
+<button class="premium-3d-button w-full py-4 rounded-lg text-on-secondary-fixed font-headline-lg-mobile flex items-center justify-center gap-2 group animate-shine animate-soft-pulse">
+                            JOIN NOW
+                            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Upcoming Matches List -->
+<section>
+<h3 class="text-headline-lg-mobile font-headline-lg-mobile text-on-surface mb-6 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">event_upcoming</span>
+                Upcoming Battles
+            </h3>
+<div class="grid grid-cols-1 gap-4">
+<!-- Match Item 1 -->
+<div class="glass-panel p-4 rounded-xl flex items-center gap-4 hover:border-secondary-fixed-dim/40 transition-all cursor-pointer">
+<div class="w-20 h-20 rounded-lg overflow-hidden shrink-0 border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="Abstract digital neon artwork with sharp geometric lines and vibrant violet and blue light trails. The style is futuristic and cybernetic, representing high-speed knowledge and data processing. Deep shadows and high-contrast lighting create a premium, mysterious atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFrX4zJmCxG6AXtCpzqPISIo2fyb_lcqKbl_DzeZa_MKhwnGVBgHZrZ7HbeEioF3TjzQ4mbCyy7ExJrtvk1sVTzYrvCdC6yDSRU8zypyKbuDV1cETqAHy5CRY61BQ8X2Z_U_045SP798a4nurPMhS9OgM5an4s37c-HCYGkOygFRVmJt7Yys4U6aHKAfTSSKiLUkjJPdbFTUf32SML7y4Mg6kKtVPCXTnFnY5aKqw9OYT1JoGLHWWx7hFzwz53PtK8E2BFLaBW1aUy">
+</div>
+<div class="flex-grow">
+<h4 class="text-headline-lg-mobile font-headline-lg-mobile text-on-surface leading-tight mb-1">Knowledge War</h4>
+<div class="flex items-center gap-3 text-label-md font-label-md text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">schedule</span> 10:30 PM</span>
+<span class="flex items-center gap-1 text-secondary-fixed-dim"><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span> ₹50,000</span>
+</div>
+</div>
+<div class="text-right">
+<p class="text-label-md font-label-md text-on-surface-variant mb-1">Entry</p>
+<p class="text-on-secondary-container bg-secondary-container font-black px-3 py-1 rounded-md">₹500</p>
+</div>
+</div>
+<!-- Match Item 2 -->
+<div class="glass-panel p-4 rounded-xl flex items-center gap-4 hover:border-secondary-fixed-dim/40 transition-all cursor-pointer">
+<div class="w-20 h-20 rounded-lg overflow-hidden shrink-0 border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="A 3D render of a glowing crystal brain floating in a field of digital stars. The aesthetic is sophisticated and high-tech, using shades of indigo, gold, and vibrant teal. Soft light glows from within the brain, symbolizing intelligence and mastery." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCP_UGZomncb-YKzr4uTJivsBtjyZD2qI_dBSWApMTi-A96V004hhhynLqUUK24RoJK00iRwuqDw6yyKIEwsR6c-hvRbpps0z63KwwluW7ZUFJ5MIdAWa7tmGVd14L13WxihH5nqfF0Meq4eGpCQ0SE6370y29DUjLct3ng9PokMDrwyXI84VkHxWkz-kBWa2CZxu_aqv_aHOO8Kv0KQMVoBScowEtxf3YxdeYdQKoMTe9Oj_CCbU_N_yh-zYbDzEzYIzGAWs6izwfc">
+</div>
+<div class="flex-grow">
+<h4 class="text-headline-lg-mobile font-headline-lg-mobile text-on-surface leading-tight mb-1">Brain Buster</h4>
+<div class="flex items-center gap-3 text-label-md font-label-md text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">schedule</span> 11:45 PM</span>
+<span class="flex items-center gap-1 text-secondary-fixed-dim"><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span> ₹25,000</span>
+</div>
+</div>
+<div class="text-right">
+<p class="text-label-md font-label-md text-on-surface-variant mb-1">Entry</p>
+<p class="text-on-secondary-container bg-secondary-container font-black px-3 py-1 rounded-md">₹250</p>
+</div>
+</div>
+<!-- Match Item 3 -->
+<div class="glass-panel p-4 rounded-xl flex items-center gap-4 hover:border-secondary-fixed-dim/40 transition-all cursor-pointer">
+<div class="w-20 h-20 rounded-lg overflow-hidden shrink-0 border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="A futuristic metallic trophy standing on a pedestal made of glass. The trophy is illuminated by dramatic spotlights in a dark environment. Vibrant purple and gold reflections dance on its surface, representing victory and prestige." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkVwL852WDujKLUVBTQKMlK-iiCiV8sTex4gOarz_KaZGFwAt7PjuFDqA18YC6ZvZwMhq8hmpqSycsVcZUu0FHMNUaywbq65eGBiuQ8sR5RNfiklqKNyL00XAtrrkCcBX2UlDMFtTYylSjyOuOHj5nzuaLZ-u3gmOhNwNE3Gx49YXiQ7LMaK4C7Y7GJAb-8iTgQzOS7GbWRytO5KLGdA4C_uRK1ZOCW7Mn_bYxyzcQyCiBrfFNYEIGz4wEd-bLlGRf6kI0-umhlkc8">
+</div>
+<div class="flex-grow">
+<h4 class="text-headline-lg-mobile font-headline-lg-mobile text-on-surface leading-tight mb-1">Trophy Quest</h4>
+<div class="flex items-center gap-3 text-label-md font-label-md text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">schedule</span> 01:15 AM</span>
+<span class="flex items-center gap-1 text-secondary-fixed-dim"><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span> ₹1,00,000</span>
+</div>
+</div>
+<div class="text-right">
+<p class="text-label-md font-label-md text-on-surface-variant mb-1">Entry</p>
+<p class="text-on-secondary-container bg-secondary-container font-black px-3 py-1 rounded-md">₹1,000</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 h-20 px-4 pb-safe bg-surface-container-lowest/90 backdrop-blur-2xl border-t border-outline-variant/30 bg-surface-container-highest/50 shadow-[0px_-8px_24px_rgba(0,0,0,0.5)] rounded-t-xl flex justify-around items-center">
+<a class="flex flex-col items-center justify-center text-secondary-fixed-dim bg-secondary-container/10 rounded-full px-4 py-1 border border-secondary-fixed-dim/30" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-label-md font-label-md">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="text-label-md font-label-md">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="text-label-md font-label-md">Wallet</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-label-md font-label-md">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for countdown timer
+        function updateTimer() {
+            const timerEl = document.getElementById('countdown');
+            let parts = timerEl.innerText.split(':');
+            let totalSeconds = parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
+            
+            if (totalSeconds > 0) {
+                totalSeconds--;
+                let h = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+                let m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+                let s = (totalSeconds % 60).toString().padStart(2, '0');
+                timerEl.innerText = `${h}:${m}:${s}`;
+            }
+        }
+        setInterval(updateTimer, 1000);
+
+        // Add subtle scale effect on tap for match cards
+        document.querySelectorAll('.glass-panel').forEach(card => {
+            card.addEventListener('mousedown', () => card.style.transform = 'scale(0.98)');
+            card.addEventListener('mouseup', () => card.style.transform = 'scale(1)');
+            card.addEventListener('mouseleave', () => card.style.transform = 'scale(1)');
+        });
+    </script>
+
+
+</body></html>

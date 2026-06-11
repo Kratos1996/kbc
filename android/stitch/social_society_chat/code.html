@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Social Society - Radiance Arena</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;family=Sora:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary": "#fff9ef",
+                    "inverse-surface": "#e2e2e2",
+                    "on-primary": "#3c0090",
+                    "tertiary": "#cbbff6",
+                    "on-secondary": "#3a3000",
+                    "surface-container": "#1e2020",
+                    "surface-container-low": "#1a1c1c",
+                    "tertiary-fixed": "#e7deff",
+                    "inverse-on-surface": "#2f3131",
+                    "background": "#121414",
+                    "secondary-fixed": "#ffe16d",
+                    "primary-fixed": "#e9ddff",
+                    "outline-variant": "#4a4457",
+                    "on-surface": "#e2e2e2",
+                    "on-tertiary-fixed-variant": "#49406f",
+                    "on-primary-container": "#ddcdff",
+                    "on-secondary-fixed-variant": "#544600",
+                    "on-primary-fixed": "#23005b",
+                    "surface-dim": "#121414",
+                    "primary-fixed-dim": "#d1bcff",
+                    "outline": "#958da3",
+                    "on-background": "#e2e2e2",
+                    "tertiary-fixed-dim": "#cbbff6",
+                    "surface-container-lowest": "#0c0f0f",
+                    "primary": "#d1bcff",
+                    "surface-bright": "#37393a",
+                    "surface": "#121414",
+                    "inverse-primary": "#7212ff",
+                    "tertiary-container": "#5f5585",
+                    "secondary-container": "#ffdb3c",
+                    "on-tertiary-fixed": "#1d1440",
+                    "on-error-container": "#ffdad6",
+                    "on-error": "#690005",
+                    "surface-tint": "#d1bcff",
+                    "error-container": "#93000a",
+                    "error": "#ffb4ab",
+                    "on-secondary-fixed": "#221b00",
+                    "on-secondary-container": "#725f00",
+                    "on-surface-variant": "#ccc3da",
+                    "surface-variant": "#333535",
+                    "on-tertiary": "#332957",
+                    "on-primary-fixed-variant": "#5700c9",
+                    "primary-container": "#7000ff",
+                    "surface-container-highest": "#333535",
+                    "surface-container-high": "#282a2b",
+                    "secondary-fixed-dim": "#e9c400",
+                    "on-tertiary-container": "#d9ceff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "64px",
+                    "container-max-width": "1200px",
+                    "margin-mobile": "20px",
+                    "gutter": "16px",
+                    "unit": "8px"
+            },
+            "fontFamily": {
+                    "label-md": ["JetBrains Mono"],
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Sora"],
+                    "headline-xl": ["Sora"],
+                    "headline-lg": ["Sora"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #121414;
+            color: #e2e2e2;
+            overflow: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(30, 32, 32, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(209, 188, 255, 0.1);
+        }
+
+        .premium-glow {
+            box-shadow: 0 0 15px rgba(233, 196, 0, 0.3);
+            border: 1px solid rgba(255, 225, 109, 0.5);
+        }
+
+        .hex-avatar {
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+        }
+
+        .reaction-float {
+            position: absolute;
+            bottom: 100px;
+            right: 20px;
+            pointer-events: none;
+            animation: floatUp 3s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-400px) scale(1.5); opacity: 0; }
+        }
+
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            background: #ffe16d;
+            border-radius: 50%;
+            animation: sparkleAnim 2s linear forwards;
+        }
+
+        @keyframes sparkleAnim {
+            0% { transform: translate(0, 0) scale(0); opacity: 1; }
+            100% { transform: translate(var(--tw-translate-x), var(--tw-translate-y)) scale(1); opacity: 0; }
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(209, 188, 255, 0.2);
+            border-radius: 10px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="h-screen flex flex-col font-body-md text-body-md">
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface-container/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-lg">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">movie_filter</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(209,188,255,0.5)]">RADIANCE ARENA</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="bg-surface-bright/20 px-4 py-1.5 rounded-full border border-primary/20 flex items-center gap-2 transition-all duration-300 active:scale-95">
+<span class="material-symbols-outlined text-secondary-fixed text-lg" style="font-variation-settings: 'FILL' 1;">monetization_on</span>
+<span class="font-label-md text-label-md text-primary">12,500 GC</span>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-primary overflow-hidden">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOUUAXK88zPj7HJR1p4RMF4dnG5vi3c7RUEiUNsO5NjJelIU1aXdubrv-gHh6oMthYFoNo9Dco5iXJxJCeZB-61TVoX1Nf7EmEtbOJCikUj3EDXH6ahpNokt1CxcMF8XgCDEn5n2pu0XKJp-wFWAnknYvjr5kXiOlQ6Yfos9f9IJ2cJ5YnIv-XTJR0PIGK9HtM_qhuwrfwV-JQ7I9U_06IqkqgwjEkkq9Qwaikk2xuXNd1tqDYxEpg0uIT8iKGyy2Ba_Nn8ynjqql-"/>
+</div>
+</div>
+</header>
+<main class="flex-1 mt-16 pb-20 relative overflow-hidden flex flex-col">
+<!-- Live Broadcast Preview Panel -->
+<section class="p-margin-mobile pt-4 z-10">
+<div class="relative w-full aspect-video rounded-xl overflow-hidden shadow-2xl border border-outline-variant/30 group">
+<img alt="Live Broadcast" class="w-full h-full object-cover grayscale-[20%] group-hover:scale-105 transition-transform duration-700" data-alt="A high-tech television studio set for a high-stakes trivia game show. A contestant sits in a central illuminated chair surrounded by circular neon purple light rigs. In the background, large digital screens show abstract golden data patterns. The atmosphere is cinematic, dramatic, and prestige-focused with professional studio lighting and deep shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsLyzq1g108AHHhIFOXHh1KRVIaQXWvympPKKsWUIv9WiNlQSTOGfICu2DxAzzlqRAEWOx9stIpuDF9HvhIqSqWycJolkUcMndrQXqZ6lBp9wjDEXUD9MlrmHxgYODCDciZ8xRCzhGSudlfVEOgjqYP7LuPKV7Jaex9MQGi7NF_fyWkv_ppavwUU1xeb_WcNO6yr1KrGsJXKPPNM6o3AvtCF-UuzglUwbzLzMLpEOggJqeYVlDb-CBqK3AYSLPJmqKhYqIwIYBHVgW"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute top-4 left-4 flex items-center gap-2">
+<span class="bg-red-600 text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1 uppercase tracking-widest animate-pulse">
+<span class="w-1.5 h-1.5 bg-white rounded-full"></span> Live
+                    </span>
+<span class="bg-black/50 backdrop-blur-md text-[10px] px-2 py-0.5 rounded font-label-md flex items-center gap-1 border border-white/10">
+<span class="material-symbols-outlined text-sm">visibility</span> 42.8K
+                    </span>
+</div>
+<div class="absolute bottom-4 left-4">
+<p class="text-[10px] uppercase tracking-widest text-secondary-fixed font-bold mb-1 opacity-80">Current Contestant</p>
+<h3 class="font-headline-lg-mobile text-white drop-shadow-md">Alex "The Brain" V.</h3>
+</div>
+<button class="absolute bottom-4 right-4 bg-primary/20 hover:bg-primary/40 backdrop-blur-md p-2 rounded-full border border-primary/30 transition-all active:scale-90">
+<span class="material-symbols-outlined text-primary">fullscreen</span>
+</button>
+</div>
+</section>
+<!-- Social Society Header -->
+<div class="px-margin-mobile flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">groups</span>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight">Social Society</h2>
+</div>
+<div class="flex items-center -space-x-2">
+<div class="w-6 h-6 rounded-full border border-surface bg-primary/20 overflow-hidden"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJoOj4OYY25QjXXG-qOYp17ZaOXHK1a0RAn58hJ1XrFf_rRWh2PXnkaDRquzjif92GB-IPbUq2EHisxmdnaKgvHrbmC_67tFYjYMZps3y10Q7BvJciHzBG3PQy2n1go_vVxNe7FeCsarbhrB-R6QADipgFReqcWyGtm9SRZduW-7UK4CGWLqj9lkiC0VhMqNNCxBbkP9Nyh50PBjWKPzYJ660Ywe2Bm9Ksu6Psb90qctc0DaUvcRFG2jpGD9ZnFzb_61wP-vj1y3pG"/></div>
+<div class="w-6 h-6 rounded-full border border-surface bg-primary/20 overflow-hidden"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9pRctW0b10kn4yfiV0aY9TDfMYxEkI-bSfDoFqjBV4QsfKIx4npQwKZUBbtj50t1Tkzm4bOM3ZB4NEuer5XqW3exL2MMJBDg-V18CCRVS4qXmFZI9OPenij7RwwS2xosJWN6vd94QuECUQunwkByrAjLmlhQtSfGy7jJEMpPWbRZ8kzX1qkNsBrR3Jy9Hl569LJQup3taM3gY8NEl7aqOp3Ty_Iaz4AKztjMU3Y-d47Iu-zXtMg4ht6qjlCumn2nM1y4ZKFKD3gQi"/></div>
+<div class="w-6 h-6 rounded-full border border-surface bg-primary/20 overflow-hidden"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-y0NYnp1K8fg9jTYCGGeziXPJtdvs0qIbv4GAYPqE0eHzkb0LKK0WjTDX1Sygu56-y4DH2lRCErHEhvk0fm1DYi91aOcGlOl1U4maDQ3CfbjyzDZeqvJ-4NPQEynjcK0y2rylgBdJ2iv1bj6DZnoA-ruAsHWbFWCSiAipJZpOVg3UxaLjk2g9zfwbtZozvrrrmkJBmoxGLlB6TPu1-23hGAmqa7q4GqFwzPx3eF23SBP6OILx4C58juYqRjOE0-HwgorMuoKxvdHA"/></div>
+<div class="flex items-center justify-center w-6 h-6 rounded-full border border-surface bg-surface-bright text-[8px] font-bold">+12</div>
+</div>
+</div>
+<!-- Chat Feed -->
+<div class="flex-1 overflow-y-auto px-margin-mobile space-y-4 py-4 scroll-smooth" id="chat-feed">
+<!-- Message 1 (Standard) -->
+<div class="flex gap-3 animate-fade-in">
+<div class="w-10 h-10 rounded-xl bg-surface-variant flex-shrink-0 overflow-hidden border border-outline-variant/30">
+<img alt="Sarah" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHRcCzN7nWoFOCCGJOoC_p8nS40dzgsjlfqz_8voxBAsAbeo_FVrl_3aYvzgNtAeczrsij09nDlikbbgVhSeoO5IYNqHN9Zb3zumnh0Qg3TJHUvkPXcCHO9YTNhnbkibX4wpbEyVBvgH_K4a1dp7hr41hHTvXHVkRUd7unJGhWtPxLoQfaewfTsdlAd7CG-9CPEifD8jsg8LfFbwzTbzZZPtOu0gQeLUx2SuZzwclBDm94W2-WczVpEo2UQJWYdGMNL2QuVbDucz2B"/>
+</div>
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-[12px] font-bold">SarahJ_92</span>
+<div class="bg-surface-container-high/50 backdrop-blur-sm px-3 py-2 rounded-2xl rounded-tl-none border border-white/5 max-w-[85%]">
+<p class="text-on-surface text-sm">That last question was brutal! I thought it was B for sure.</p>
+</div>
+</div>
+</div>
+<!-- Message 2 (Premium Highlight) -->
+<div class="flex gap-3 animate-fade-in">
+<div class="w-10 h-10 flex-shrink-0 hex-avatar bg-gradient-to-br from-secondary-fixed to-primary p-0.5 premium-glow">
+<div class="w-full h-full hex-avatar bg-surface-container overflow-hidden">
+<img alt="Grandmaster" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDK_JSpa8mm8-gldE_tImxQaUH8RVZahlGF9bG1vmPCIoedQmcVTwqksfmgE6bJlp9LDFpOSvGi8_AWweGBjdqGP4Kq5F6nzAQRac1HV-iw8JfI7I8JJVl1AI5eK-g1B_yaLa6yIawQLWz_5dU7KKlhK1JLIGIRnEfkoorgaFs2LsVP8MNJ1oAFvNzJCzw84ufRqRBi7jUT04m8UAuubqGVrgy9n8--IKZDjsil6dpkYZMQOzA5eGQqf0YZot0MxFf-WH3zuXdQeAl0"/>
+</div>
+</div>
+<div class="flex flex-col w-full">
+<div class="flex items-center gap-2">
+<span class="text-secondary-fixed text-[12px] font-extrabold uppercase tracking-widest">Grandmaster_Lux</span>
+<span class="material-symbols-outlined text-secondary-fixed text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div class="bg-secondary-fixed/10 backdrop-blur-md px-3 py-2 rounded-2xl rounded-tl-none border border-secondary-fixed/30 shadow-[0_0_10px_rgba(233,196,0,0.1)] max-w-[90%]">
+<p class="text-secondary text-sm font-medium">He's got this. Alex has been practicing the history category for months! 💎</p>
+</div>
+</div>
+</div>
+<!-- Message 3 (System/Event) -->
+<div class="flex justify-center py-2">
+<span class="bg-primary/10 text-primary-fixed-dim text-[10px] px-4 py-1 rounded-full border border-primary/20 uppercase tracking-widest font-bold">
+                    System: 50:50 Lifeline Used by Alex
+                </span>
+</div>
+<!-- Message 4 (Standard) -->
+<div class="flex gap-3 animate-fade-in">
+<div class="w-10 h-10 rounded-xl bg-surface-variant flex-shrink-0 overflow-hidden border border-outline-variant/30">
+<img alt="Tyler" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAourwGNXpzPKqsYn4tzCaCmDrVJXnL7nKqRZBIDxLigVsRIXrqW9TjdjIjrM9l1-q5v3Lg6icd1SWfslW4mjmM5MNdgXdLFVxuGERb_f3LRVPMEdfbRtmhmDBjl0TJ8-9NMC39KxTGt0BccjLS-iqenwOxluWy0JeuEBl6bfYo9cHTGrfmozha7TIg3t8mPkzKeLape6bChywJCzBFmErnXHEsrkgY0PJ78P-h-m9-0F5mcskHHiSeb4EJoG5eSblZJO2RXOjE28dv"/>
+</div>
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-[12px] font-bold">T-Bone_Quizzer</span>
+<div class="bg-surface-container-high/50 backdrop-blur-sm px-3 py-2 rounded-2xl rounded-tl-none border border-white/5 max-w-[85%]">
+<p class="text-on-surface text-sm">LFGGGGG! Alex is on fire tonight! 🔥</p>
+</div>
+</div>
+</div>
+<!-- Message 5 (Standard) -->
+<div class="flex gap-3 animate-fade-in">
+<div class="w-10 h-10 rounded-xl bg-surface-variant flex-shrink-0 overflow-hidden border border-outline-variant/30">
+<img alt="Mia" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqrKy1Rra_rShTPNSLk5rqyxYu2_mGYbufWRc0zau8GCNJ1cZ4WCrTYiT5-KodEYGLxjMKlMHQcVoo0QYSYbSXzsxe9t_pXG03ohPTX_-fm9KGPmSp3OkR369i9emQrmn-RxUi7cFoDMuEUgTbg4upe70zUTi2B4sbaAu-WsqqPF3FhA_MYRvq2OxxYzcb_0gZpjcPtyuT0jWXLeaSWp8s7jVXrnwcv2AAfDcK3ghM0LY1HMnqzPOgBcPJEYwaqVgnxLhr8GSgIJ11"/>
+</div>
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-[12px] font-bold">Mia_Mars</span>
+<div class="bg-surface-container-high/50 backdrop-blur-sm px-3 py-2 rounded-2xl rounded-tl-none border border-white/5 max-w-[85%]">
+<p class="text-on-surface text-sm">Who's watching from London? 🇬🇧</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Reactions Container -->
+<div class="absolute inset-0 pointer-events-none z-20" id="reactions-container"></div>
+<!-- Chat Input & Interaction Area -->
+<div class="p-margin-mobile glass-panel border-t border-outline-variant/20 rounded-t-3xl">
+<div class="flex items-center gap-4 mb-4 overflow-x-auto no-scrollbar py-1">
+<button class="flex-shrink-0 w-10 h-10 rounded-full bg-surface-bright/20 flex items-center justify-center text-xl hover:bg-surface-bright/40 active:scale-90 transition-all" onclick="sendReaction('🔥')">🔥</button>
+<button class="flex-shrink-0 w-10 h-10 rounded-full bg-surface-bright/20 flex items-center justify-center text-xl hover:bg-surface-bright/40 active:scale-90 transition-all" onclick="sendReaction('👏')">👏</button>
+<button class="flex-shrink-0 w-10 h-10 rounded-full bg-surface-bright/20 flex items-center justify-center text-xl hover:bg-surface-bright/40 active:scale-90 transition-all" onclick="sendReaction('❤️')">❤️</button>
+<button class="flex-shrink-0 w-10 h-10 rounded-full bg-surface-bright/20 flex items-center justify-center text-xl hover:bg-surface-bright/40 active:scale-90 transition-all" onclick="sendReaction('😮')">😮</button>
+<button class="flex-shrink-0 w-10 h-10 rounded-full bg-surface-bright/20 flex items-center justify-center text-xl hover:bg-surface-bright/40 active:scale-90 transition-all" onclick="sendReaction('💯')">💯</button>
+<div class="h-6 w-[1px] bg-outline-variant/30 mx-1 flex-shrink-0"></div>
+<button class="flex-shrink-0 px-4 py-2 rounded-full bg-gradient-to-r from-secondary-fixed to-secondary-container text-on-secondary-fixed font-bold text-xs uppercase tracking-widest shadow-lg flex items-center gap-2 active:scale-95 transition-all" id="cheer-btn">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span> Cheer
+                </button>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex-1 relative">
+<input class="w-full bg-surface-container-lowest/80 border border-outline-variant/40 rounded-2xl py-3.5 px-5 text-sm text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-inner" placeholder="Join the society..." type="text"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container-lowest/90 backdrop-blur-2xl border-t border-outline-variant/20 shadow-[0_-8px_24px_rgba(0,0,0,0.5)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined text-2xl">movie_filter</span>
+<span class="font-label-md text-[10px] mt-1">Studio</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary-fixed bg-secondary-fixed/10 rounded-xl px-4 py-1 shadow-[0_0_15px_rgba(233,196,0,0.3)] active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">groups</span>
+<span class="font-label-md text-[10px] mt-1">Society</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined text-2xl">leaderboard</span>
+<span class="font-label-md text-[10px] mt-1">Ladder</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined text-2xl">person</span>
+<span class="font-label-md text-[10px] mt-1">Profile</span>
+</a>
+</nav>
+<script>
+        // Reaction Floating Effect
+        function sendReaction(emoji) {
+            const container = document.getElementById('reactions-container');
+            const reaction = document.createElement('div');
+            reaction.className = 'reaction-float text-3xl select-none';
+            reaction.innerText = emoji;
+            
+            // Random horizontal offset
+            const randomX = Math.random() * 80 - 40;
+            reaction.style.right = (30 + randomX) + 'px';
+            
+            container.appendChild(reaction);
+            
+            // Auto remove
+            setTimeout(() => {
+                reaction.remove();
+            }, 3000);
+        }
+
+        // Cheer Sparkle Effect
+        const cheerBtn = document.getElementById('cheer-btn');
+        cheerBtn.addEventListener('click', () => {
+            const container = document.getElementById('reactions-container');
+            
+            // Send Game Logo Icon
+            const logo = document.createElement('div');
+            logo.className = 'reaction-float text-primary flex flex-col items-center select-none';
+            logo.innerHTML = `
+                <span class="material-symbols-outlined text-5xl" style="font-variation-settings: 'FILL' 1;">movie_filter</span>
+                <span class="font-bold text-[8px] tracking-[0.2em] text-secondary-fixed">RADIANCE</span>
+            `;
+            logo.style.right = '40%';
+            container.appendChild(logo);
+            setTimeout(() => logo.remove(), 3000);
+
+            // Create Sparkles
+            for (let i = 0; i < 30; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                
+                const size = Math.random() * 6 + 2;
+                sparkle.style.width = size + 'px';
+                sparkle.style.height = size + 'px';
+                
+                const startX = window.innerWidth / 2;
+                const startY = window.innerHeight - 100;
+                
+                sparkle.style.left = startX + 'px';
+                sparkle.style.top = startY + 'px';
+                
+                const destX = (Math.random() - 0.5) * 400;
+                const destY = - (Math.random() * 500 + 100);
+                
+                sparkle.style.setProperty('--tw-translate-x', destX + 'px');
+                sparkle.style.setProperty('--tw-translate-y', destY + 'px');
+                
+                container.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 2000);
+            }
+        });
+
+        // Simulate incoming chat messages
+        const chatFeed = document.getElementById('chat-feed');
+        const simulatedUsers = ['Alex_Master', 'QuizQueen', 'TriviaKing', 'LuminousPlayer', 'NeonDreamer'];
+        const simulatedMessages = [
+            'No way that was the answer!',
+            'Alex is carrying the show right now.',
+            'That gold glow is incredible.',
+            'Hoping for a geography question next.',
+            'Who else used their lifeline already? lol'
+        ];
+
+        function addSimulatedMessage() {
+            const user = simulatedUsers[Math.floor(Math.random() * simulatedUsers.length)];
+            const msg = simulatedMessages[Math.floor(Math.random() * simulatedMessages.length)];
+            const seed = Math.floor(Math.random() * 100);
+            
+            const div = document.createElement('div');
+            div.className = 'flex gap-3 opacity-0 translate-y-4 transition-all duration-500';
+            div.innerHTML = `
+                <div class="w-10 h-10 rounded-xl bg-surface-variant flex-shrink-0 overflow-hidden border border-outline-variant/30">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}" alt="${user}">
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-on-surface-variant text-[12px] font-bold">${user}</span>
+                    <div class="bg-surface-container-high/50 backdrop-blur-sm px-3 py-2 rounded-2xl rounded-tl-none border border-white/5 max-w-[85%]">
+                        <p class="text-on-surface text-sm">${msg}</p>
+                    </div>
+                </div>
+            `;
+            
+            chatFeed.appendChild(div);
+            
+            // Trigger animation
+            setTimeout(() => {
+                div.classList.remove('opacity-0', 'translate-y-4');
+                chatFeed.scrollTop = chatFeed.scrollHeight;
+            }, 100);
+        }
+
+        setInterval(() => {
+            if (Math.random() > 0.6) addSimulatedMessage();
+        }, 4000);
+
+    </script>
+</body></html>

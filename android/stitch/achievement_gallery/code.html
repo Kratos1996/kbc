@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Radiance Arena | Achievement Gallery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;family=Sora:wght@700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;family=Sora:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "secondary": "#fff9ef",
+                "inverse-surface": "#e2e2e2",
+                "on-primary": "#3c0090",
+                "tertiary": "#cbbff6",
+                "on-secondary": "#3a3000",
+                "surface-container": "#1e2020",
+                "surface-container-low": "#1a1c1c",
+                "tertiary-fixed": "#e7deff",
+                "inverse-on-surface": "#2f3131",
+                "background": "#121414",
+                "secondary-fixed": "#ffe16d",
+                "primary-fixed": "#e9ddff",
+                "outline-variant": "#4a4457",
+                "on-surface": "#e2e2e2",
+                "on-tertiary-fixed-variant": "#49406f",
+                "on-primary-container": "#ddcdff",
+                "on-secondary-fixed-variant": "#544600",
+                "on-primary-fixed": "#23005b",
+                "surface-dim": "#121414",
+                "primary-fixed-dim": "#d1bcff",
+                "outline": "#958da3",
+                "on-background": "#e2e2e2",
+                "tertiary-fixed-dim": "#cbbff6",
+                "surface-container-lowest": "#0c0f0f",
+                "primary": "#d1bcff",
+                "surface-bright": "#37393a",
+                "surface": "#121414",
+                "inverse-primary": "#7212ff",
+                "tertiary-container": "#5f5585",
+                "secondary-container": "#ffdb3c",
+                "on-tertiary-fixed": "#1d1440",
+                "on-error-container": "#ffdad6",
+                "on-error": "#690005",
+                "surface-tint": "#d1bcff",
+                "error-container": "#93000a",
+                "error": "#ffb4ab",
+                "on-secondary-fixed": "#221b00",
+                "on-secondary-container": "#725f00",
+                "on-surface-variant": "#ccc3da",
+                "surface-variant": "#333535",
+                "on-tertiary": "#332957",
+                "on-primary-fixed-variant": "#5700c9",
+                "primary-container": "#7000ff",
+                "surface-container-highest": "#333535",
+                "surface-container-high": "#282a2b",
+                "secondary-fixed-dim": "#e9c400",
+                "on-tertiary-container": "#d9ceff"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "margin-desktop": "64px",
+                "container-max-width": "1200px",
+                "margin-mobile": "20px",
+                "gutter": "16px",
+                "unit": "8px"
+            },
+            "fontFamily": {
+                "label-md": ["JetBrains Mono"],
+                "body-md": ["Inter"],
+                "headline-lg-mobile": ["Sora"],
+                "headline-xl": ["Sora"],
+                "headline-lg": ["Sora"]
+            },
+            "fontSize": {
+                "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .glass-panel {
+            background: rgba(30, 32, 32, 0.6);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(209, 188, 255, 0.1);
+        }
+
+        .hexagon-frame {
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .badge-glow {
+            filter: drop-shadow(0 0 12px rgba(209, 188, 255, 0.4));
+        }
+
+        .badge-locked {
+            filter: grayscale(1) opacity(0.4);
+        }
+
+        .achievement-card:hover .hexagon-frame {
+            transform: scale(1.05) translateY(-4px);
+            filter: drop-shadow(0 0 20px rgba(233, 196, 0, 0.3));
+        }
+
+        @keyframes progress-shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .shimmer-bar {
+            background: linear-gradient(90deg, #7000ff, #d1bcff, #7000ff);
+            background-size: 200% 100%;
+            animation: progress-shimmer 3s infinite linear;
+        }
+
+        .floating-orb {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(112, 0, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .modal-enter {
+            animation: modalIn 0.3s ease-out forwards;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen selection:bg-primary/30">
+<!-- Background Elements -->
+<div class="fixed inset-0 overflow-hidden pointer-events-none">
+<div class="floating-orb top-[-10%] left-[-5%]" style="animation: pulse 12s infinite alternate"></div>
+<div class="floating-orb bottom-[10%] right-[-10%]" style="animation: pulse 15s infinite alternate-reverse"></div>
+
+</div>
+<!-- Top Navigation (From Shared Components) -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface-container/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-lg">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40">
+<span class="material-symbols-outlined text-primary text-[20px]">person</span>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(209,188,255,0.5)]">RADIANCE ARENA</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex gap-6 mr-6">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-all" href="#">STUDIO</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-all" href="#">LADDER</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-all" href="#">STORE</a>
+</div>
+<div class="bg-surface-bright/20 px-3 py-1 rounded-full flex items-center gap-2 border border-outline-variant/30">
+<span class="material-symbols-outlined text-secondary-fixed text-[18px]" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="font-label-md text-label-md text-primary">12,500 GC</span>
+</div>
+</div>
+</header>
+<main class="relative z-10 pt-24 pb-32 px-margin-mobile md:px-margin-desktop max-w-container-max-width mx-auto">
+<!-- Header Section -->
+<section class="mb-12">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+<div>
+<h2 class="font-headline-lg text-headline-lg mb-2">Achievement Gallery</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-lg">Showcase your intellectual dominance and prestige across the grand arena of knowledge.</p>
+</div>
+<div class="w-full md:w-80 space-y-3">
+<div class="flex justify-between items-center px-1">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase">Total Mastery</span>
+<span class="font-label-md text-label-md text-primary">82%</span>
+</div>
+<div class="h-3 w-full bg-surface-container-highest rounded-full overflow-hidden border border-outline-variant/30 shadow-inner">
+<div class="h-full w-[82%] shimmer-bar rounded-full shadow-[0_0_12px_rgba(112,0,255,0.5)]"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Achievement Grid (Asymmetric Bento Style) -->
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap- gutter">
+<!-- Badge 1: Fastest Finger -->
+<div class="achievement-card cursor-pointer group flex flex-col items-center p-4 rounded-xl transition-all duration-300" onclick="showDetail('Fastest Finger', 'Answer 10 questions in under 3 seconds each.', 'Oct 12, 2023', 'flash_on', 'earned')">
+<div class="hexagon-frame w-24 h-28 bg-gradient-to-br from-primary-container to-surface-container-high flex items-center justify-center mb-3 relative overflow-hidden">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_transparent_70%)] opacity-50"></div>
+<span class="material-symbols-outlined text-[40px] text-primary badge-glow z-10" style="font-variation-settings: 'FILL' 1;">flash_on</span>
+<div class="absolute bottom-0 left-0 right-0 h-1 bg-primary/40"></div>
+</div>
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary text-center">Fastest Finger</span>
+</div>
+<!-- Badge 2: Millionaire (Locked) -->
+<div class="achievement-card cursor-pointer group flex flex-col items-center p-4 rounded-xl transition-all duration-300" onclick="showDetail('Millionaire', 'Reach the top level of the ladder in a single session.', 'Locked', 'payments', 'locked')">
+<div class="hexagon-frame w-24 h-28 bg-surface-variant/40 flex items-center justify-center mb-3 badge-locked relative">
+<span class="material-symbols-outlined text-[40px] text-on-surface-variant z-10">payments</span>
+<div class="absolute inset-0 flex items-center justify-center bg-black/20 z-20">
+<span class="material-symbols-outlined text-on-surface-variant/40 text-[24px]">lock</span>
+</div>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant/60 text-center">Millionaire</span>
+</div>
+<!-- Badge 3: Survivor -->
+<div class="achievement-card cursor-pointer group flex flex-col items-center p-4 rounded-xl transition-all duration-300" onclick="showDetail('Survivor', 'Complete a game with zero lifelines remaining.', 'Nov 04, 2023', 'shield', 'earned')">
+<div class="hexagon-frame w-24 h-28 bg-gradient-to-br from-secondary-container/20 to-surface-container-high border-2 border-secondary-fixed/30 flex items-center justify-center mb-3 relative overflow-hidden">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(233,196,0,0.2)_0%,_transparent_70%)] opacity-50"></div>
+<span class="material-symbols-outlined text-[40px] text-secondary-fixed badge-glow z-10" style="font-variation-settings: 'FILL' 1;">shield</span>
+<div class="absolute bottom-0 left-0 right-0 h-1 bg-secondary-fixed/40"></div>
+</div>
+<span class="font-label-md text-label-md text-on-surface group-hover:text-secondary-fixed text-center">Survivor</span>
+</div>
+<!-- Badge 4: Knowledge Seeker -->
+<div class="achievement-card cursor-pointer group flex flex-col items-center p-4 rounded-xl transition-all duration-300" onclick="showDetail('Scholar', 'Answer 500 questions correctly across all game modes.', 'Dec 22, 2023', 'auto_stories', 'earned')">
+<div class="hexagon-frame w-24 h-28 bg-gradient-to-br from-tertiary-container/30 to-surface-container-high border-2 border-tertiary/20 flex items-center justify-center mb-3 relative">
+<span class="material-symbols-outlined text-[40px] text-tertiary badge-glow z-10" style="font-variation-settings: 'FILL' 1;">auto_stories</span>
+<div class="absolute bottom-0 left-0 right-0 h-1 bg-tertiary/40"></div>
+</div>
+<span class="font-label-md text-label-md text-on-surface group-hover:text-tertiary text-center">Scholar</span>
+</div>
+<!-- Badge 5: High Roller (Locked) -->
+<div class="achievement-card flex flex-col items-center p-4 rounded-xl opacity-50">
+<div class="hexagon-frame w-24 h-28 bg-surface-variant/40 flex items-center justify-center mb-3 badge-locked relative">
+<span class="material-symbols-outlined text-[40px] text-on-surface-variant z-10">casino</span>
+<div class="absolute inset-0 flex items-center justify-center bg-black/20 z-20">
+<span class="material-symbols-outlined text-on-surface-variant/40 text-[24px]">lock</span>
+</div>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant/60 text-center">High Roller</span>
+</div>
+<!-- Repeat pattern for more achievements -->
+<div class="achievement-card cursor-pointer group flex flex-col items-center p-4 rounded-xl transition-all duration-300" onclick="showDetail('Grandmaster', 'Reach Rank #1 on the Seasonal Ladder.', 'Locked', 'military_tech', 'locked')">
+<div class="hexagon-frame w-24 h-28 bg-surface-variant/40 flex items-center justify-center mb-3 badge-locked relative">
+<span class="material-symbols-outlined text-[40px] text-on-surface-variant z-10">military_tech</span>
+<div class="absolute inset-0 flex items-center justify-center bg-black/20 z-20">
+<span class="material-symbols-outlined text-on-surface-variant/40 text-[24px]">lock</span>
+</div>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant/60 text-center">Grandmaster</span>
+</div>
+<div class="achievement-card cursor-pointer group flex flex-col items-center p-4 rounded-xl transition-all duration-300" onclick="showDetail('Electrician', 'Use the Bolt Lifeline 10 times in a row.', 'Jan 15, 2024', 'electric_bolt', 'earned')">
+<div class="hexagon-frame w-24 h-28 bg-gradient-to-br from-primary/30 to-surface-container-high border-2 border-primary/20 flex items-center justify-center mb-3 relative">
+<span class="material-symbols-outlined text-[40px] text-primary badge-glow z-10" style="font-variation-settings: 'FILL' 1;">electric_bolt</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary text-center">Electrician</span>
+</div>
+<div class="achievement-card flex flex-col items-center p-4 rounded-xl opacity-50">
+<div class="hexagon-frame w-24 h-28 bg-surface-variant/40 flex items-center justify-center mb-3 badge-locked relative">
+<span class="material-symbols-outlined text-[40px] text-on-surface-variant z-10">workspace_premium</span>
+<div class="absolute inset-0 flex items-center justify-center bg-black/20 z-20">
+<span class="material-symbols-outlined text-on-surface-variant/40 text-[24px]">lock</span>
+</div>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant/60 text-center">Prestige I</span>
+</div>
+<div class="achievement-card cursor-pointer group flex flex-col items-center p-4 rounded-xl transition-all duration-300" onclick="showDetail('World Traveler', 'Answer 50 geography questions correctly.', 'Feb 10, 2024', 'public', 'earned')">
+<div class="hexagon-frame w-24 h-28 bg-gradient-to-br from-secondary-fixed/20 to-surface-container-high border-2 border-secondary-fixed/20 flex items-center justify-center mb-3 relative">
+<span class="material-symbols-outlined text-[40px] text-secondary-fixed badge-glow z-10" style="font-variation-settings: 'FILL' 1;">public</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface group-hover:text-secondary-fixed text-center">World Traveler</span>
+</div>
+<div class="achievement-card flex flex-col items-center p-4 rounded-xl opacity-50">
+<div class="hexagon-frame w-24 h-28 bg-surface-variant/40 flex items-center justify-center mb-3 badge-locked relative">
+<span class="material-symbols-outlined text-[40px] text-on-surface-variant z-10">emoji_events</span>
+<div class="absolute inset-0 flex items-center justify-center bg-black/20 z-20">
+<span class="material-symbols-outlined text-on-surface-variant/40 text-[24px]">lock</span>
+</div>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant/60 text-center">Tournament Hero</span>
+</div>
+</div>
+<!-- Detail Panel Section (As Bento Cards) -->
+<section class="mt-20">
+<h3 class="font-headline-lg text-headline-lg mb-6 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">history_edu</span>
+                Recent Milestones
+            </h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="glass-panel p-6 rounded-2xl border-l-4 border-l-primary flex flex-col justify-between hover:translate-y-[-4px] transition-all">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-primary/10 text-primary font-label-md text-[12px] px-2 py-1 rounded">LEGENDARY</span>
+<span class="text-on-surface-variant font-label-md text-[12px]">2h ago</span>
+</div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-2">Grand Slam</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Achieved by winning 5 consecutive games without using any lifelines.</p>
+</div>
+<div class="mt-6 flex items-center gap-4">
+<img class="w-12 h-12 rounded-lg object-cover border border-outline-variant" data-alt="A macro shot of a sleek futuristic trophy with crystalline edges and deep purple glowing core. The lighting is dramatic and cinematic, emphasizing the sharp angles and high-tech material of the reward. Deep blacks and vibrant purples define the high-end gaming aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuClYj8E8_zOVbqM5uI0AXcPKD1RYuVdONDslrogvb2tYIvwFyFIWpGQTf8tbv_6ML-fUB7pgjzYOMlfI0FGMmjcnXPC74FrfOQV-mSiRN_cmOjM98BGAiDCew-jaT2l2NGmgcR1uyv4yiPf3oyr_KzhBXdcLCKQZdkj8ISy303uwtkSb1BY4ULvWk3OaMB3YYTyQ-GCJlhPvQ67MhHCQCD3o_mmVlddKxUpDngNaAoV-Tc-lTrZgHMrgCtqqx3kCYwiTTfrtBdCPy0f"/>
+<button class="bg-primary/20 text-primary border border-primary/40 px-4 py-1 rounded-full font-label-md text-[12px] hover:bg-primary hover:text-on-primary transition-all">REWARD: +500 XP</button>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-2xl border-l-4 border-l-secondary-fixed flex flex-col justify-between hover:translate-y-[-4px] transition-all">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-secondary-fixed/10 text-secondary-fixed font-label-md text-[12px] px-2 py-1 rounded">ELITE</span>
+<span class="text-on-surface-variant font-label-md text-[12px]">1d ago</span>
+</div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-secondary-fixed mb-2">Unstoppable</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Reached level 15 on the ladder for the third time this week.</p>
+</div>
+<div class="mt-6 flex items-center gap-4">
+<img class="w-12 h-12 rounded-lg object-cover border border-outline-variant" data-alt="A detailed 3D render of a golden hexagonal medallion floating in a dark, atmospheric void. The medallion features intricate tech patterns and is lit from above with a warm, prestige gold light. The background features subtle digital particles and purple lens flares to maintain a high-stakes, cinematic gaming atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUJFyk75wU5vNo_e9OxhxzYqm64JmWXsKQDfSVe8qEDTR5Bv2PD-y_kbjAHU3XMmDU7GalNnjA4PmfBKbq20ikXEIk_SEPQaTA4rIaZsXXnbkPc0Eg8CVI17_BOWSDs4EulvaB_FiQqCU4fOzp1BFewnUfnlfkNB8bDKx7JoGdpBsh4-kNFWrkqedTu57XnipzCZKO40j1BQpc5n0l-rp4Sjbxe8JxodOeTEKpumlb45_YpbjDr2dE2gOEHS6P8FD3XvZYWuM_7gSG"/>
+<button class="bg-secondary-fixed/20 text-secondary-fixed border border-secondary-fixed/40 px-4 py-1 rounded-full font-label-md text-[12px] hover:bg-secondary-fixed hover:text-on-secondary transition-all">REWARD: Gold Skin</button>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-2xl border-l-4 border-l-tertiary flex flex-col justify-between hover:translate-y-[-4px] transition-all">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-tertiary/10 text-tertiary font-label-md text-[12px] px-2 py-1 rounded">UNCOMMON</span>
+<span class="text-on-surface-variant font-label-md text-[12px]">3d ago</span>
+</div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-tertiary mb-2">History Buff</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Answered 20 history-related questions correctly in a row.</p>
+</div>
+<div class="mt-6 flex items-center gap-4">
+<img class="w-12 h-12 rounded-lg object-cover border border-outline-variant" data-alt="A futuristic holographic book floating in a dark chamber, emitting a soft purple and blue light. Digital data streams revolve around the object. The visual style is sleek and premium, focusing on technological mastery and ancient knowledge reimagined for a high-end digital arena." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx_42awWHmzabF7iaX8_dHPR8lltc9Wqqhe8M8dTN4dzR4YKCarvECMtqe12nhlAwzzUS7cDw7O8hAPmcsyKEl9U1BmfdkJj9wZhuyXCzN97tHrkXH6R5tbANDkCMrRnIJgPA2EqO0RmU9ytncQ1Iyzigs9MgpOWaZg6JxFcIyVIgVOt_Kic3yMKinC-z2JXADXDloiCocIawHPxvfBFcIoWc6JLrvB8Iz2FmJsXpxFhvB01vi-8FpgPSJ-4ivq8oO9rMUS9uCsDbj"/>
+<button class="bg-tertiary/20 text-tertiary border border-tertiary/40 px-4 py-1 rounded-full font-label-md text-[12px] hover:bg-tertiary hover:text-on-tertiary transition-all">REWARD: Badge Title</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Shell (Shared Components) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container-lowest/90 backdrop-blur-2xl border-t border-outline-variant/20 shadow-[0_-8px_24px_rgba(0,0,0,0.5)] rounded-t-xl">
+<button class="flex flex-col items-center justify-center text-on-surface-variant/60 active:scale-90 duration-200 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">movie_filter</span>
+<span class="font-label-md text-label-md">Studio</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant/60 active:scale-90 duration-200 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="font-label-md text-label-md">Ladder</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant/60 active:scale-90 duration-200 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">local_mall</span>
+<span class="font-label-md text-label-md">Store</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary-fixed bg-secondary-fixed/10 rounded-xl px-4 py-1 shadow-[0_0_15px_rgba(233,196,0,0.3)] active:scale-90 duration-200">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</button>
+</nav>
+<!-- Achievement Detail Modal -->
+<div class="fixed inset-0 z-[100] hidden items-center justify-center p-6 bg-black/80 backdrop-blur-md" id="badge-modal">
+<div class="glass-panel w-full max-w-md p-8 rounded-3xl border border-primary/30 relative modal-enter">
+<button class="absolute top-4 right-4 text-on-surface-variant hover:text-primary transition-colors" onclick="hideDetail()">
+<span class="material-symbols-outlined">close</span>
+</button>
+<div class="flex flex-col items-center text-center">
+<div class="hexagon-frame w-32 h-36 bg-gradient-to-br from-primary-container to-surface-container-high flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(112,0,255,0.3)] border-2 border-primary/40" id="modal-hex">
+<span class="material-symbols-outlined text-[64px] text-primary" id="modal-icon" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-secondary-fixed mb-2 tracking-tight" id="modal-title">ACHIEVEMENT NAME</h3>
+<div class="bg-primary/20 text-primary font-label-md text-[12px] px-3 py-1 rounded-full mb-6 border border-primary/20" id="modal-status">EARNED</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 px-4" id="modal-desc">Detailed achievement description goes here, explaining the monumental task completed by the user.</p>
+<div class="w-full grid grid-cols-2 gap-4 mb-8">
+<div class="bg-surface-container-high p-4 rounded-xl border border-outline-variant/30">
+<p class="font-label-md text-[10px] text-on-surface-variant uppercase mb-1">Earned On</p>
+<p class="font-label-md text-label-md text-on-surface" id="modal-date">Oct 12, 2023</p>
+</div>
+<div class="bg-surface-container-high p-4 rounded-xl border border-outline-variant/30">
+<p class="font-label-md text-[10px] text-on-surface-variant uppercase mb-1">Global Rarity</p>
+<p class="font-label-md text-label-md text-on-surface">Top 3.2%</p>
+</div>
+</div>
+<div class="flex flex-col w-full gap-3">
+<button class="w-full bg-secondary-fixed text-on-secondary font-headline-lg-mobile text-[16px] py-4 rounded-xl flex items-center justify-center gap-2 shadow-[0_4px_0_0_#725f00] active:translate-y-[2px] active:shadow-[0_2px_0_0_#725f00] transition-all">
+<span class="material-symbols-outlined">share</span>
+                        Share to Society
+                    </button>
+<button class="w-full bg-surface-bright/20 text-on-surface-variant py-4 rounded-xl font-label-md text-label-md hover:bg-surface-bright/40 transition-all border border-outline-variant/20" onclick="hideDetail()">
+                        Back to Gallery
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<script>
+        function showDetail(title, desc, date, icon, status) {
+            const modal = document.getElementById('badge-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDesc = document.getElementById('modal-desc');
+            const modalDate = document.getElementById('modal-date');
+            const modalIcon = document.getElementById('modal-icon');
+            const modalHex = document.getElementById('modal-hex');
+            const modalStatus = document.getElementById('modal-status');
+
+            modalTitle.innerText = title;
+            modalDesc.innerText = desc;
+            modalDate.innerText = date;
+            modalIcon.innerText = icon;
+
+            if(status === 'locked') {
+                modalStatus.innerText = 'LOCKED';
+                modalStatus.className = 'bg-surface-variant/40 text-on-surface-variant/60 font-label-md text-[12px] px-3 py-1 rounded-full mb-6 border border-outline-variant/30';
+                modalHex.className = 'hexagon-frame w-32 h-36 bg-surface-variant flex items-center justify-center mb-6 badge-locked';
+                modalTitle.className = 'font-headline-lg text-headline-lg text-on-surface-variant mb-2 tracking-tight grayscale';
+            } else {
+                modalStatus.innerText = 'EARNED';
+                modalStatus.className = 'bg-primary/20 text-primary font-label-md text-[12px] px-3 py-1 rounded-full mb-6 border border-primary/20';
+                modalHex.className = 'hexagon-frame w-32 h-36 bg-gradient-to-br from-primary-container to-surface-container-high flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(112,0,255,0.3)] border-2 border-primary/40';
+                modalTitle.className = 'font-headline-lg text-headline-lg text-secondary-fixed mb-2 tracking-tight';
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideDetail() {
+            const modal = document.getElementById('badge-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close on backdrop click
+        document.getElementById('badge-modal').addEventListener('click', function(e) {
+            if (e.target === this) hideDetail();
+        });
+    </script>
+</body></html>

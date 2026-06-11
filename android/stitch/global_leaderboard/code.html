@@ -1,0 +1,446 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Global Leaderboard | Gladiator Arena</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&amp;family=JetBrains+Mono:wght@500&amp;family=Inter:wght@400;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;family=Sora:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#fff9ef",
+                        "error-container": "#93000a",
+                        "error": "#ffb4ab",
+                        "tertiary-container": "#5f5585",
+                        "inverse-on-surface": "#2f3131",
+                        "surface-container-high": "#282a2b",
+                        "on-primary-fixed": "#23005b",
+                        "tertiary": "#cbbff6",
+                        "surface-bright": "#37393a",
+                        "secondary-fixed-dim": "#e9c400",
+                        "surface-container-low": "#1a1c1c",
+                        "on-secondary": "#3a3000",
+                        "on-surface": "#e2e2e2",
+                        "surface-container-highest": "#333535",
+                        "on-background": "#e2e2e2",
+                        "on-tertiary-fixed": "#1d1440",
+                        "on-primary-fixed-variant": "#5700c9",
+                        "on-primary": "#3c0090",
+                        "tertiary-fixed": "#e7deff",
+                        "surface-tint": "#d1bcff",
+                        "background": "#121414",
+                        "on-tertiary": "#332957",
+                        "primary-fixed-dim": "#d1bcff",
+                        "outline": "#958da3",
+                        "primary-fixed": "#e9ddff",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-lowest": "#0c0f0f",
+                        "on-secondary-fixed-variant": "#544600",
+                        "primary": "#d1bcff",
+                        "inverse-primary": "#7212ff",
+                        "surface-variant": "#333535",
+                        "surface-container": "#1e2020",
+                        "surface": "#121414",
+                        "on-secondary-fixed": "#221b00",
+                        "on-tertiary-container": "#d9ceff",
+                        "on-tertiary-fixed-variant": "#49406f",
+                        "on-secondary-container": "#725f00",
+                        "outline-variant": "#4a4457",
+                        "on-error": "#690005",
+                        "secondary-container": "#ffdb3c",
+                        "primary-container": "#7000ff",
+                        "secondary-fixed": "#ffe16d",
+                        "on-surface-variant": "#ccc3da",
+                        "on-primary-container": "#ddcdff",
+                        "inverse-surface": "#e2e2e2",
+                        "surface-dim": "#121414",
+                        "tertiary-fixed-dim": "#cbbff6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "64px",
+                        "container-max-width": "1200px",
+                        "margin-mobile": "20px",
+                        "unit": "8px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Sora"],
+                        "headline-lg": ["Sora"],
+                        "label-md": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Sora"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .glass-card {
+            background: rgba(30, 32, 32, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(149, 141, 163, 0.2);
+        }
+
+        .hexagon-path {
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+        }
+
+        .glowing-gold-border {
+            position: relative;
+            background: linear-gradient(135deg, #ffe16d, #e9c400);
+            padding: 2px;
+        }
+
+        .podium-1 {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 20px rgba(233, 196, 0, 0.4));
+            z-index: 10;
+        }
+
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(233, 196, 0, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(233, 196, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(233, 196, 0, 0); }
+        }
+
+        .animate-pulse-gold {
+            animation: pulse-gold 2s infinite;
+        }
+
+        /* Custom scrollbar */
+        .rankings-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .rankings-scroll::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+        .rankings-scroll::-webkit-scrollbar-thumb {
+            background: #4a4457;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen selection:bg-primary-container selection:text-on-primary-container overflow-hidden flex flex-col">
+<!-- Immersive Studio Background Shader -->
+<!-- STITCH_SHADER_START:ANIMATION_33 class="fixed inset-0 w-full h-full opacity-60 z-0 pointer-events-none" -->
+<div class="fixed inset-0 w-full h-full opacity-60 z-0 pointer-events-none" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_33" style="display:block;width:100%;height:100%" width="636" height="1086"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_33');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+varying vec2 v_texCoord;
+
+void main() {
+    vec2 uv = v_texCoord;
+    
+    // Deep studio blue/purple base
+    vec3 color1 = vec3(0.07, 0.0, 0.15);
+    vec3 color2 = vec3(0.0, 0.05, 0.2);
+    
+    // Floating golden particles / dust
+    float particles = sin(uv.x * 20.0 + u_time) * cos(uv.y * 15.0 - u_time * 0.5);
+    particles = pow(max(0.0, particles), 20.0);
+    
+    // Atmospheric god rays
+    float rays = pow(sin(uv.x * 3.0 + u_time * 0.2), 10.0) * (1.0 - uv.y);
+    
+    vec3 finalColor = mix(color1, color2, uv.y);
+    finalColor += rays * vec3(0.2, 0.3, 0.5);
+    finalColor += particles * vec3(1.0, 0.8, 0.3);
+    
+    gl_FragColor = vec4(finalColor, 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_33 -->
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface-container-low/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-2xl flex items-center justify-between px-margin-mobile py-4 md:px-margin-desktop">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary text-3xl">leaderboard</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-extrabold tracking-tighter text-secondary">GLOBAL RANKINGS</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined p-2 rounded-full bg-surface-variant/30 hover:bg-surface-variant/50 transition-colors active:scale-90">search</button>
+<div class="w-10 h-10 rounded-full border-2 border-secondary overflow-hidden shadow-lg">
+<img alt="Champion Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqZU1zDIxuH4J-OJ-yvblggVBfajCEt21Jlb2iiL6CYwO0JijB9sxME9VMlxoPkq78qDdXc1KGvmdAhPhz0RNnuHj-Xad1Si35uU8mhUpCzPQ0Xzz_ujK3fZLKw64ujrPPwRzI_20IpKO0N9xgYT3rw6dYfR9U1IODaJ2ENdxlEMUn_2UhDuM6dT0lmak_zGU26LHxtQH4vUuhmwhzeRC5F6chb3eKlJcJ7wby7_Hbv3SAIDFPCTW3m4Abh2ahgESbs_JlrC3U9yQm">
+</div>
+</div>
+</header>
+<!-- Main Content Layout -->
+<main class="relative z-10 flex-1 pt-24 pb-32 px-margin-mobile md:px-margin-desktop max-w-container-max-width mx-auto w-full flex flex-col h-screen">
+<!-- Tabs Section -->
+<div class="flex justify-center mb-8">
+<div class="inline-flex p-1 bg-surface-container-high/60 backdrop-blur-md rounded-xl border border-outline-variant/20 shadow-inner">
+<button class="px-8 py-2 rounded-lg font-label-md text-label-md transition-all text-on-surface-variant hover:bg-surface-variant/30">Daily</button>
+<button class="px-8 py-2 rounded-lg font-label-md text-label-md transition-all text-on-surface-variant hover:bg-surface-variant/30">Weekly</button>
+<button class="px-8 py-2 rounded-lg font-label-md text-label-md transition-all bg-secondary text-on-secondary shadow-lg">All-Time</button>
+</div>
+</div>
+<!-- Podium Section -->
+<div class="flex items-end justify-center gap-2 md:gap-8 mb-12 mt-4">
+<!-- Rank 2 -->
+<div class="flex flex-col items-center">
+<div class="relative glass-card hexagon-path w-24 h-28 md:w-32 md:h-36 flex flex-col items-center justify-center border-t-2 border-outline/30 animate-pulse">
+<img alt="Rank 2 Avatar" class="w-12 h-12 md:w-16 md:h-16 rounded-full mb-2 border border-outline/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzelLc4XduRI2w-rwicipOKNgHBlaVtY2vWzk2d6mMxLUXXkxLLHEiB7qoZUId--7TyCjUeTXkEINA5MxqiZvJc0zaSMoIzdjr7lZQWIDKDd0CuVordt2zKpDsWMrSFkElVCTRHyU-mtPuC8rBRQ2fx8oFUtAt4VjD5HyCeoYBRdAVM7ekQK7Dnn-0PPONMgxNBoJvnjkDux85nEwHEwUfjGwUucJbTtCyH5U4BtIrr_d372zjCv6pCfaNhMxOYuwEWERKOt-kDs8-">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-300 text-black text-[10px] font-bold px-2 py-0.5 rounded-full">#2</div>
+<p class="font-label-md text-[10px] text-on-surface truncate w-20 text-center">Xenon_77</p>
+<p class="font-label-md text-secondary-fixed-dim text-[10px]">$850K</p>
+</div>
+</div>
+<!-- Rank 1: The Ultimate Crorepati -->
+<div class="flex flex-col items-center podium-1">
+<div class="relative glowing-gold-border animate-pulse-gold hexagon-path w-32 h-36 md:w-44 md:h-48 flex flex-col items-center justify-center animate-pulse">
+<div class="absolute inset-0 bg-surface-container-lowest hexagon-path flex flex-col items-center justify-center">
+<div class="absolute -top-5 left-1/2 -translate-x-1/2 flex flex-col items-center">
+<span class="material-symbols-outlined text-secondary-fixed text-3xl mb-1" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+<div class="bg-secondary-fixed text-on-secondary-fixed text-[10px] font-extrabold px-3 py-0.5 rounded-full tracking-widest uppercase">Ultimate Crorepati</div>
+</div>
+<img alt="Rank 1 Avatar" class="w-16 h-16 md:w-24 md:h-24 rounded-full mb-1 border-2 border-secondary-fixed shadow-[0_0_15px_rgba(233,196,0,0.5)]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7rFeeKRYwUeiK6XAs0ZWstySUmpLBLmuKxYWFsWeC4CLh2316qTAtaH3dIWnD3fKMIWANkkWZy2rvuY9kjYlFJ-QjsqVPIlCcUV1JBcQ6PZ_Ic9oodAyAuVF7mS2aISvjkInddES6J5bblg4OhxO4UVFZoVql_SvAdt9z26nahZ5v1oHmcyPYJmyM21q70NAh2VipUPgpt8VY-gAW9SIDvhNu-dRG430DWG3peBUIM-q5OTT7ybU4BZOfvtMx8InpRz2GVYGqNhEa">
+<p class="font-headline-lg-mobile text-sm text-secondary font-bold truncate px-2">RHEA_SHARMA</p>
+<p class="font-label-md text-secondary-fixed-dim text-xs">$1.2M Earnings</p>
+</div>
+</div>
+</div>
+<!-- Rank 3 -->
+<div class="flex flex-col items-center">
+<div class="relative glass-card hexagon-path w-24 h-28 md:w-32 md:h-36 flex flex-col items-center justify-center border-t-2 border-outline/30 animate-pulse">
+<img alt="Rank 3 Avatar" class="w-12 h-12 md:w-16 md:h-16 rounded-full mb-2 border border-outline/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAizqizls52ekKB5CqfzyRgOchyd_4OXIm-CrMLaI9HzuWnFPhN-C-d_IiKKZQ9NkHSGXUNuvokVmisRNquqzpnrVj_sormkH1EIpNTTd_j7dC3u6537AzuADAKaoiTj0lmdwS3JWl-LzLoF5abnAr1F1V-YuAamj_JiJsyCFa34R9Tm-Bt-08YCZf7osklUCnnSNfhByt2WIlCWBpgzMK7YQHfL1UqwVw6dNIUUmTvtM7bRxCYE2TfSjInEv5GB4ZXXvNAJP_GuHZf">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">#3</div>
+<p class="font-label-md text-[10px] text-on-surface truncate w-20 text-center">Vikas_Master</p>
+<p class="font-label-md text-secondary-fixed-dim text-[10px]">$720K</p>
+</div>
+</div>
+</div>
+<!-- Scrollable Ranking List -->
+<div class="flex-1 overflow-y-auto rankings-scroll space-y-4 pb-48 px-2">
+<!-- Dynamically Generated Ranking Items (4-100) -->
+<div class="space-y-3">
+<!-- Template Item Rank 4 -->
+<div class="glass-card p-4 rounded-xl flex items-center gap-4 border-l-4 border-secondary-fixed hover:translate-x-2 transition-transform cursor-pointer">
+<span class="font-label-md text-secondary-fixed-dim text-lg w-8">04</span>
+<div class="w-12 h-12 rounded-lg bg-surface-variant/30 flex items-center justify-center border border-outline/20">
+<img alt="User 4 Avatar" class="w-10 h-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkwA54t-tqrAd1g-xr2wOeaCediGXcfOOTTnAvj2TmRyzegRXO8UrcCy-VfBqvsIXtiyjkC6Hq43KQjg_U9ai5f99EO1pWQ_PgWNqq4jGpA2agu0xEM8ooegdQzwvFe3e-CdWjqMsDaC0RzKnwExhJUW-O1wnGVnm_hMk7gUG-O3zg7JZSKSwfweR0gWGtPPh6gzhZ2nOr-_oXhjOOAi5ItDJMCKZ4ayd39OcSgeeFfoKuZRgGgOJJw5HVAlK-i6PBWvx8Mndccu8w">
+</div>
+<div class="flex-1">
+<h4 class="font-body-md font-bold text-secondary">Aarav.eth</h4>
+<p class="text-xs text-on-surface-variant">Veteran Strategist</p>
+</div>
+<div class="text-right">
+<p class="font-label-md text-secondary-fixed">$612,400</p>
+<p class="text-[10px] text-outline">89% Win Rate</p>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<!-- Template Item Rank 5 -->
+<div class="glass-card p-4 rounded-xl flex items-center gap-4 border-l-4 border-outline/30 hover:translate-x-2 transition-transform cursor-pointer">
+<span class="font-label-md text-outline text-lg w-8">05</span>
+<div class="w-12 h-12 rounded-lg bg-surface-variant/30 flex items-center justify-center border border-outline/20">
+<img alt="User 5 Avatar" class="w-10 h-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFQcqmErp_VgNJaOCp1CWl0Hfo-PLHM56C4byBdmseLkttoZ6yv9kc1nM9focykRNE7YXuFi-JlvjJ5H0fP1aXApTR8yAhMcSNobR-AaE0lLtZs-TzEC6-NqIZYK6hF9nsMuYFf3CurJYpmtmKbPa6EVScospfBT1XU6uzGdqCS-NpIfmw_a3XJ32hwkJCMKr_XS_cj0sVZrVDdflrGlGXeVapRZdMX7j9H3pavOcsVmRD2R9aFOStcWx2NzbBRr4jYlU3l3GJUK7Q">
+</div>
+<div class="flex-1">
+<h4 class="font-body-md font-bold text-secondary">Krypton_King</h4>
+<p class="text-xs text-on-surface-variant">Elite Tier</p>
+</div>
+<div class="text-right">
+<p class="font-label-md text-secondary-fixed">$580,000</p>
+<p class="text-[10px] text-outline">82% Win Rate</p>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<!-- Template Item Rank 6 -->
+<div class="glass-card p-4 rounded-xl flex items-center gap-4 border-l-4 border-outline/30 hover:translate-x-2 transition-transform cursor-pointer">
+<span class="font-label-md text-outline text-lg w-8">06</span>
+<div class="w-12 h-12 rounded-lg bg-surface-variant/30 flex items-center justify-center border border-outline/20">
+<img alt="User 6 Avatar" class="w-10 h-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkxC4tJTlnFO_nKW7Cj3sgjQt22B-urtnW2TKSgoVLNj6aDI8EqLYhT8uiFO7oOTPiy2RvZun5wxM_ADeV1ETWt9LIFcMK1NdFj7fV2oAqShU17E2tvi0APJuvY9EScbgIF4JWdwJSq1jWwiWBNHj-6A6jWPciFE0fGKzBp6hzCfyo2HdbW_v-mP1A43wcieUDTjhxcjZKvjIgf-gOBT0khdXyUPn1akJjOSn7MwUb0QG_hNkbP0OS76kpxV25fLzLkrVul1bokPWC">
+</div>
+<div class="flex-1">
+<h4 class="font-body-md font-bold text-secondary">PixelWizard</h4>
+<p class="text-xs text-on-surface-variant">Rising Star</p>
+</div>
+<div class="text-right">
+<p class="font-label-md text-secondary-fixed">$495,200</p>
+<p class="text-[10px] text-outline">77% Win Rate</p>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<!-- Template Item Rank 7 -->
+<div class="glass-card p-4 rounded-xl flex items-center gap-4 border-l-4 border-outline/30 hover:translate-x-2 transition-transform cursor-pointer opacity-80">
+<span class="font-label-md text-outline text-lg w-8">07</span>
+<div class="w-12 h-12 rounded-lg bg-surface-variant/30 flex items-center justify-center border border-outline/20">
+<img alt="User 7 Avatar" class="w-10 h-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByYtE-foeIOf70juzc2Bu5mOuhCFe-JJL93hwTilT7K9D0Hte_nhWKUYAqESrDxstlLnUeJpkLloDb686emXnBDOxpNbn5QrGbs5RBaip_RbSkjvaOz3KPZ_dleAm2_98dfE1Ox3ZN4dGf0ALUuipfd6iCO2Qg62RkPYUSc8w_t-1qFP3yIvBINYRzWG2mTJ5pCIzBSXSIPB4I2gdEwIkyOGc3-L4at-h_hmvLNmFIf_2QQYQrcyteL8dIQlPfMUhaGlBBFhkdNkUz">
+</div>
+<div class="flex-1">
+<h4 class="font-body-md font-bold text-secondary">CyberShikari</h4>
+<p class="text-xs text-on-surface-variant">Grand Master</p>
+</div>
+<div class="text-right">
+<p class="font-label-md text-secondary-fixed">$450,000</p>
+<p class="text-[10px] text-outline">75% Win Rate</p>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Current User Sticky Bottom Bar -->
+<div class="fixed bottom-20 left-0 w-full z-50 px-4 md:px-margin-desktop mb-4">
+<div class="max-w-container-max-width mx-auto">
+<div class="bg-secondary-fixed text-on-secondary-fixed p-4 rounded-2xl shadow-2xl flex items-center justify-between animate-bounce-short hover:scale-[1.02]">
+<div class="flex items-center gap-4">
+<div class="bg-on-secondary-fixed/10 p-2 rounded-lg font-headline-lg-mobile text-sm">#42</div>
+<div class="w-10 h-10 rounded-full border border-on-secondary-fixed/30 overflow-hidden">
+<img alt="User Profile Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvNZSQKx4pb_sVR2_6cbnRZPoVhpjfBSVEcbYpOV_O-Ql3FiVfvkXe6EUKof072AUozjcLAcq-94C5bAFs9ekqXiQSLZT6oslKz7MjINK02zPscxT9qFi-jYVloA3f3XMKsPI1RXGnIcfCYyD01lVfOHkwqXHxcfE7uJ42uvkRf0-ohNcULhpYz6LJxPw9deEgH4B5JDnKWuXY1WRanQNBSlHad2vu43wKqSX9n7M1-kA1QCh2K1Df8uOlJwxVK7pMyEmxfkYKy5vH">
+</div>
+<div>
+<h5 class="font-bold text-sm">You (Grandmaster)</h5>
+<p class="text-[10px] font-medium opacity-70">Top 5% of Global Players</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-md text-sm">$312,000 Total</p>
+<button class="text-[10px] font-bold underline flex items-center gap-1">VIEW PROGRESS <span class="material-symbols-outlined text-[12px]">arrow_forward</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-2xl border-t border-outline-variant/20 shadow-[0_-8px_24px_rgba(0,0,0,0.5)] flex justify-around items-center pt-2 pb-6 px-4 rounded-t-xl">
+<button class="flex flex-col items-center justify-center text-outline transition-all hover:text-primary-fixed active:scale-90 duration-200">
+<span class="material-symbols-outlined">ads_click</span>
+<span class="font-label-md text-label-md mt-1">Arena</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim drop-shadow-[0_0_8px_rgba(233,196,0,0.4)] transition-all active:scale-90 duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+<span class="font-label-md text-label-md mt-1">Ladder</span>
+</button>
+<button class="flex flex-col items-center justify-center text-outline transition-all hover:text-primary-fixed active:scale-90 duration-200">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md mt-1">Society</span>
+</button>
+<button class="flex flex-col items-center justify-center text-outline transition-all hover:text-primary-fixed active:scale-90 duration-200">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-label-md text-label-md mt-1">Vault</span>
+</button>
+</nav>
+<script>
+        // Micro-interaction: Tab Switching
+        const tabs = document.querySelectorAll('.inline-flex button');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => {
+                    t.classList.remove('bg-secondary', 'text-on-secondary', 'shadow-lg');
+                    t.classList.add('text-on-surface-variant', 'hover:bg-surface-variant/30');
+                });
+                tab.classList.remove('text-on-surface-variant', 'hover:bg-surface-variant/30');
+                tab.classList.add('bg-secondary', 'text-on-secondary', 'shadow-lg');
+            });
+        });
+
+        // Micro-interaction: Scrolling header shrink
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('py-2');
+                header.classList.remove('py-4');
+            } else {
+                header.classList.add('py-4');
+                header.classList.remove('py-2');
+            }
+        });
+    </script>
+
+
+</body></html>

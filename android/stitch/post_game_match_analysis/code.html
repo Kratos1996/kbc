@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Post-Game Match Analysis | Radiance Arena</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&amp;family=JetBrains+Mono:wght@500&amp;family=Inter:wght@400;500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;family=Sora:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(30, 32, 32, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(209, 188, 255, 0.1);
+        }
+        .gold-glow {
+            box-shadow: 0 0 20px rgba(233, 196, 0, 0.3);
+        }
+        .ledge-button {
+            position: relative;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 0 rgba(84, 70, 0, 1);
+        }
+        .ledge-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 rgba(84, 70, 0, 1);
+        }
+        @keyframes pulse-gold {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .animate-pulse-gold {
+            animation: pulse-gold 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#4a4457",
+                        "on-secondary-fixed-variant": "#544600",
+                        "background": "#121414",
+                        "surface-container-low": "#1a1c1c",
+                        "surface-variant": "#333535",
+                        "primary": "#d1bcff",
+                        "inverse-surface": "#e2e2e2",
+                        "secondary-container": "#ffdb3c",
+                        "primary-fixed-dim": "#d1bcff",
+                        "on-tertiary-container": "#d9ceff",
+                        "surface-container-high": "#282a2b",
+                        "on-secondary-fixed": "#221b00",
+                        "on-primary": "#3c0090",
+                        "secondary-fixed": "#ffe16d",
+                        "on-primary-container": "#ddcdff",
+                        "surface-dim": "#121414",
+                        "surface-container": "#1e2020",
+                        "secondary-fixed-dim": "#e9c400",
+                        "on-secondary": "#3a3000",
+                        "surface": "#121414",
+                        "primary-container": "#7000ff",
+                        "on-surface-variant": "#ccc3da",
+                        "inverse-on-surface": "#2f3131",
+                        "tertiary-fixed-dim": "#cbbff6",
+                        "on-tertiary-fixed-variant": "#49406f",
+                        "on-tertiary": "#332957",
+                        "error-container": "#93000a",
+                        "tertiary": "#cbbff6",
+                        "surface-tint": "#d1bcff",
+                        "surface-container-highest": "#333535",
+                        "on-primary-fixed": "#23005b",
+                        "on-surface": "#e2e2e2",
+                        "on-primary-fixed-variant": "#5700c9",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005",
+                        "outline": "#958da3",
+                        "surface-container-lowest": "#0c0f0f",
+                        "surface-bright": "#37393a",
+                        "tertiary-fixed": "#e7deff",
+                        "error": "#ffb4ab",
+                        "secondary": "#fff9ef",
+                        "on-tertiary-fixed": "#1d1440",
+                        "primary-fixed": "#e9ddff",
+                        "on-background": "#e2e2e2",
+                        "tertiary-container": "#5f5585",
+                        "on-secondary-container": "#725f00",
+                        "inverse-primary": "#7212ff"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Sora"],
+                        "label-md": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "headline-xl": ["Sora"],
+                        "headline-lg-mobile": ["Sora"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface selection:bg-primary/30">
+<!-- Background Shader Animation -->
+<div class="fixed inset-0 -z-10 overflow-hidden">
+
+<div class="absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-background"></div>
+</div>
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-[0_4px_20px_rgba(112,0,255,0.3)] flex items-center justify-between px-margin-mobile h-16">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary p-2 hover:bg-primary-container/20 rounded-full transition-colors active:scale-95 duration-150">menu</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-primary to-tertiary tracking-tighter">RADIANCE ARENA</h1>
+</div>
+<div class="flex items-center gap-2 bg-surface-container-high rounded-full px-4 py-1 border border-outline-variant/20">
+<span class="material-symbols-outlined text-secondary-fixed text-sm" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+<span class="font-label-md text-label-md text-on-surface">12.4k</span>
+</div>
+</header>
+<main class="pt-24 pb-32 max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop">
+<!-- Match Summary Hero -->
+<section class="mb-12 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
+<div class="inline-block px-4 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary font-label-md text-label-md mb-4 tracking-widest">MATCH COMPLETED</div>
+<h2 class="font-headline-xl text-headline-xl mb-2 bg-gradient-to-r from-on-surface via-primary to-on-surface bg-clip-text text-transparent">VICTORY ASCENDANT</h2>
+<div class="flex flex-col md:flex-row justify-center items-center gap-6 mt-8">
+<!-- Rank Card -->
+<div class="glass-card p-6 rounded-3xl w-full md:w-64 gold-glow border-secondary-fixed/30 relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-secondary-fixed/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="font-label-md text-label-md text-on-surface-variant uppercase tracking-tighter mb-2">Final Rank</div>
+<div class="font-headline-xl text-headline-xl text-secondary-fixed">#1</div>
+<div class="font-body-md text-body-md text-secondary-fixed/80">Global Arena</div>
+</div>
+<!-- Earnings Card -->
+<div class="glass-card p-6 rounded-3xl w-full md:w-64 border-primary/30 relative overflow-hidden">
+<div class="font-label-md text-label-md text-on-surface-variant uppercase tracking-tighter mb-2">Total Earnings</div>
+<div class="font-headline-xl text-headline-xl text-primary">$25,000</div>
+<div class="font-body-md text-body-md text-primary/80">Pending Payout</div>
+</div>
+</div>
+</section>
+<!-- Bento Analysis Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- Performance Breakdown (Left Column) -->
+<div class="lg:col-span-7 space-y-6">
+<section class="glass-card rounded-3xl p-8">
+<div class="flex items-center justify-between mb-8">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Performance Profile</h3>
+<span class="material-symbols-outlined text-primary">insights</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+<!-- Radar Placeholder (Visualized via CSS) -->
+<div class="relative aspect-square flex items-center justify-center">
+<div class="absolute inset-0 rounded-full border-[1px] border-outline-variant/30 scale-100"></div>
+<div class="absolute inset-0 rounded-full border-[1px] border-outline-variant/30 scale-75"></div>
+<div class="absolute inset-0 rounded-full border-[1px] border-outline-variant/30 scale-50"></div>
+<div class="absolute inset-0 rounded-full border-[1px] border-outline-variant/30 scale-25"></div>
+<!-- Data Shape -->
+<svg class="w-full h-full drop-shadow-[0_0_8px_rgba(209,188,255,0.6)]" viewbox="0 0 100 100">
+<polygon fill="rgba(209,188,255,0.2)" points="50,10 85,35 75,85 25,85 15,35" stroke="#d1bcff" stroke-width="1"></polygon>
+<circle cx="50" cy="10" fill="#d1bcff" r="2"></circle>
+<circle cx="85" cy="35" fill="#d1bcff" r="2"></circle>
+<circle cx="75" cy="85" fill="#d1bcff" r="2"></circle>
+<circle cx="25" cy="85" fill="#d1bcff" r="2"></circle>
+<circle cx="15" cy="35" fill="#d1bcff" r="2"></circle>
+</svg>
+</div>
+<!-- Stat Bars -->
+<div class="flex flex-col justify-center gap-6">
+<div class="space-y-2">
+<div class="flex justify-between font-label-md text-label-md">
+<span class="text-on-surface-variant">ACCURACY</span>
+<span class="text-primary">94%</span>
+</div>
+<div class="h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 94%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between font-label-md text-label-md">
+<span class="text-on-surface-variant">SPEED</span>
+<span class="text-secondary-fixed">FASTEST FINGER</span>
+</div>
+<div class="h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary-fixed rounded-full" style="width: 88%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between font-label-md text-label-md">
+<span class="text-on-surface-variant">LIFELINE EFFICIENCY</span>
+<span class="text-tertiary">OPTIMAL</span>
+</div>
+<div class="h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-tertiary rounded-full" style="width: 72%"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Question Review List -->
+<section class="glass-card rounded-3xl p-8">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Question Review</h3>
+<div class="flex gap-2">
+<span class="bg-surface-container px-3 py-1 rounded text-label-md font-label-md text-on-surface-variant">Filter: All</span>
+</div>
+</div>
+<div class="space-y-4">
+<!-- Correct Question -->
+<div class="p-4 rounded-2xl bg-surface-container/40 border-l-4 border-primary group hover:bg-surface-container-high transition-all">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-md text-label-md text-primary">QUESTION 14</span>
+<span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface mb-2">Which celestial body is known as the "Morning Star"?</p>
+<div class="text-xs font-label-md text-on-surface-variant bg-surface-container-highest/50 p-2 rounded">
+<strong class="text-primary">ANALYST:</strong> Venus is often called the morning star because it appears shortly before sunrise.
+                            </div>
+</div>
+<!-- Missed Question -->
+<div class="p-4 rounded-2xl bg-surface-container/40 border-l-4 border-error/50 group hover:bg-surface-container-high transition-all">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-md text-label-md text-error">QUESTION 15</span>
+<span class="material-symbols-outlined text-error text-sm">cancel</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface mb-2">The 'Event Horizon' is a term most commonly associated with which phenomenon?</p>
+<div class="text-xs font-label-md text-on-surface-variant bg-surface-container-highest/50 p-2 rounded">
+<strong class="text-error">CORRECT:</strong> Black Holes. You selected 'Supernova'. The event horizon marks the point of no return.
+                            </div>
+</div>
+</div>
+</section>
+</div>
+<!-- Side Widgets (Right Column) -->
+<aside class="lg:col-span-5 space-y-6">
+<!-- Leaderboard Shift Widget -->
+<section class="glass-card rounded-3xl p-8 bg-gradient-to-br from-primary-container/10 to-transparent border-primary/20 overflow-hidden relative">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/20 blur-3xl rounded-full"></div>
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-6">Leaderboard Shift</h3>
+<div class="flex items-center gap-8">
+<div class="text-center">
+<div class="font-label-md text-label-md text-on-surface-variant mb-1">Previous</div>
+<div class="font-headline-lg-mobile text-headline-lg-mobile text-outline">#142</div>
+</div>
+<div class="flex-1 flex flex-col items-center">
+<span class="material-symbols-outlined text-secondary-fixed text-4xl mb-2 animate-bounce">stat_1</span>
+<div class="font-label-md text-label-md text-secondary-fixed">+141 Positions</div>
+</div>
+<div class="text-center">
+<div class="font-label-md text-label-md text-on-surface-variant mb-1">Current</div>
+<div class="font-headline-lg-mobile text-headline-lg-mobile text-secondary-fixed font-extrabold gold-glow rounded-xl px-2">#1</div>
+</div>
+</div>
+</section>
+<!-- Next Event Teaser -->
+<section class="glass-card rounded-3xl overflow-hidden group">
+<div class="h-48 relative">
+<img alt="Futuristic gaming arena" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="A cinematic, high-angle shot of a futuristic esports arena illuminated in deep neon purples and metallic gold accents. Large holographic displays float above the audience, showing abstract data streams and player rankings. The atmosphere is electric, filled with atmospheric fog and sharp geometric architecture, reflecting a premium, high-stakes tournament environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsfQKg6N71T-KGwbeiy9oPIM4OkmvfB3ZHvJOe7yLluSgLLc0cc9gVWCiibYoQgIqrvkYoXwgGwAhoj_rEVEJ7MlZm3XUkDxcwuVDAhtiNioxBn5qSftWNSnwn6btyIB-C8Ni9_bitTdB4zfGu267xqom_cEuOaMAcOuJoFdNSoAi3x62Aub83D2Hst_RrpV9vB_hQWN__okT4X8dvyzXTlnGn74rMEfoZCP7UwcKGan66RNUewaBN94bO01NnOTzWkZCEACPmqLTL"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent"></div>
+<div class="absolute bottom-4 left-6">
+<span class="bg-secondary-container text-on-secondary-container font-label-md text-xs px-2 py-1 rounded-full uppercase tracking-tighter mb-2 inline-block">LIVE IN 2H 14M</span>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-white">The Nebula Gauntlet</h4>
+</div>
+</div>
+<div class="p-6">
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Face off against the top 1% for a guaranteed share of the $500,000 seasonal pool.</p>
+<button class="ledge-button w-full bg-secondary-fixed-dim text-on-secondary-fixed font-label-md text-label-md py-4 rounded-xl flex items-center justify-center gap-2 uppercase font-bold">
+                            Register for Entry
+                            <span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</section>
+<!-- Achievement Showcase -->
+<section class="glass-card rounded-3xl p-6">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-4">Milestones Unlocked</h3>
+<div class="flex gap-4">
+<div class="w-16 h-16 rounded-2xl bg-surface-container-highest border border-primary/30 flex items-center justify-center group cursor-help">
+<span class="material-symbols-outlined text-primary group-hover:scale-125 transition-transform" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div class="w-16 h-16 rounded-2xl bg-surface-container-highest border border-secondary-fixed/30 flex items-center justify-center group cursor-help">
+<span class="material-symbols-outlined text-secondary-fixed group-hover:scale-125 transition-transform" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+</div>
+<div class="w-16 h-16 rounded-2xl bg-surface-container-highest border border-tertiary/30 flex items-center justify-center group cursor-help">
+<span class="material-symbols-outlined text-tertiary group-hover:scale-125 transition-transform" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<div class="w-16 h-16 rounded-2xl bg-surface-container-highest/30 border border-outline-variant/20 border-dashed flex items-center justify-center opacity-40">
+<span class="material-symbols-outlined text-on-surface-variant">add</span>
+</div>
+</div>
+</section>
+</aside>
+</div>
+</main>
+<!-- Bottom Navigation Anchor -->
+<nav class="fixed bottom-0 left-0 w-full h-20 bg-surface-container-lowest/90 backdrop-blur-2xl border-t border-outline-variant/20 flex justify-around items-center px-4 pb-safe z-50 rounded-t-xl shadow-[0_-8px_32px_rgba(0,0,0,0.6)]">
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary transition-all active:scale-90 transform duration-200 cursor-pointer">
+<span class="material-symbols-outlined">sports_esports</span>
+<span class="font-label-md text-label-md">ARENA</span>
+</div>
+<div class="flex flex-col items-center justify-center text-secondary-fixed shadow-[0_0_15px_rgba(233,196,0,0.4)] bg-secondary-container/10 rounded-xl p-2 active:scale-90 transform duration-200 cursor-pointer">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="font-label-md text-label-md">LADDER</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary transition-all active:scale-90 transform duration-200 cursor-pointer">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-md text-label-md">VAULT</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary transition-all active:scale-90 transform duration-200 cursor-pointer">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">PROFILE</span>
+</div>
+</nav>
+<script>
+        // Micro-interactions for glass cards on mouse move
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body></html>

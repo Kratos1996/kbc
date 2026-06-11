@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Radiance Arena - Match History</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&amp;family=Inter:wght@400;500&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .hexagon-path {
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+        }
+
+        .gold-glow {
+            box-shadow: 0 0 15px rgba(233, 196, 0, 0.3);
+        }
+
+        .win-pulse {
+            animation: pulse-blue 3s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        }
+
+        @keyframes pulse-blue {
+            0%, 100% { box-shadow: 0 0 10px rgba(114, 18, 255, 0.2), inset 0 0 5px rgba(114, 18, 255, 0.1); }
+            50% { box-shadow: 0 0 25px rgba(114, 18, 255, 0.5), inset 0 0 15px rgba(114, 18, 255, 0.2); }
+        }
+
+        .glass-card {
+            background: rgba(30, 32, 32, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 219, 60, 0.15);
+        }
+
+        .studio-background {
+            background: radial-gradient(circle at 50% -20%, #23005b 0%, #0c0f0f 70%);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary": "#3c0090",
+                      "inverse-surface": "#e2e2e2",
+                      "primary": "#d1bcff",
+                      "surface-container-lowest": "#0c0f0f",
+                      "on-tertiary-fixed": "#1d1440",
+                      "on-tertiary": "#332957",
+                      "surface-dim": "#121414",
+                      "surface-container-highest": "#333535",
+                      "surface-container-low": "#1a1c1c",
+                      "on-primary-fixed": "#23005b",
+                      "inverse-primary": "#7212ff",
+                      "on-error": "#690005",
+                      "tertiary": "#cbbff6",
+                      "on-surface-variant": "#ccc3da",
+                      "on-primary-fixed-variant": "#5700c9",
+                      "tertiary-container": "#5f5585",
+                      "on-background": "#e2e2e2",
+                      "on-tertiary-container": "#d9ceff",
+                      "surface-variant": "#333535",
+                      "secondary": "#fff9ef",
+                      "surface-container": "#1e2020",
+                      "surface": "#121414",
+                      "on-secondary-fixed-variant": "#544600",
+                      "secondary-container": "#ffdb3c",
+                      "surface-container-high": "#282a2b",
+                      "inverse-on-surface": "#2f3131",
+                      "on-error-container": "#ffdad6",
+                      "secondary-fixed-dim": "#e9c400",
+                      "on-secondary": "#3a3000",
+                      "outline-variant": "#4a4457",
+                      "surface-tint": "#d1bcff",
+                      "primary-fixed": "#e9ddff",
+                      "outline": "#958da3",
+                      "on-tertiary-fixed-variant": "#49406f",
+                      "on-surface": "#e2e2e2",
+                      "on-secondary-container": "#725f00",
+                      "surface-bright": "#37393a",
+                      "primary-container": "#7000ff",
+                      "on-primary-container": "#ddcdff",
+                      "error-container": "#93000a",
+                      "primary-fixed-dim": "#d1bcff",
+                      "error": "#ffb4ab",
+                      "tertiary-fixed-dim": "#cbbff6",
+                      "background": "#121414",
+                      "tertiary-fixed": "#e7deff",
+                      "secondary-fixed": "#ffe16d",
+                      "on-secondary-fixed": "#221b00"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-max-width": "1200px",
+                      "gutter": "16px",
+                      "unit": "8px",
+                      "margin-desktop": "64px",
+                      "margin-mobile": "20px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Sora"],
+                      "body-md": ["Inter"],
+                      "label-md": ["JetBrains Mono"],
+                      "headline-xl": ["Sora"],
+                      "headline-lg-mobile": ["Sora"]
+              },
+              "fontSize": {
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md studio-background min-h-screen pb-32">
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-[0_4px_20px_rgba(114,18,255,0.2)]">
+<div class="flex justify-between items-center px-margin-mobile py-4 w-full md:px-margin-desktop">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 hexagon-path bg-gradient-to-br from-primary to-inverse-primary p-[1px]">
+<div class="w-full h-full hexagon-path bg-surface flex items-center justify-center overflow-hidden">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A stylized digital avatar of a confident quiz player with professional studio lighting and a glowing purple outline. The background shows a high-tech arena with subtle lens flares and sharp geometric shapes. The overall aesthetic is clean, modern, and high-stakes." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLUihDIhm6Ru-1mztCNat9kJ59FD7S3QDfK1DGBw8uhRs2ebzP71hzzW6XegO-yXlCqKcCPtGmnJnCFgEzUePBJzgJCBoIXN2MnjYaWHwBnrObqma2cfcoZqgXfWI8wDzVwve-Qnrj0YwjVcVioUFxpf1hmF3LeTwGDCKkT85veQH5nmq537T7RD6MIYZYLuKQQcvzhPV5DgDxWDZdsoELpwrKgKDsNFM_PP_9p7x7HhiPRW6dZoWWd7GbJbq54c2VOczGRgbOADwS"/>
+</div>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-transparent bg-clip-text bg-gradient-to-b from-primary to-tertiary tracking-tighter uppercase md:text-headline-lg">RADIANCE ARENA</h1>
+</div>
+<div class="bg-surface-container-high px-4 py-1.5 rounded-full border border-outline-variant/50 flex items-center gap-2 active:scale-95 duration-200 cursor-pointer">
+<span class="material-symbols-outlined text-secondary-fixed-dim text-sm" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="font-label-md text-label-md text-secondary">$2,500</span>
+</div>
+</div>
+</header>
+<main class="pt-28 px-margin-mobile max-w-5xl mx-auto md:px-gutter">
+<!-- Header Section -->
+<section class="mb-10 text-center md:text-left">
+<h2 class="font-headline-xl text-headline-xl text-secondary mb-2 tracking-tight">Match History</h2>
+<p class="text-on-surface-variant font-body-md max-w-xl">Your journey through the arena. Review your conquests, analyze your defeats, and track your ascending fortune.</p>
+</section>
+<!-- History Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Recent Win Card (Animated) -->
+<div class="glass-card p-6 relative overflow-hidden win-pulse rounded-xl group transition-all duration-500 hover:border-secondary-fixed">
+<div class="absolute top-0 right-0 p-3">
+<span class="bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest">Victory</span>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div>
+<p class="font-label-md text-[10px] text-outline uppercase">Match ID: #RA-8821</p>
+<p class="font-label-md text-label-md text-on-surface">Oct 24, 2023</p>
+</div>
+<div class="w-12 h-12 hexagon-path bg-secondary-fixed-dim/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary-fixed-dim" style="font-variation-settings: 'FILL' 1;">rocket_launch</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-white mb-1">Space &amp; Science</h3>
+<div class="flex items-center gap-2">
+<span class="text-secondary-fixed-dim font-bold text-xl">$10,000</span>
+<span class="text-outline text-xs">PRIZE EARNED</span>
+</div>
+</div>
+<button class="w-full py-3 bg-primary-container/20 border border-primary-container/40 rounded-lg text-primary text-sm font-bold hover:bg-primary-container/40 transition-colors">VIEW BREAKDOWN</button>
+</div>
+</div>
+<!-- Standard Win Card -->
+<div class="glass-card p-6 relative overflow-hidden rounded-xl group transition-all duration-500 hover:border-secondary-fixed">
+<div class="absolute top-0 right-0 p-3">
+<span class="bg-secondary-container/20 text-secondary-fixed-dim text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest">Victory</span>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div>
+<p class="font-label-md text-[10px] text-outline uppercase">Match ID: #RA-8790</p>
+<p class="font-label-md text-label-md text-on-surface">Oct 22, 2023</p>
+</div>
+<div class="w-12 h-12 hexagon-path bg-tertiary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">history_edu</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-white mb-1">World History</h3>
+<div class="flex items-center gap-2">
+<span class="text-secondary-fixed-dim font-bold text-xl">$2,500</span>
+<span class="text-outline text-xs">PRIZE EARNED</span>
+</div>
+</div>
+<button class="w-full py-3 bg-surface-container-highest border border-outline-variant/30 rounded-lg text-on-surface-variant text-sm font-bold hover:bg-surface-container-high transition-colors">VIEW BREAKDOWN</button>
+</div>
+</div>
+<!-- Loss Card -->
+<div class="glass-card p-6 relative overflow-hidden rounded-xl opacity-80 group transition-all duration-500 hover:opacity-100 border-outline-variant/20">
+<div class="absolute top-0 right-0 p-3">
+<span class="bg-error-container/20 text-error text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest">Eliminated</span>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div>
+<p class="font-label-md text-[10px] text-outline uppercase">Match ID: #RA-8755</p>
+<p class="font-label-md text-label-md text-on-surface">Oct 20, 2023</p>
+</div>
+<div class="w-12 h-12 hexagon-path bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-outline" style="font-variation-settings: 'FILL' 0;">movie</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface-variant mb-1">Pop Culture</h3>
+<div class="flex items-center gap-2">
+<span class="text-outline font-bold text-xl">$0</span>
+<span class="text-outline text-xs">PRIZE EARNED</span>
+</div>
+</div>
+<button class="w-full py-3 bg-surface-container-highest border border-outline-variant/30 rounded-lg text-on-surface-variant text-sm font-bold hover:bg-surface-container-high transition-colors">VIEW BREAKDOWN</button>
+</div>
+</div>
+<!-- Long History Entry (Bento Style) -->
+<div class="md:col-span-2 glass-card p-6 rounded-xl flex flex-col md:flex-row items-center gap-6 group">
+<div class="w-24 h-24 hexagon-path bg-gradient-to-br from-primary-container to-surface flex-shrink-0 flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div class="flex-grow text-center md:text-left">
+<div class="flex flex-wrap justify-center md:justify-start gap-4 mb-3">
+<span class="font-label-md text-[10px] text-outline uppercase">Match ID: #RA-8702</span>
+<span class="font-label-md text-[10px] text-outline uppercase">Oct 15, 2023</span>
+</div>
+<h3 class="font-headline-lg text-white mb-2">Grand Championship Finale</h3>
+<p class="text-on-surface-variant text-sm mb-4">You reached the final round in the "Universal Knowledge" tier. A legendary performance.</p>
+</div>
+<div class="flex flex-col items-center md:items-end justify-center min-w-[140px]">
+<span class="text-secondary-fixed-dim font-bold text-3xl drop-shadow-md">$50,000</span>
+<span class="text-outline text-xs uppercase tracking-tighter">Ultimate Prize</span>
+<span class="mt-4 bg-secondary-container text-on-secondary-container text-[10px] font-bold px-3 py-1 rounded-full uppercase">Top 1%</span>
+</div>
+</div>
+<!-- Stats Card -->
+<div class="glass-card p-6 rounded-xl border-primary/30 flex flex-col justify-between">
+<h3 class="font-label-md text-primary uppercase text-xs mb-4">History Statistics</h3>
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant text-sm">Win Rate</span>
+<span class="text-white font-bold">68%</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[68%]"></div>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant text-sm">Total Earnings</span>
+<span class="text-secondary-fixed-dim font-bold">$72,500</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Anchor -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface-container-low/90 backdrop-blur-2xl rounded-t-xl border-t border-outline-variant/20 shadow-[0_-8px_24px_rgba(0,0,0,0.5)]">
+<div class="flex justify-around items-center h-20 px-4 pb-safe max-w-2xl mx-auto">
+<a class="flex flex-col items-center justify-center text-outline hover:text-primary-fixed-dim transition-all active:translate-y-[-2px] duration-300" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary-fixed-dim drop-shadow-[0_0_8px_rgba(233,196,0,0.6)] active:translate-y-[-2px] duration-300" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">history</span>
+<span class="font-label-md text-label-md">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline hover:text-primary-fixed-dim transition-all active:translate-y-[-2px] duration-300" href="#">
+<span class="material-symbols-outlined mb-1">account_balance_wallet</span>
+<span class="font-label-md text-label-md">Wallet</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline hover:text-primary-fixed-dim transition-all active:translate-y-[-2px] duration-300" href="#">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</div>
+</nav>
+<!-- Visual Atmosphere: Particles/Glow -->
+<div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+<div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 blur-[120px] rounded-full"></div>
+<div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-secondary-fixed-dim/5 blur-[150px] rounded-full"></div>
+</div>
+<script>
+        // Simple micro-interaction for cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body></html>

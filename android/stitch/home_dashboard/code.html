@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Radiance Arena - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&amp;family=JetBrains+Mono:wght@500&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;family=Sora:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#e7deff",
+                    "primary": "#d1bcff",
+                    "inverse-primary": "#7212ff",
+                    "tertiary": "#cbbff6",
+                    "secondary": "#fff9ef",
+                    "error": "#ffb4ab",
+                    "surface-container": "#1e2020",
+                    "on-primary": "#3c0090",
+                    "surface-dim": "#121414",
+                    "primary-fixed": "#e9ddff",
+                    "surface-bright": "#37393a",
+                    "tertiary-fixed-dim": "#cbbff6",
+                    "on-tertiary": "#332957",
+                    "surface-container-low": "#1a1c1c",
+                    "on-primary-container": "#ddcdff",
+                    "background": "#121414",
+                    "on-secondary-fixed-variant": "#544600",
+                    "on-error-container": "#ffdad6",
+                    "on-tertiary-container": "#d9ceff",
+                    "on-surface": "#e2e2e2",
+                    "on-tertiary-fixed": "#1d1440",
+                    "primary-container": "#7000ff",
+                    "on-secondary": "#3a3000",
+                    "primary-fixed-dim": "#d1bcff",
+                    "on-tertiary-fixed-variant": "#49406f",
+                    "surface-container-highest": "#333535",
+                    "surface-variant": "#333535",
+                    "outline-variant": "#4a4457",
+                    "error-container": "#93000a",
+                    "on-background": "#e2e2e2",
+                    "secondary-fixed-dim": "#e9c400",
+                    "surface-tint": "#d1bcff",
+                    "on-primary-fixed-variant": "#5700c9",
+                    "secondary-container": "#ffdb3c",
+                    "inverse-on-surface": "#2f3131",
+                    "secondary-fixed": "#ffe16d",
+                    "on-surface-variant": "#ccc3da",
+                    "outline": "#958da3",
+                    "on-secondary-fixed": "#221b00",
+                    "on-secondary-container": "#725f00",
+                    "surface-container-lowest": "#0c0f0f",
+                    "inverse-surface": "#e2e2e2",
+                    "surface-container-high": "#282a2b",
+                    "surface": "#121414",
+                    "on-error": "#690005",
+                    "on-primary-fixed": "#23005b",
+                    "tertiary-container": "#5f5585"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "margin-desktop": "64px",
+                    "container-max-width": "1200px",
+                    "gutter": "16px",
+                    "margin-mobile": "20px"
+            },
+            "fontFamily": {
+                    "headline-xl": ["Sora"],
+                    "headline-lg": ["Sora"],
+                    "headline-lg-mobile": ["Sora"],
+                    "label-md": ["JetBrains Mono"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #121414;
+            color: #e2e2e2;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(30, 32, 32, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(209, 188, 255, 0.1);
+        }
+        .three-d-button {
+            transition: transform 0.15s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.15s ease;
+            box-shadow: 0 6px 0 #b08d00, 0 8px 15px rgba(0,0,0,0.4);
+        }
+        .three-d-button:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #b08d00, 0 4px 10px rgba(0,0,0,0.4);
+        }
+        .gold-shimmer {
+            background: linear-gradient(135deg, #ffe16d 0%, #e9c400 50%, #ffe16d 100%);
+            background-size: 200% 200%;
+            animation: shimmer 3s infinite linear;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .arena-glow {
+            box-shadow: 0 0 30px rgba(112, 0, 255, 0.2);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md antialiased">
+<!-- Background Overlay -->
+<div class="fixed inset-0 pointer-events-none z-0 opacity-20">
+<img alt="KBC Studio background" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAp72Gn8sJQyb5-EeVGNzhikXXPqNw2RRmXsOvTojz5AYzP8LEwZBPhDijV5ym60TzK1c0Lm4EP8Prs8set817CcFruf-rsRzejwZaHxgeoPLgvn6PMz9A7lP0gI1fIfJQZECd-nfPkUutrSIyuxEZGmGQUTHDAi4x_OWmbfEJz1KMgFs3HR8Px_RcwnsKE9VV83TJxJxG_iAnl_9D6Pg5Is-V9jlKUwJShNIhjhnbwnqXY7arM4D8mJYJSPtrhgzguG0Q72vBaBSHv"/>
+</div>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface-container-low/80 backdrop-blur-xl border-b border-primary/20 shadow-xl flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full border-2 border-primary overflow-hidden hover:brightness-125 transition-all active:scale-95 duration-150 cursor-pointer">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A high-quality 3D avatar profile picture of a confident player character in the Radiance Arena style. The avatar features sharp, modern features with a futuristic headset and glowing accents on their digital clothing. The lighting is dramatic and cinematic, reflecting the high-stakes environment of the television game show, with a purple and gold ambient glow." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl3CKKtS3C4HUArB72k2lsq-8M96RKMXQJJWlDH2OYcO_mK5fV-QueGfLQhnwMWPyQKvVvU9F8RywitcRHPr7quZjgno7j3lfq-wG556OBjKlEkYoRsFD7C4kBlOw-ZtTV2NAHGGDGhf7Yl7_onTBce7uo9OvrvO72wh3Y1MGJPDimT4TQmGHUI89avUj7ffUyEGJKwUr_wNmXiy6UHl7Ds16NUG0I-y_d9qrVPEJb9mU4Q6b18cZSasRxX3h2hyuf1rRDgGBDidDU"/>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tighter italic uppercase">RADIANCE ARENA</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="bg-primary-container/20 px-4 py-1.5 rounded-full border border-primary/30 flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-fixed text-sm">account_balance_wallet</span>
+<span class="font-label-md text-label-md text-primary">$25,000</span>
+</div>
+</div>
+</header>
+<main class="relative z-10 pt-24 pb-28 px-margin-mobile max-w-container-max-width mx-auto">
+<!-- Profile Header Section -->
+<section class="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3">
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Welcome back, Mastermind</h2>
+<div class="gold-shimmer text-on-secondary px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg flex items-center gap-1">
+<span class="material-symbols-outlined !text-[14px]" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                        Crorepati
+                    </div>
+</div>
+<p class="text-on-surface-variant opacity-80">You're only 3 levels away from the Daily Grand Finale.</p>
+</div>
+</section>
+<!-- Stats Bento Grid -->
+<section class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+<div class="glass-panel p-6 rounded-xl flex flex-col gap-1 arena-glow">
+<span class="text-on-surface-variant font-label-md text-[12px] uppercase tracking-wider">Matches Played</span>
+<div class="flex items-end gap-2">
+<span class="font-headline-lg text-primary">142</span>
+<span class="text-primary/60 text-xs mb-1.5">+12 this week</span>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl flex flex-col gap-1 arena-glow">
+<span class="text-on-surface-variant font-label-md text-[12px] uppercase tracking-wider">Win Rate</span>
+<div class="flex items-end gap-2">
+<span class="font-headline-lg text-secondary-fixed">84%</span>
+<span class="material-symbols-outlined text-secondary-fixed text-lg mb-1">trending_up</span>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl flex flex-col gap-1 arena-glow col-span-2 md:col-span-1">
+<span class="text-on-surface-variant font-label-md text-[12px] uppercase tracking-wider">Global Rank</span>
+<div class="flex items-end gap-2">
+<span class="font-headline-lg text-on-surface">#1,204</span>
+<span class="text-on-surface-variant/60 text-xs mb-1.5">Top 1%</span>
+</div>
+</div>
+</section>
+<!-- Primary CTA: Play Daily Quiz -->
+<section class="mb-10">
+<button class="three-d-button w-full h-48 rounded-2xl gold-shimmer relative overflow-hidden group">
+<div class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
+<div class="relative z-10 flex flex-col items-center justify-center text-on-secondary-fixed">
+<span class="material-symbols-outlined text-6xl mb-2" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+<span class="font-headline-xl text-headline-lg md:text-headline-xl tracking-tight leading-none">PLAY DAILY QUIZ</span>
+<span class="font-label-md mt-2 uppercase tracking-[0.2em] opacity-80">Win up to $1,000,000</span>
+</div>
+<!-- Hot edge lighting effect -->
+<div class="absolute top-0 left-0 w-full h-[1px] bg-white/40"></div>
+<div class="absolute inset-0 border-[1px] border-white/20 rounded-2xl pointer-events-none"></div>
+</button>
+</section>
+<!-- Sub Actions Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Fastest Finger First -->
+<div class="glass-panel rounded-2xl p-6 flex flex-col gap-4 relative group hover:border-primary/40 transition-colors">
+<div class="flex justify-between items-start">
+<div class="w-12 h-12 bg-primary-container/30 rounded-xl flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">timer</span>
+</div>
+<span class="bg-primary/20 text-primary-fixed text-[10px] px-2 py-1 rounded font-bold uppercase tracking-tighter">New Round</span>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-on-surface mb-1">Fastest Finger First</h3>
+<p class="text-on-surface-variant text-sm">Race against the clock to arrange 4 items in chronological order. Entry: $500</p>
+</div>
+<button class="mt-auto w-full py-3 bg-surface-container-highest border border-outline-variant rounded-lg font-label-md text-primary hover:bg-primary/10 transition-colors">CHALLENGE NOW</button>
+</div>
+<!-- Live Sunday Show -->
+<div class="glass-panel rounded-2xl p-6 flex flex-col gap-4 relative overflow-hidden group hover:border-secondary-fixed/40 transition-colors">
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-secondary-container/10 blur-3xl rounded-full"></div>
+<div class="flex justify-between items-start">
+<div class="w-12 h-12 bg-secondary-container/20 rounded-xl flex items-center justify-center text-secondary-fixed">
+<span class="material-symbols-outlined text-3xl">live_tv</span>
+</div>
+<div class="font-label-md text-secondary-fixed text-lg" id="countdown">02:14:45</div>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-on-surface mb-1">Live Sunday Show</h3>
+<p class="text-on-surface-variant text-sm">Join host Amitabh in the grand finale. 10 lucky winners will be picked live.</p>
+</div>
+<button class="mt-auto w-full py-3 bg-secondary-container text-on-secondary-container rounded-lg font-label-md font-bold hover:brightness-110 transition-all">SET REMINDER</button>
+</div>
+</section>
+</main>
+<!-- Navigation Drawer (Mental Map Only - Not Rendered for focused dashboard view) -->
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface-container-highest/60 backdrop-blur-2xl border-t border-primary/30 flex justify-around items-center h-20 px-4 shadow-[0_-8px_32px_rgba(0,0,0,0.5)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 shadow-[0_0_10px_rgba(112,0,255,0.5)] active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 hover:opacity-100 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-md text-label-md">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 hover:opacity-100 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-label-md text-label-md">Wallet</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 hover:opacity-100 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple Countdown Logic for Sunday Show
+        function updateCountdown() {
+            const countdownEl = document.getElementById('countdown');
+            let timeParts = countdownEl.innerText.split(':');
+            let hours = parseInt(timeParts[0]);
+            let minutes = parseInt(timeParts[1]);
+            let seconds = parseInt(timeParts[2]);
+
+            if (seconds > 0) {
+                seconds--;
+            } else {
+                seconds = 59;
+                if (minutes > 0) {
+                    minutes--;
+                } else {
+                    minutes = 59;
+                    if (hours > 0) {
+                        hours--;
+                    }
+                }
+            }
+
+            countdownEl.innerText = 
+                String(hours).padStart(2, '0') + ":" + 
+                String(minutes).padStart(2, '0') + ":" + 
+                String(seconds).padStart(2, '0');
+        }
+        setInterval(updateCountdown, 1000);
+
+        // Subtle parallax effect on background
+        window.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+            const bg = document.querySelector('img[alt="KBC Studio background"]');
+            if (bg) {
+                bg.style.transform = `scale(1.1) translate(${moveX}px, ${moveY}px)`;
+            }
+        });
+    </script>
+</body></html>

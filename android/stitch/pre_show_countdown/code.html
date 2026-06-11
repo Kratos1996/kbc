@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Radiance Arena | Pre-Show Countdown</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#4a4457",
+                        "on-secondary-fixed-variant": "#544600",
+                        "background": "#121414",
+                        "surface-container-low": "#1a1c1c",
+                        "surface-variant": "#333535",
+                        "primary": "#d1bcff",
+                        "inverse-surface": "#e2e2e2",
+                        "secondary-container": "#ffdb3c",
+                        "primary-fixed-dim": "#d1bcff",
+                        "on-tertiary-container": "#d9ceff",
+                        "surface-container-high": "#282a2b",
+                        "on-secondary-fixed": "#221b00",
+                        "on-primary": "#3c0090",
+                        "secondary-fixed": "#ffe16d",
+                        "on-primary-container": "#ddcdff",
+                        "surface-dim": "#121414",
+                        "surface-container": "#1e2020",
+                        "secondary-fixed-dim": "#e9c400",
+                        "on-secondary": "#3a3000",
+                        "surface": "#121414",
+                        "primary-container": "#7000ff",
+                        "on-surface-variant": "#ccc3da",
+                        "inverse-on-surface": "#2f3131",
+                        "tertiary-fixed-dim": "#cbbff6",
+                        "on-tertiary-fixed-variant": "#49406f",
+                        "on-tertiary": "#332957",
+                        "error-container": "#93000a",
+                        "tertiary": "#cbbff6",
+                        "surface-tint": "#d1bcff",
+                        "surface-container-highest": "#333535",
+                        "on-primary-fixed": "#23005b",
+                        "on-surface": "#e2e2e2",
+                        "on-primary-fixed-variant": "#5700c9",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005",
+                        "outline": "#958da3",
+                        "surface-container-lowest": "#0c0f0f",
+                        "surface-bright": "#37393a",
+                        "tertiary-fixed": "#e7deff",
+                        "error": "#ffb4ab",
+                        "secondary": "#fff9ef",
+                        "on-tertiary-fixed": "#1d1440",
+                        "primary-fixed": "#e9ddff",
+                        "on-background": "#e2e2e2",
+                        "tertiary-container": "#5f5585",
+                        "on-secondary-container": "#725f00",
+                        "inverse-primary": "#7212ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "container-max-width": "1200px",
+                        "unit": "8px",
+                        "margin-desktop": "64px",
+                        "margin-mobile": "20px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Sora"],
+                        "label-md": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "headline-xl": ["Sora"],
+                        "headline-lg-mobile": ["Sora"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes glow {
+            0%, 100% { opacity: 0.8; filter: drop-shadow(0 0 15px rgba(112,0,255,0.6)); }
+            50% { opacity: 1; filter: drop-shadow(0 0 35px rgba(112,0,255,0.9)); }
+        }
+        @keyframes pulse-gold {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(233,196,0,0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(233,196,0,0); }
+        }
+        .animate-glow { animation: glow 3s ease-in-out infinite; }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-pulse-gold { animation: pulse-gold 2s infinite; }
+        
+        .glass-panel {
+            background: rgba(30, 32, 32, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(204, 195, 218, 0.1);
+        }
+
+        .hex-clip {
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+        }
+        
+        .countdown-digit {
+            font-variant-numeric: tabular-nums;
+        }
+
+        canvas#particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen font-body-md selection:bg-primary selection:text-on-primary overflow-x-hidden">
+<canvas id="particles"></canvas>
+<!-- Top Navigation Anchor -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-[0_4px_20px_rgba(112,0,255,0.3)] flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16">
+<div class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-primary to-tertiary tracking-tighter">
+            RADIANCE ARENA
+        </div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex items-center gap-6 mr-8">
+<span class="font-label-md text-label-md text-secondary cursor-pointer">ARENA</span>
+<span class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer">LADDER</span>
+<span class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer">VAULT</span>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container-high rounded-full border border-primary/20 hover:bg-primary/10 transition-all active:scale-95">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+<span class="font-label-md text-label-md">12.4k</span>
+</button>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer p-2 hover:bg-primary-container/20 rounded-full transition-colors">menu</span>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="relative z-10 pt-24 pb-32 px-margin-mobile md:px-margin-desktop max-w-[1400px] mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Center Column: Countdown & Main Action -->
+<div class="lg:col-span-8 flex flex-col gap-8 order-2 lg:order-1">
+<!-- Countdown Section -->
+<div class="relative py-12 flex flex-col items-center justify-center glass-panel rounded-3xl overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary-container/10 via-transparent to-transparent opacity-50"></div>
+<h2 class="font-label-md text-label-md text-primary tracking-[0.3em] mb-4">PRE-SHOW COUNTDOWN</h2>
+<div class="relative z-10 flex items-center justify-center gap-4 md:gap-8 animate-glow">
+<div class="flex flex-col items-center">
+<span class="font-headline-xl text-headline-xl md:text-[120px] md:leading-none tracking-tighter text-on-surface countdown-digit" id="timer">05:42</span>
+</div>
+</div>
+<div class="mt-8 flex flex-col items-center gap-4">
+<p class="font-body-md text-body-md text-on-surface-variant text-center max-w-md">
+                            The arena is pulsing with energy. Prepare your strategy for the upcoming <span class="text-secondary font-bold">Midnight Gauntlet</span>.
+                        </p>
+<!-- Pulsing Join Button -->
+<button class="mt-4 px-10 py-4 bg-secondary-container text-on-secondary-container font-headline-lg-mobile text-headline-lg-mobile rounded-xl font-bold tracking-tight shadow-xl hover:scale-105 active:scale-95 transition-all animate-pulse-gold flex items-center gap-3">
+                            JOIN LOBBY
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Prize Pool Growth Section -->
+<div class="glass-panel rounded-3xl p-6 flex flex-col gap-4">
+<div class="flex justify-between items-end">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant">CURRENT JACKPOT</span>
+<span class="font-headline-lg text-headline-lg text-secondary-fixed-dim">$254,890.00</span>
+</div>
+<div class="flex items-center gap-2 text-primary font-label-md">
+<span class="material-symbols-outlined animate-pulse" style="font-size: 18px;">trending_up</span>
+                            GROWING REAL-TIME
+                        </div>
+</div>
+<div class="w-full h-3 bg-surface-container rounded-full overflow-hidden border border-outline-variant/30">
+<div class="h-full bg-gradient-to-r from-primary via-secondary to-tertiary shadow-[0_0_15px_rgba(209,188,255,0.5)] transition-all duration-1000" id="prize-bar" style="width: 74%;"></div>
+</div>
+<div class="flex justify-between font-label-md text-[10px] text-on-surface-variant opacity-60">
+<span>MIN GUARANTEE $100K</span>
+<span>NEXT MILESTONE $300K</span>
+</div>
+</div>
+<!-- Studio Warm-up (Glassmorphism Preview) -->
+<div class="relative glass-panel rounded-3xl overflow-hidden h-[300px] group cursor-pointer">
+<img class="absolute inset-0 w-full h-full object-cover filter blur-md opacity-40 scale-110 group-hover:scale-100 transition-transform duration-1000" data-alt="A high-end television broadcast studio for an esports tournament. The stage is dark with neon purple and gold lighting. In the background, blurred silhouettes of production crew and camera operators are visible. A large holographic arena logo glows in the center. The mood is highly professional, cinematic, and intense." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdLX4mEG3QISPOGjfhni090i2ePLXznJT-VeMoKNU4JzZg67bHALjenRh3Hc9wqsvqQGomQPv9GxrgvBNCd4MBXnqiWVokmdcLUsmxLbLlsaIdiyVPX4ldJwFmimgxhSe2KmbG2JXIAx68KAAspd5pvepjzMZujLulttP1RA6pnls9lM03MifzfZMIxP5OHIEHkG8AjKp04K0QUpZ_EqrIoUoF4WE6OH7SRy88te38lvYOZ0dzP9DJbr5K3uqRxqZRGV0wFqQdTPZY"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute inset-0 flex flex-col items-center justify-center gap-4">
+<div class="w-16 h-16 rounded-full bg-primary/20 backdrop-blur-md flex items-center justify-center border border-primary/40 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+</div>
+<div class="text-center">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile">Live Studio Warm-up</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Host: Master Oracle &amp; Special Guests</p>
+</div>
+</div>
+<div class="absolute top-4 left-4 bg-error text-on-error px-3 py-1 rounded-full text-[10px] font-bold flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-on-error animate-pulse"></span>
+                        LIVE
+                    </div>
+</div>
+</div>
+<!-- Side Column: Contestants & Meta -->
+<div class="lg:col-span-4 flex flex-col gap-6 order-1 lg:order-2">
+<!-- Contestant Spotlight Section -->
+<div class="glass-panel rounded-3xl p-6 flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile tracking-tight">Lobby Spotlight</h3>
+<span class="font-label-md text-label-md text-primary">128 Joined</span>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Contestant Card 1 -->
+<div class="flex items-center gap-4 p-3 rounded-2xl bg-surface-container-high/50 border border-outline-variant/20 hover:bg-surface-container-highest transition-colors">
+<div class="relative">
+<div class="w-14 h-14 hex-clip bg-gradient-to-br from-secondary to-primary p-[2px]">
+<div class="w-full h-full hex-clip bg-surface overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional gamer headshot portrait with dramatic side lighting. The man has a focused expression, styled dark hair, and wearing high-tech gaming peripherals. The lighting is dominated by deep blues and vibrant violets, fitting a futuristic esports arena aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTuqkkL7GvQEf7MkAx0gALZDKGbecQ9xEGLFw25Q70L8i34au7J8nwEXvGytnUqUGmXw4AO5jMzd0VSYF-ZE7nNRHd2n14b4KrS1CJjcC5kJ2pvCUGuu35ZnSoQZM0QtplxdaN9DQg3Ekc8iI3h2BHoSGATH73vsjRT-5QS4Wgm32-NoQrCwiqNa7yUQkaRrVESn3pbPFT6YciyvqxjZBwNNdNNgROpxkNS0PydSfBH5AvysfsVjPItFdoWrkQ_ZmPc65XgKQKdclq"/>
+</div>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-secondary-container text-on-secondary-container text-[8px] font-bold px-1 rounded border border-surface">D-III</div>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-lg-mobile text-[16px] text-on-surface">Grandmaster_X</span>
+<span class="font-label-md text-[12px] text-on-surface-variant opacity-70">Winstreak: 5</span>
+</div>
+<div class="ml-auto flex flex-col items-end">
+<span class="text-[10px] text-primary">ELITE</span>
+<span class="material-symbols-outlined text-secondary" style="font-size: 16px;">military_tech</span>
+</div>
+</div>
+<!-- Contestant Card 2 -->
+<div class="flex items-center gap-4 p-3 rounded-2xl bg-surface-container-high/50 border border-outline-variant/20 hover:bg-surface-container-highest transition-colors">
+<div class="relative">
+<div class="w-14 h-14 hex-clip bg-gradient-to-br from-tertiary to-primary p-[2px]">
+<div class="w-full h-full hex-clip bg-surface overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A young female competitor portrait for an intellectual game show. She is wearing sleek, modern eyewear reflecting colorful interface elements. The background is a dark, abstract digital void with hints of cyan and purple light. She looks determined and ready for a challenge." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoqCCIbk2e7hsTbzApfyeeiSzn-oXdk2Atfr2OaIu9DzJWw_WEfV3vDbzDcdkOkmJZD0s3Fw4yrIc6tpKAutUQ9sREztWWDMwysm0TFjDCL3z8DfedhLHLCIQR2zKj3t1ceRKU9KJlQ4OWJ9saeLAJfHP5hCL_D959zBOFM674WpWWv5WTQnTZYnFnmOUO6kwzpz8ZdKy_11Nj58xemjJPuFDpumoepqcjEw4gFSND4Df6KEyuxUfaEx238gxHSQoDOL0dM3fDm8Ah"/>
+</div>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-secondary-container text-on-secondary-container text-[8px] font-bold px-1 rounded border border-surface">D-I</div>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-lg-mobile text-[16px] text-on-surface">Neon_Cipher</span>
+<span class="font-label-md text-[12px] text-on-surface-variant opacity-70">Top 1% Logic</span>
+</div>
+<div class="ml-auto flex flex-col items-end">
+<span class="text-[10px] text-primary">LEGACY</span>
+<span class="material-symbols-outlined text-secondary" style="font-size: 16px;">verified</span>
+</div>
+</div>
+<!-- Contestant Card 3 -->
+<div class="flex items-center gap-4 p-3 rounded-2xl bg-surface-container-high/50 border border-outline-variant/20 hover:bg-surface-container-highest transition-colors">
+<div class="relative">
+<div class="w-14 h-14 hex-clip bg-gradient-to-br from-on-surface-variant to-outline p-[2px]">
+<div class="w-full h-full hex-clip bg-surface overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A stylized portrait of a seasoned strategist for a high-stakes competition. The subject has an intense gaze and salt-and-pepper hair, lit by warm amber lighting against a dark backdrop. The aesthetic is cinematic, suggesting wisdom and strategic depth." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDig7ykY7KMqMV3zGkPEdxTBIkyWwNtBPfjUyQaz_zsHqW-NiMgWTEqYzuUsbUI8fuZ3WLrW6S3LoS8udG1_ma914r0X-mgx1GyhLUQ8L_MAd6ya_5BiH3800XtaJ8FxcFcT7q4CcjOE4La23DzVJ3pp9-r_VUBdVGSEdqZbTHyjgXScbNwjnxRq3-R0Hi0CZvFGGIMoqhZq00Liihp7Q4tzikLb6lv0spUQWByXM8Jk49PDS6dMjRmXIgjw16T4AghYVuYQlVs5YPM"/>
+</div>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-secondary-container text-on-secondary-container text-[8px] font-bold px-1 rounded border border-surface">P-IV</div>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-lg-mobile text-[16px] text-on-surface">OldMaster7</span>
+<span class="font-label-md text-[12px] text-on-surface-variant opacity-70">Veteran Badge</span>
+</div>
+<div class="ml-auto flex flex-col items-end">
+<span class="text-[10px] text-primary">PRO</span>
+<span class="material-symbols-outlined text-secondary" style="font-size: 16px;">star</span>
+</div>
+</div>
+</div>
+<button class="w-full py-3 rounded-xl border border-primary/30 text-primary font-label-md hover:bg-primary/5 transition-all">VIEW FULL LOBBY</button>
+</div>
+<!-- Event Details -->
+<div class="glass-panel rounded-3xl p-6 flex flex-col gap-4 border-l-4 border-secondary">
+<h4 class="font-label-md text-label-md text-secondary">MATCH PARAMETERS</h4>
+<ul class="flex flex-col gap-3">
+<li class="flex items-center justify-between text-body-md">
+<span class="text-on-surface-variant">Rounds</span>
+<span class="text-on-surface">15 Hex-Levels</span>
+</li>
+<li class="flex items-center justify-between text-body-md">
+<span class="text-on-surface-variant">Time Limit</span>
+<span class="text-on-surface">12s / Question</span>
+</li>
+<li class="flex items-center justify-between text-body-md">
+<span class="text-on-surface-variant">Difficulty</span>
+<span class="text-error font-bold italic">HARMONIC CHAOS</span>
+</li>
+</ul>
+</div>
+<!-- Lifelines Preview -->
+<div class="glass-panel rounded-3xl p-6 flex flex-col gap-4">
+<h4 class="font-label-md text-label-md text-on-surface-variant">AVAILABLE LIFELINES</h4>
+<div class="flex justify-around items-center py-2">
+<div class="flex flex-col items-center gap-2 group cursor-help">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest border border-primary/40 flex items-center justify-center group-hover:bg-primary/20 transition-all shadow-[0_0_10px_rgba(112,0,255,0.2)]">
+<span class="material-symbols-outlined text-primary">analytics</span>
+</div>
+<span class="text-[10px] font-label-md">ORACLE</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-help">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest border border-secondary/40 flex items-center justify-center group-hover:bg-secondary/20 transition-all shadow-[0_0_10px_rgba(233,196,0,0.2)]">
+<span class="material-symbols-outlined text-secondary">exposure_neg_1</span>
+</div>
+<span class="text-[10px] font-label-md">VANISH</span>
+</div>
+<div class="flex flex-col items-center gap-2 group cursor-help">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest border-on-surface-variant/40 flex items-center justify-center group-hover:bg-white/10 transition-all">
+<span class="material-symbols-outlined text-on-surface">sync</span>
+</div>
+<span class="text-[10px] font-label-md">SWAP</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Shell (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full h-20 bg-surface-container-lowest/90 backdrop-blur-2xl border-t border-outline-variant/20 rounded-t-xl z-50 flex justify-around items-center px-4 pb-safe shadow-[0_-8px_32px_rgba(0,0,0,0.6)]">
+<div class="flex flex-col items-center justify-center text-secondary-fixed shadow-[0_0_15px_rgba(233,196,0,0.4)] bg-secondary-container/10 rounded-xl p-2 active:scale-90 transform duration-200">
+<span class="material-symbols-outlined">sports_esports</span>
+<span class="font-label-md text-[10px]">ARENA</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary transition-all active:scale-90 transform duration-200">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="font-label-md text-[10px]">LADDER</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary transition-all active:scale-90 transform duration-200">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-md text-[10px]">VAULT</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary transition-all active:scale-90 transform duration-200">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-[10px]">PROFILE</span>
+</div>
+</nav>
+<script>
+        // Particle Background Effect
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.opacity = Math.random() * 0.5;
+                this.color = Math.random() > 0.5 ? '#7000ff' : '#ffe16d';
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    this.reset();
+                }
+            }
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 60; i++) {
+            particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Countdown Timer Logic
+        let seconds = 342; // 05:42
+        const timerElement = document.getElementById('timer');
+        
+        function updateTimer() {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            timerElement.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            if (seconds > 0) {
+                seconds--;
+            } else {
+                seconds = 300; // Reset for demo
+            }
+        }
+        setInterval(updateTimer, 1000);
+
+        // Real-time Prize Bar Pulsing
+        const prizeBar = document.getElementById('prize-bar');
+        setInterval(() => {
+            const currentWidth = parseFloat(prizeBar.style.width);
+            const newWidth = Math.min(100, currentWidth + 0.05);
+            prizeBar.style.width = newWidth + '%';
+        }, 2000);
+    </script>
+</body></html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Radiance Arena - Live Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&amp;family=JetBrains+Mono:wght@500&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+        }
+        
+        .hot-seat-gradient {
+            background: radial-gradient(circle at center, #0a0e27 0%, #000000 100%);
+        }
+
+        .studio-floor {
+            background: radial-gradient(ellipse at bottom, rgba(72, 18, 255, 0.2) 0%, transparent 70%);
+        }
+
+        .light-beam {
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to top, rgba(114, 18, 255, 0.4), transparent);
+            filter: blur(4px);
+            transform: rotate(15deg);
+        }
+
+        .kbc-container {
+            position: relative;
+            background: linear-gradient(180deg, #1a1a4a 0%, #05051a 100%);
+            border: 2px solid #ffffff40;
+            box-shadow: 0 0 15px rgba(114, 18, 255, 0.3);
+        }
+
+        .diamond-taper {
+            clip-path: polygon(5% 0%, 95% 0%, 100% 50%, 95% 100%, 5% 100%, 0% 50%);
+        }
+
+        .option-hexagon {
+            clip-path: polygon(5% 0%, 95% 0%, 100% 50%, 95% 100%, 5% 100%, 0% 50%);
+            transition: all 0.3s ease;
+        }
+
+        .option-hexagon:hover {
+            background: linear-gradient(90deg, #ffdb3c 0%, #725f00 100%);
+            color: #000;
+        }
+
+        .lifeline-btn {
+            background: linear-gradient(180deg, #2a2a6a 0%, #0a0a2a 100%);
+            border: 1.5px solid #ffffff60;
+            border-radius: 12px;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.1);
+        }
+
+        .prize-glow {
+            text-shadow: 0 0 10px rgba(255, 219, 60, 0.8);
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        .scanline {
+            background: linear-gradient(to bottom, transparent, rgba(114, 18, 255, 0.1), transparent);
+            animation: scanline 8s linear infinite;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "on-secondary-fixed": "#221b00",
+                "on-secondary-container": "#725f00",
+                "inverse-surface": "#e2e2e2",
+                "surface": "#121414",
+                "inverse-primary": "#7212ff",
+                "surface-container-low": "#1a1c1c",
+                "on-primary": "#3c0090",
+                "inverse-on-surface": "#2f3131",
+                "surface-container-high": "#282a2b",
+                "primary-container": "#7000ff",
+                "outline": "#958da3",
+                "tertiary-container": "#5f5585",
+                "on-primary-container": "#ddcdff",
+                "on-error-container": "#ffdad6",
+                "on-secondary": "#3a3000",
+                "primary-fixed": "#e9ddff",
+                "background": "#121414",
+                "error-container": "#93000a",
+                "on-tertiary-container": "#d9ceff",
+                "secondary": "#fff9ef",
+                "surface-container": "#1e2020",
+                "surface-variant": "#333535",
+                "on-surface": "#e2e2e2",
+                "surface-container-highest": "#333535",
+                "on-surface-variant": "#ccc3da",
+                "outline-variant": "#4a4457",
+                "on-primary-fixed": "#23005b",
+                "tertiary-fixed": "#e7deff",
+                "primary-fixed-dim": "#d1bcff",
+                "on-tertiary": "#332957",
+                "error": "#ffb4ab",
+                "tertiary": "#cbbff6",
+                "surface-tint": "#d1bcff",
+                "secondary-fixed-dim": "#e9c400",
+                "on-primary-fixed-variant": "#5700c9",
+                "on-tertiary-fixed-variant": "#49406f",
+                "on-secondary-fixed-variant": "#544600",
+                "secondary-container": "#ffdb3c",
+                "on-tertiary-fixed": "#1d1440",
+                "primary": "#d1bcff",
+                "on-background": "#e2e2e2",
+                "on-error": "#690005",
+                "surface-dim": "#121414",
+                "surface-container-lowest": "#0c0f0f",
+                "secondary-fixed": "#ffe16d",
+                "tertiary-fixed-dim": "#cbbff6",
+                "surface-bright": "#37393a"
+              },
+              "spacing": {
+                "unit": "8px",
+                "margin-desktop": "64px",
+                "gutter": "16px",
+                "container-max-width": "1200px",
+                "margin-mobile": "20px"
+              },
+              "fontFamily": {
+                "headline-lg": ["Sora"],
+                "body-md": ["Inter"],
+                "label-md": ["JetBrains Mono"],
+                "headline-xl": ["Sora"],
+                "headline-lg-mobile": ["Sora"]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="hot-seat-gradient text-on-background min-h-screen overflow-hidden selection:bg-primary selection:text-on-primary">
+<!-- Atmosphere Layer -->
+<div class="fixed inset-0 z-0">
+<div class="studio-floor absolute inset-0"></div>
+<div class="scanline absolute inset-0 w-full h-full pointer-events-none opacity-20"></div>
+<!-- Lighting Beams -->
+<div class="light-beam left-1/4 top-0 opacity-40"></div>
+<div class="light-beam right-1/4 top-0 opacity-40" style="transform: rotate(-15deg);"></div>
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-primary/10 blur-[100px] rounded-full"></div>
+</div>
+<!-- Top Lifelines & Bar -->
+<header class="fixed top-0 w-full z-50 flex flex-col items-center pt-4">
+<div class="flex gap-4 mb-4">
+<button class="lifeline-btn px-6 py-2 flex flex-col items-center justify-center group hover:scale-105 transition-transform">
+<span class="font-bold text-white text-sm">50:50</span>
+</button>
+<button class="lifeline-btn px-6 py-2 flex flex-col items-center justify-center group hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-white text-xl">sync_alt</span>
+</button>
+<button class="lifeline-btn px-6 py-2 flex flex-col items-center justify-center group hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-white text-xl">groups</span>
+</button>
+<button class="lifeline-btn px-6 py-2 border-error/50 hover:bg-error/20">
+<span class="font-bold text-error text-xs uppercase tracking-widest">Quit</span>
+</button>
+</div>
+<!-- Arena Logo / Timer -->
+<div class="flex items-center gap-8 px-12 py-2 bg-gradient-to-r from-transparent via-primary/10 to-transparent border-y border-primary/20 w-full justify-center">
+<div class="text-primary font-headline-lg-mobile italic uppercase tracking-tighter">Radiance Arena</div>
+<div class="relative w-12 h-12 flex items-center justify-center">
+<svg class="absolute inset-0 transform -rotate-90">
+<circle class="text-white/10" cx="24" cy="24" fill="transparent" r="20" stroke="currentColor" stroke-width="3"></circle>
+<circle class="text-secondary-fixed transition-all duration-1000" cx="24" cy="24" fill="transparent" id="timer-circle" r="20" stroke="currentColor" stroke-dasharray="126" stroke-dashoffset="30" stroke-width="3"></circle>
+</svg>
+<span class="text-xl font-bold text-secondary-fixed" id="timer-text">45</span>
+</div>
+<div class="text-secondary-fixed font-headline-lg-mobile">$25,000</div>
+</div>
+</header>
+<!-- Main Game Stage -->
+<main class="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-gutter px-margin-mobile md:px-margin-desktop h-screen items-center">
+<div class="hidden md:col-span-1"></div>
+<!-- Center Question Area -->
+<div class="md:col-span-8 flex flex-col gap-12 pt-24">
+<!-- Diamond Tapered Question Box -->
+<div class="relative w-full">
+<div class="diamond-taper kbc-container py-10 px-20 border-x-[12px] border-white/20">
+<div class="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-primary/20"></div>
+<h2 class="relative z-10 text-center font-headline-lg-mobile md:text-2xl text-white leading-relaxed">
+                    Which celestial object is primarily composed of carbon and is thought to be the core of an ancient white dwarf?
+                </h2>
+</div>
+<!-- Connection Lines -->
+<div class="absolute left-0 top-1/2 -translate-x-full w-full h-[2px] bg-gradient-to-r from-transparent to-white/30"></div>
+<div class="absolute right-0 top-1/2 translate-x-full w-full h-[2px] bg-gradient-to-l from-transparent to-white/30"></div>
+</div>
+<!-- Options Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-6">
+<!-- Option A -->
+<button class="option-hexagon group relative h-16 kbc-container flex items-center border-x-8 border-white/20">
+<div class="absolute left-0 w-12 h-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold border-r border-white/20">A</div>
+<span class="pl-16 text-white font-body-md text-lg">BPM 37093 (Lucy)</span>
+</button>
+<!-- Option B -->
+<button class="option-hexagon group relative h-16 kbc-container flex items-center border-x-8 border-white/20">
+<div class="absolute left-0 w-12 h-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold border-r border-white/20">B</div>
+<span class="pl-16 text-white font-body-md text-lg">Sagittarius A*</span>
+</button>
+<!-- Option C -->
+<button class="option-hexagon group relative h-16 kbc-container flex items-center border-x-8 border-white/20">
+<div class="absolute left-0 w-12 h-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold border-r border-white/20">C</div>
+<span class="pl-16 text-white font-body-md text-lg">Gliese 581g</span>
+</button>
+<!-- Option D -->
+<button class="option-hexagon group relative h-16 kbc-container flex items-center border-x-8 border-white/20">
+<div class="absolute left-0 w-12 h-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold border-r border-white/20">D</div>
+<span class="pl-16 text-white font-body-md text-lg">Kepler-22b</span>
+</button>
+</div>
+</div>
+<!-- Prize Ladder Sidebar -->
+<aside class="hidden md:flex md:col-span-3 flex-col h-3/4 self-center justify-center pl-8 border-l border-white/10">
+<div class="flex flex-col-reverse gap-1.5 font-label-md overflow-y-auto no-scrollbar pr-4">
+<div class="flex justify-between text-on-surface-variant opacity-40 py-0.5"><span>1</span><span>$1,000</span></div>
+<div class="flex justify-between text-on-surface-variant opacity-40 py-0.5"><span>2</span><span>$2,000</span></div>
+<div class="flex justify-between text-on-surface-variant opacity-40 py-0.5"><span>3</span><span>$3,000</span></div>
+<div class="flex justify-between text-secondary-fixed/60 py-0.5 border-b border-white/10"><span>4</span><span>$5,000</span></div>
+<div class="flex justify-between text-on-surface-variant py-0.5"><span>5</span><span>$10,000</span></div>
+<div class="flex justify-between text-on-surface-variant py-0.5"><span>6</span><span>$20,000</span></div>
+<div class="flex justify-between text-on-surface-variant py-0.5"><span>7</span><span>$40,000</span></div>
+<div class="flex justify-between text-on-surface-variant py-0.5"><span>8</span><span>$80,000</span></div>
+<div class="flex justify-between text-secondary-fixed/60 py-0.5 border-b border-white/10"><span>9</span><span>$160,000</span></div>
+<!-- Active Level Highlight -->
+<div class="flex justify-between bg-secondary-container text-on-secondary-container px-4 py-2 rounded-lg font-bold scale-110 shadow-[0_0_20px_rgba(255,219,60,0.4)] prize-glow my-2 border border-white/30">
+<span>10</span>
+<span>$320,000</span>
+</div>
+<div class="flex justify-between text-white py-0.5"><span>11</span><span>$640,000</span></div>
+<div class="flex justify-between text-white py-0.5"><span>12</span><span>$1,250,000</span></div>
+<div class="flex justify-between text-white py-0.5"><span>13</span><span>$2,500,000</span></div>
+<div class="flex justify-between text-white py-0.5"><span>14</span><span>$5,000,000</span></div>
+<div class="flex justify-between text-secondary-fixed font-headline-lg-mobile py-4 border-t-2 border-secondary-fixed/30 mt-2 prize-glow">
+<span class="text-sm">★</span>
+<span>$1 CRORE</span>
+</div>
+</div>
+</aside>
+</main>
+<!-- Navigation Bar (Hidden) -->
+<nav class="hidden"></nav>
+<script>
+    // Timer Logic
+    let timeLeft = 45;
+    const timerText = document.getElementById('timer-text');
+    const timerCircle = document.getElementById('timer-circle');
+    const totalLength = 126;
+
+    const countdown = setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            timeLeft = 0;
+        }
+        timerText.innerText = timeLeft;
+        const offset = (timeLeft / 45) * totalLength;
+        timerCircle.style.strokeDashoffset = totalLength - offset;
+
+        if (timeLeft <= 10) {
+            timerCircle.classList.remove('text-secondary-fixed');
+            timerCircle.classList.add('text-error');
+            timerText.classList.add('text-error');
+        }
+    }, 1000);
+
+    // Option selection effect
+    document.querySelectorAll('.option-hexagon').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.option-hexagon').forEach(b => {
+                b.classList.remove('bg-secondary-container', 'text-on-secondary-container', 'shadow-lg');
+                const label = b.querySelector('.absolute');
+                if(label) label.classList.remove('bg-white', 'text-black');
+            });
+            
+            this.classList.add('bg-secondary-container', 'text-on-secondary-container', 'shadow-[0_0_25px_rgba(255,219,60,0.5)]');
+            const label = this.querySelector('.absolute');
+            if(label) label.classList.add('bg-white', 'text-black');
+        });
+    });
+</script>
+</body></html>
