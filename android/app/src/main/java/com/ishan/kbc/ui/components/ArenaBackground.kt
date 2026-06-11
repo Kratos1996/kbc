@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ishan.kbc.R
@@ -24,9 +25,11 @@ import com.ishan.kbc.ui.theme.SurfaceContainerLowest
 
 @Composable
 fun ArenaBackground(modifier: Modifier = Modifier) {
+    val config = LocalConfiguration.current
+    val bgResId = if (config.screenWidthDp >= 600) R.drawable.bg_fold_or_tab else R.drawable.bg_mobile
     Box(modifier = modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(id = R.drawable.bg_mobile),
+            painter = painterResource(id = bgResId),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,

@@ -1,5 +1,6 @@
 package com.ishan.kbc.ui.tournament
 
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -13,28 +14,22 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,8 +38,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -52,7 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ishan.kbc.R
-import com.ishan.kbc.ui.theme.Error
+import com.ishan.kbc.ui.components.ArenaBackground
 import com.ishan.kbc.ui.theme.Gold
 import com.ishan.kbc.ui.theme.GoldDark
 import com.ishan.kbc.ui.theme.JetBrainsMonoFont
@@ -60,13 +61,11 @@ import com.ishan.kbc.ui.theme.OnPrimary
 import com.ishan.kbc.ui.theme.OnSurface
 import com.ishan.kbc.ui.theme.OnSurfaceVariant
 import com.ishan.kbc.ui.theme.Primary
-import com.ishan.kbc.ui.theme.PrimaryContainer
 import com.ishan.kbc.ui.theme.SoraFont
 import com.ishan.kbc.ui.theme.SurfaceBright
 import com.ishan.kbc.ui.theme.SurfaceContainerHigh
 import com.ishan.kbc.ui.theme.SurfaceContainerHighest
 import com.ishan.kbc.ui.theme.SurfaceContainerLow
-import com.ishan.kbc.ui.theme.SurfaceContainerLowest
 
 @Composable
 fun TournamentScreen(
@@ -77,40 +76,68 @@ fun TournamentScreen(
 
     LaunchedEffect(Unit) { viewModel.startCountdown() }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        ArenaBackground()
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp),
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .verticalScroll(rememberScrollState()),
         ) {
-            Spacer(Modifier.height(12.dp))
-
-            IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = null,
-                    tint = OnSurface
-                )
+            // Top Header Bar
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(SurfaceContainerLow.copy(alpha = 0.85f))
+                    .padding(horizontal = 20.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "RADIANCE ARENA",
+                        color = Primary,
+                        fontWeight = FontWeight.Black,
+                        fontSize = 18.sp,
+                        letterSpacing = 4.sp,
+                        fontFamily = SoraFont,
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(SurfaceContainerHigh.copy(alpha = 0.4f))
+                        .border(1.dp, OnSurfaceVariant.copy(alpha = 0.2f), RoundedCornerShape(20.dp))
+                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "\u20B9",
+                        color = Gold,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        text = "12,500 GC",
+                        color = Gold,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 13.sp,
+                    )
+                }
             }
 
-            Spacer(Modifier.height(8.dp))
-
-            // Hero section
+            // Hero Section
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(
-                        Brush.horizontalGradient(
-                            listOf(SurfaceContainerLow, SurfaceContainerLow.copy(alpha = 0.3f)),
-                        ),
-                    )
-                    .border(1.dp, Primary.copy(alpha = 0.2f), RoundedCornerShape(20.dp)),
+                    .padding(horizontal = 20.dp)
+                    .padding(top = 16.dp)
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(SurfaceContainerLow.copy(alpha = 0.6f))
+                    .border(1.dp, Primary.copy(alpha = 0.2f), RoundedCornerShape(24.dp)),
             ) {
                 Column(modifier = Modifier.padding(24.dp)) {
                     Box(
@@ -120,31 +147,33 @@ fun TournamentScreen(
                             .padding(horizontal = 12.dp, vertical = 4.dp),
                     ) {
                         Text(
-                            "PREMIUM EVENT",
-                            style = MaterialTheme.typography.labelSmall,
+                            text = "PREMIUM EVENT",
                             color = Primary,
                             fontWeight = FontWeight.Bold,
+                            fontSize = 10.sp,
                             letterSpacing = 2.sp,
                         )
                     }
                     Spacer(Modifier.height(16.dp))
                     Text(
-                        "SUNDAY",
-                        style = MaterialTheme.typography.headlineLarge,
+                        text = "SUNDAY",
                         color = OnSurface,
                         fontWeight = FontWeight.Black,
+                        fontSize = 32.sp,
+                        fontFamily = SoraFont,
                     )
                     Text(
-                        "GRAND CHAMPIONSHIP",
-                        style = MaterialTheme.typography.headlineMedium,
+                        text = "GRAND CHAMPIONSHIP",
                         color = Gold,
                         fontWeight = FontWeight.Black,
+                        fontSize = 24.sp,
+                        fontFamily = SoraFont,
                     )
                     Spacer(Modifier.height(12.dp))
                     Text(
-                        stringResource(R.string.tournament_desc),
-                        style = MaterialTheme.typography.bodyMedium,
+                        text = stringResource(R.string.tournament_desc),
                         color = OnSurfaceVariant,
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                     Spacer(Modifier.height(20.dp))
                     Row(
@@ -154,16 +183,17 @@ fun TournamentScreen(
                     ) {
                         Column {
                             Text(
-                                stringResource(R.string.tournament_prize_pool),
-                                style = MaterialTheme.typography.labelSmall,
+                                text = stringResource(R.string.tournament_prize_pool),
                                 color = OnSurfaceVariant,
+                                fontSize = 10.sp,
                                 letterSpacing = 2.sp,
                             )
+                            Spacer(Modifier.height(4.dp))
                             Text(
-                                "$1,000,000",
-                                style = MaterialTheme.typography.headlineSmall,
+                                text = "$1,000,000",
                                 color = Gold,
                                 fontWeight = FontWeight.Black,
+                                fontSize = 28.sp,
                             )
                         }
                         Box(
@@ -174,15 +204,13 @@ fun TournamentScreen(
                         )
                         Column {
                             Text(
-                                stringResource(R.string.tournament_starts),
-                                style = MaterialTheme.typography.labelSmall,
+                                text = stringResource(R.string.tournament_starts),
                                 color = OnSurfaceVariant,
+                                fontSize = 10.sp,
                                 letterSpacing = 2.sp,
                             )
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                verticalAlignment = Alignment.Bottom,
-                            ) {
+                            Spacer(Modifier.height(4.dp))
+                            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                                 CountdownUnit(state.days.toString().padStart(2, '0'), stringResource(R.string.tournament_days))
                                 Text(":", color = Primary, fontWeight = FontWeight.Bold, fontSize = 20.sp)
                                 CountdownUnit(state.hours.toString().padStart(2, '0'), stringResource(R.string.tournament_hrs))
@@ -194,135 +222,254 @@ fun TournamentScreen(
                         }
                     }
                 }
+                // Hex decoration
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .size(120.dp)
+                        .padding(bottom = 8.dp, end = 8.dp),
+                ) {
+                    HexDecoration()
+                }
             }
 
             Spacer(Modifier.height(20.dp))
 
-            GlassPanel(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    stringResource(R.string.tournament_requirements),
-                    style = MaterialTheme.typography.titleSmall,
-                    color = OnSurface,
-                    fontWeight = FontWeight.Bold,
-                )
-                Spacer(Modifier.height(12.dp))
-                val reqs = listOf(
-                    "Minimum Level 10" to "Standard player eligibility",
-                    "Valid Lifeline Bundle" to "Active for championship duration",
-                    "Clean Play Record" to "No active bans or warnings",
-                    "Region Verified" to "Available for Global Arena",
-                )
-                reqs.forEach { (title, desc) ->
-                    RequirementRow(title, desc)
-                    Spacer(Modifier.height(8.dp))
-                }
-            }
-
-            Spacer(Modifier.height(12.dp))
-
-            GlassPanel(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    stringResource(R.string.tournament_breakdown),
-                    style = MaterialTheme.typography.titleSmall,
-                    color = OnSurface,
-                    fontWeight = FontWeight.Bold,
-                )
-                Spacer(Modifier.height(12.dp))
-                PrizeRow("1st Place Grand Winner", "$500,000", gold = true)
-                Spacer(Modifier.height(8.dp))
-                PrizeRow("2nd - 10th Finalists", "$25,000 each")
-                Spacer(Modifier.height(8.dp))
-                PrizeRow("Top 100 Consolation", "$2,500 each")
-            }
-
-            Spacer(Modifier.height(12.dp))
-
-            // Entry selection + Register
-            GlassPanel(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    stringResource(R.string.tournament_entry_method),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = OnSurfaceVariant,
-                    letterSpacing = 2.sp,
-                )
-                Spacer(Modifier.height(12.dp))
-                EntryOption(
-                    title = "5,000 RP",
-                    subtitle = "Radiance Points Entry",
-                    icon = "RP",
-                    selected = state.selectedEntry == EntryMethod.RadiancePoints,
-                ) { viewModel.selectEntry(EntryMethod.RadiancePoints) }
-                Spacer(Modifier.height(8.dp))
-                EntryOption(
-                    title = "Gold Pass",
-                    subtitle = "Season Pass Admission",
-                    icon = "GP",
-                    selected = state.selectedEntry == EntryMethod.GoldPass,
-                    onClick = { viewModel.selectEntry(EntryMethod.GoldPass) },
-                )
-                Spacer(Modifier.height(20.dp))
-
-                Button(
-                    onClick = { viewModel.register() },
-                    enabled = !state.isRegistering,
-                    modifier = Modifier.fillMaxWidth().height(60.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent,
-                        contentColor = OnPrimary,
-                        disabledContainerColor = Color.Transparent,
-                    ),
-                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
+            // Requirements + Prize Breakdown in flex row
+            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                // Requirements
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(SurfaceContainerLow.copy(alpha = 0.6f))
+                        .border(1.dp, OnSurfaceVariant.copy(alpha = 0.1f), RoundedCornerShape(24.dp))
+                        .padding(20.dp),
                 ) {
-                    if (state.isRegistering) {
-                        CircularProgressIndicator(
-                            color = OnPrimary,
-                            modifier = Modifier.size(24.dp),
-                            strokeWidth = 2.dp,
+                    Column {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = stringResource(R.string.tournament_requirements),
+                                color = OnSurface,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp,
+                                fontFamily = SoraFont,
+                            )
+                        }
+                        Spacer(Modifier.height(16.dp))
+                        RequirementCard(
+                            icon = "\u25B2",
+                            title = "Minimum Level 10",
+                            desc = "Standard player eligibility",
                         )
-                    } else {
-                        Text(
-                            if (state.isRegistered) stringResource(R.string.tournament_registered)
-                            else stringResource(R.string.tournament_register),
-                            fontWeight = FontWeight.Black,
-                            fontSize = 18.sp,
-                            letterSpacing = 3.sp,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(
-                                    if (state.isRegistered) Brush.horizontalGradient(listOf(PrimaryContainer, Primary))
-                                    else Brush.horizontalGradient(listOf(Gold, GoldDark)),
-                                    RoundedCornerShape(16.dp),
-                                )
-                                .wrapContentSize(Alignment.Center)
+                        Spacer(Modifier.height(8.dp))
+                        RequirementCard(
+                            icon = "\u26A1",
+                            title = "Valid Lifeline Bundle",
+                            desc = "Active for championship duration",
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        RequirementCard(
+                            icon = "\u270D",
+                            title = "Clean Play Record",
+                            desc = "No active bans or warnings",
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        RequirementCard(
+                            icon = "\uD83C\uDF10",
+                            title = "Region Verified",
+                            desc = "Available for Global Arena",
                         )
                     }
                 }
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    stringResource(R.string.tournament_ends),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = OnSurfaceVariant.copy(alpha = 0.6f),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
 
-            Spacer(Modifier.height(12.dp))
-
-            GlassPanel(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    stringResource(R.string.tournament_logistics),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Primary,
-                    fontWeight = FontWeight.Bold,
-                )
                 Spacer(Modifier.height(12.dp))
-                LogisticsRow("Sunday, Oct 24, 2023")
-                Spacer(Modifier.height(8.dp))
-                LogisticsRow("20:00 UTC (Main Event)")
-                Spacer(Modifier.height(8.dp))
-                LogisticsRow("Format: Triple Knockout")
+
+                // Prize Breakdown
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(SurfaceContainerLow.copy(alpha = 0.6f))
+                        .border(1.dp, OnSurfaceVariant.copy(alpha = 0.1f), RoundedCornerShape(24.dp))
+                        .padding(20.dp),
+                ) {
+                    Column {
+                        Text(
+                            text = stringResource(R.string.tournament_breakdown),
+                            color = OnSurface,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            fontFamily = SoraFont,
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        PrizeBreakdownRow(
+                            icon = "\uD83C\uDFC6",
+                            label = "1st Place Grand Winner",
+                            amount = "$500,000",
+                            gold = true,
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        PrizeBreakdownRow(
+                            icon = "\uD83C\uDF96",
+                            label = "2nd - 10th Finalists",
+                            amount = "$25,000 each",
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        PrizeBreakdownRow(
+                            icon = "\uD83D\uDC65",
+                            label = "Top 100 Consolation",
+                            amount = "$2,500 each",
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(20.dp))
+
+                // Entry Fee + Register
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(SurfaceContainerLow.copy(alpha = 0.6f))
+                        .border(1.dp, Gold.copy(alpha = 0.2f), RoundedCornerShape(24.dp))
+                        .padding(20.dp),
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = stringResource(R.string.tournament_entry_method),
+                            color = OnSurfaceVariant,
+                            fontSize = 10.sp,
+                            letterSpacing = 2.sp,
+                        )
+                        Spacer(Modifier.height(12.dp))
+                        EntryCard(
+                            title = "5,000 RP",
+                            subtitle = "Radiance Points Entry",
+                            icon = "\uD83D\uDCB0",
+                            selected = state.selectedEntry == EntryMethod.RadiancePoints,
+                            gold = true,
+                            onClick = { viewModel.selectEntry(EntryMethod.RadiancePoints) },
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        EntryCard(
+                            title = "Gold Pass",
+                            subtitle = "Season Pass Admission",
+                            icon = "\uD83D\uDCC5",
+                            selected = state.selectedEntry == EntryMethod.GoldPass,
+                            gold = false,
+                            onClick = { viewModel.selectEntry(EntryMethod.GoldPass) },
+                        )
+                        Spacer(Modifier.height(20.dp))
+
+                        // Register Button with 3D Ledge + Shimmer
+                        val transition = rememberInfiniteTransition(label = "pulse")
+                        val pulseScale by transition.animateFloat(
+                            initialValue = 1f,
+                            targetValue = 1.03f,
+                            animationSpec = infiniteRepeatable(
+                                animation = tween(durationMillis = 1500, easing = LinearEasing),
+                                repeatMode = RepeatMode.Reverse,
+                            ),
+                            label = "pulseScale",
+                        )
+                        Button(
+                            onClick = { viewModel.register() },
+                            enabled = !state.isRegistering && !state.isRegistered,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(60.dp)
+                                .drawBehind {
+                                    if (!state.isRegistered) {
+                                        drawRoundRect(
+                                            color = Color.Black.copy(alpha = 0.3f),
+                                            cornerRadius = CornerRadius(16f, 16f),
+                                            topLeft = Offset(0f, 4f),
+                                            size = Size(size.width, size.height),
+                                        )
+                                    }
+                                },
+                            shape = RoundedCornerShape(16.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent,
+                                contentColor = OnPrimary,
+                                disabledContainerColor = Color.Transparent,
+                            ),
+                        ) {
+                            if (state.isRegistering) {
+                                CircularProgressIndicator(color = OnPrimary, modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+                            } else if (state.isRegistered) {
+                                Text(
+                                    text = stringResource(R.string.tournament_registered),
+                                    fontWeight = FontWeight.Black,
+                                    fontSize = 18.sp,
+                                    letterSpacing = 3.sp,
+                                )
+                            } else {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(
+                                            Brush.verticalGradient(listOf(Gold, GoldDark)),
+                                            RoundedCornerShape(16.dp),
+                                        ),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.tournament_register),
+                                        fontWeight = FontWeight.Black,
+                                        fontSize = 18.sp,
+                                        letterSpacing = 3.sp,
+                                    )
+                                }
+                            }
+                        }
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = stringResource(R.string.tournament_ends),
+                            color = OnSurfaceVariant.copy(alpha = 0.6f),
+                            fontSize = 10.sp,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(12.dp))
+
+                // Event Logistics
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(SurfaceContainerLow.copy(alpha = 0.6f))
+                        .border(1.dp, OnSurfaceVariant.copy(alpha = 0.1f), RoundedCornerShape(24.dp))
+                        .padding(20.dp),
+                ) {
+                    Column {
+                        Text(
+                            text = stringResource(R.string.tournament_logistics),
+                            color = Primary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 11.sp,
+                            letterSpacing = 2.sp,
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        LogisticsItem(
+                            icon = "\uD83D\uDCC5",
+                            text = "Sunday, Oct 24, 2023",
+                        )
+                        Spacer(Modifier.height(12.dp))
+                        LogisticsItem(
+                            icon = "\u23F0",
+                            text = "20:00 UTC (Main Event)",
+                        )
+                        Spacer(Modifier.height(12.dp))
+                        LogisticsItem(
+                            icon = "\uD83C\uDFAE",
+                            text = "Format: Triple Knockout",
+                        )
+                    }
+                }
             }
 
             Spacer(Modifier.height(96.dp))
@@ -334,14 +481,14 @@ fun TournamentScreen(
 private fun CountdownUnit(value: String, label: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-            value,
+            text = value,
             fontFamily = JetBrainsMonoFont,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = Primary,
         )
         Text(
-            label,
+            text = label,
             fontSize = 8.sp,
             color = OnSurfaceVariant,
             letterSpacing = 1.sp,
@@ -350,112 +497,207 @@ private fun CountdownUnit(value: String, label: String) {
 }
 
 @Composable
-private fun GlassPanel(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+private fun HexDecoration() {
+    val w = 120f; val h = 120f
+    val path = Path().apply {
+        moveTo(w * 0.25f, 0f)
+        lineTo(w * 0.75f, 0f)
+        lineTo(w, h * 0.5f)
+        lineTo(w * 0.75f, h)
+        lineTo(w * 0.25f, h)
+        lineTo(0f, h * 0.5f)
+        close()
+    }
     Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(SurfaceContainerLow.copy(alpha = 0.4f))
-            .border(1.dp, OnSurfaceVariant.copy(alpha = 0.1f), RoundedCornerShape(20.dp))
-            .padding(20.dp),
-    ) { content() }
+        modifier = Modifier
+            .size(120.dp)
+            .clip(HtmlHexShape)
+            .background(Primary.copy(alpha = 0.08f)),
+    )
+}
+
+private val HtmlHexShape = object : androidx.compose.ui.graphics.Shape {
+    override fun createOutline(
+        size: androidx.compose.ui.geometry.Size,
+        layoutDirection: androidx.compose.ui.unit.LayoutDirection,
+        density: androidx.compose.ui.unit.Density,
+    ): androidx.compose.ui.graphics.Outline {
+        val w = size.width; val h = size.height
+        val path = Path().apply {
+            moveTo(w * 0.25f, 0f)
+            lineTo(w * 0.75f, 0f)
+            lineTo(w, h * 0.5f)
+            lineTo(w * 0.75f, h)
+            lineTo(w * 0.25f, h)
+            lineTo(0f, h * 0.5f)
+            close()
+        }
+        return androidx.compose.ui.graphics.Outline.Generic(path)
+    }
 }
 
 @Composable
-private fun RequirementRow(title: String, desc: String) {
+private fun RequirementCard(icon: String, title: String, desc: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(16.dp))
             .background(SurfaceBright.copy(alpha = 0.05f))
-            .border(1.dp, OnSurfaceVariant.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
+            .border(1.dp, OnSurfaceVariant.copy(alpha = 0.1f), RoundedCornerShape(16.dp))
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(title, style = MaterialTheme.typography.titleSmall, color = OnSurface, fontWeight = FontWeight.SemiBold)
-            Text(desc, style = MaterialTheme.typography.bodySmall, color = OnSurfaceVariant)
+        Box(
+            modifier = Modifier
+                .size(44.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(Primary.copy(alpha = 0.1f)),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(text = icon, fontSize = 18.sp)
+        }
+        Spacer(Modifier.width(12.dp))
+        Column {
+            Text(
+                text = title,
+                color = OnSurface,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp,
+            )
+            Text(
+                text = desc,
+                color = OnSurfaceVariant,
+                fontSize = 12.sp,
+            )
         }
     }
 }
 
 @Composable
-private fun PrizeRow(label: String, amount: String, gold: Boolean = false) {
+private fun PrizeBreakdownRow(icon: String, label: String, amount: String, gold: Boolean = false) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(
-                if (gold) Gold.copy(alpha = 0.08f)
-                else SurfaceBright.copy(alpha = 0.05f),
-            )
-            .border(
-                1.dp,
-                if (gold) Gold.copy(alpha = 0.2f) else OnSurfaceVariant.copy(alpha = 0.1f),
-                RoundedCornerShape(12.dp),
-            )
-            .padding(12.dp),
+            .clip(RoundedCornerShape(16.dp))
+            .let {
+                if (gold) {
+                    it.background(
+                        Brush.horizontalGradient(
+                            listOf(
+                                Gold.copy(alpha = 0.1f),
+                                Color.Transparent
+                            )
+                        )
+                    )
+                } else {
+                    it.background(SurfaceBright.copy(alpha = 0.05f))
+                }
+            }
+            .border(1.dp, if (gold) Gold.copy(alpha = 0.2f) else OnSurfaceVariant.copy(alpha = 0.1f), RoundedCornerShape(16.dp))
+            .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(label, style = MaterialTheme.typography.titleSmall, color = if (gold) Gold else OnSurface, fontWeight = FontWeight.SemiBold)
-        Text(amount, style = MaterialTheme.typography.titleSmall, color = if (gold) Gold else OnSurface, fontWeight = FontWeight.Bold)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(text = icon, fontSize = 20.sp)
+            Spacer(Modifier.width(10.dp))
+            Text(
+                text = label,
+                color = if (gold) Gold else OnSurface,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp,
+            )
+        }
+        Text(
+            text = amount,
+            color = if (gold) Gold else OnSurface,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            fontFamily = SoraFont,
+        )
     }
 }
 
 @Composable
-private fun EntryOption(
+private fun EntryCard(
     title: String,
     subtitle: String,
     icon: String,
     selected: Boolean,
+    gold: Boolean,
     onClick: () -> Unit,
 ) {
-    val borderColor = if (selected) Gold.copy(alpha = 0.6f) else OnSurfaceVariant.copy(alpha = 0.2f)
+    val borderC = if (selected) (if (gold) Gold.copy(alpha = 0.6f) else Primary.copy(alpha = 0.6f))
+        else OnSurfaceVariant.copy(alpha = 0.2f)
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
+            .clip(RoundedCornerShape(16.dp))
             .background(SurfaceContainerHigh)
-            .border(1.dp, borderColor, RoundedCornerShape(14.dp))
+            .border(1.dp, borderC, RoundedCornerShape(16.dp))
             .clickable(onClick = onClick)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(
-                    if (selected) Gold.copy(alpha = 0.2f)
-                    else SurfaceContainerHighest,
-                ),
+                .size(44.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(if (selected && gold) Gold.copy(alpha = 0.2f) else Primary.copy(alpha = 0.1f)),
             contentAlignment = Alignment.Center,
         ) {
-            Text(icon, fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (selected) Gold else OnSurfaceVariant)
+            Text(text = icon, fontSize = 18.sp)
         }
         Spacer(Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
-            Text(title, style = MaterialTheme.typography.titleSmall, color = OnSurface, fontWeight = FontWeight.Bold)
-            Text(subtitle, style = MaterialTheme.typography.bodySmall, color = OnSurfaceVariant)
+            Text(
+                text = title,
+                color = OnSurface,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+            )
+            Text(
+                text = subtitle,
+                color = OnSurfaceVariant,
+                fontSize = 12.sp,
+            )
         }
-        RadioButton(
-            selected = selected,
-            onClick = onClick,
-            colors = RadioButtonDefaults.colors(selectedColor = Gold, unselectedColor = OnSurfaceVariant),
-        )
+        Box(
+            modifier = Modifier
+                .size(20.dp)
+                .clip(CircleShape)
+                .background(
+                    if (selected) (if (gold) Gold else Primary)
+                    else SurfaceContainerHighest
+                )
+                .border(
+                    2.dp,
+                    if (selected) (if (gold) Gold else Primary) else OnSurfaceVariant.copy(alpha = 0.3f),
+                    CircleShape,
+                ),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (selected) {
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .clip(CircleShape)
+                        .background(OnPrimary),
+                )
+            }
+        }
     }
 }
 
 @Composable
-private fun LogisticsRow(text: String) {
+private fun LogisticsItem(icon: String, text: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(
-            modifier = Modifier
-                .size(6.dp)
-                .clip(CircleShape)
-                .background(Primary.copy(alpha = 0.4f)),
-        )
+        Text(text = icon, fontSize = 14.sp)
         Spacer(Modifier.width(10.dp))
-        Text(text, style = MaterialTheme.typography.bodyMedium, color = OnSurfaceVariant)
+        Text(
+            text = text,
+            color = OnSurfaceVariant,
+            style = MaterialTheme.typography.bodyMedium,
+        )
     }
 }

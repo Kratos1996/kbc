@@ -123,6 +123,11 @@ dependencies {
     // Billing
     implementation(libs.billing.ktx)
 
+    // Camera
+    implementation(libs.camera.camera2)
+    implementation(libs.camera.lifecycle)
+    implementation(libs.camera.view)
+
     // Security
     implementation(libs.androidx.security.crypto)
     implementation(libs.androidx.biometric)

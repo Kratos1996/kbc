@@ -1,7 +1,10 @@
 package com.ishan.kbc.ui.game
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,6 +23,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -55,19 +60,30 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ishan.kbc.R
 import com.ishan.kbc.domain.model.GameStatus
 import com.ishan.kbc.domain.model.LifelineType
+import com.ishan.kbc.ui.components.FireworksAnimation
+import com.ishan.kbc.ui.components.LiveCameraBackground
 import com.ishan.kbc.ui.components.PrizeLadder
 import com.ishan.kbc.ui.theme.Error
 import com.ishan.kbc.ui.theme.Gold
+import com.ishan.kbc.ui.theme.GoldDark
 import com.ishan.kbc.ui.theme.OnPrimary
 import com.ishan.kbc.ui.theme.OnSurface
 import com.ishan.kbc.ui.theme.OnSurfaceVariant
 import com.ishan.kbc.ui.theme.Primary
 import com.ishan.kbc.ui.theme.SafeZone
 import com.ishan.kbc.ui.theme.SecondaryContainer
+import com.ishan.kbc.ui.theme.SoraFont
 import com.ishan.kbc.ui.theme.SurfaceContainerHigh
 import com.ishan.kbc.ui.theme.SurfaceContainerHighest
 import com.ishan.kbc.ui.theme.SurfaceContainerLow
 import kotlinx.coroutines.delay
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 
 private const val TIMER_WARN = 5
 
@@ -79,8 +95,25 @@ fun GameScreen(
     val state by viewModel.state.collectAsState()
     var showQuitDialog by remember { mutableStateOf(false) }
     var pendingLifeline by remember { mutableStateOf<LifelineType?>(null) }
+    var pendingAnswerIndex by remember { mutableStateOf<Int?>(null) }
+    var showCelebration by remember { mutableStateOf(false) }
+    var showLifelineDrawer by remember { mutableStateOf(false) }
+    val config = LocalConfiguration.current
+    val isTablet = config.screenWidthDp >= 600
+    val context = LocalContext.current
+    val cameraPermissionGranted = remember {
+        ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+    }
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+    ) { /* result handled by LiveCameraBackground's own check */ }
 
-    LaunchedEffect(Unit) { if (state.gameId == null) viewModel.startGame() }
+    LaunchedEffect(Unit) {
+        if (state.gameId == null) viewModel.startGame()
+        if (!cameraPermissionGranted) {
+            cameraLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
 
     LaunchedEffect(state.status) {
         when (state.status) {
@@ -95,120 +128,257 @@ fun GameScreen(
         }
     }
 
+    LaunchedEffect(state.lastAnswerCorrect) {
+        if (state.lastAnswerCorrect == true) {
+            showCelebration = true
+            delay(2000)
+            showCelebration = false
+            if (state.status == GameStatus.InProgress) {
+                viewModel.nextQuestion()
+            }
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding()
-            .navigationBarsPadding()
             .background(Color(0xFF000000)),
     ) {
-        Row(modifier = Modifier.fillMaxSize().padding(12.dp)) {
-            PrizeLadder(
-                currentLevel = state.level,
-                safeZones = setOf(5, 10),
-                modifier = Modifier.width(108.dp).fillMaxSize(),
+        if (isTablet) {
+            // === TABLET LAYOUT ===
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding()
+                    .navigationBarsPadding(),
+            ) {
+                LiveCameraBackground()
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.45f))
+                    .statusBarsPadding()
+                    .navigationBarsPadding(),
             )
-            Column(modifier = Modifier.fillMaxSize().padding(start = 8.dp)) {
-                // === HUD Header Bar (glass-tile rounded-full) ===
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(12.dp)
+                    .statusBarsPadding()
+                    .navigationBarsPadding(),
+            ) {
+                PrizeLadder(
+                    currentLevel = state.level,
+                    safeZones = setOf(5, 10),
+                    modifier = Modifier.width(108.dp).fillMaxHeight(),
+                )
+                Column(modifier = Modifier.fillMaxSize().padding(start = 8.dp)) {
+                    HudBar(
+                        timeRemaining = state.timeRemaining,
+                        prize = state.prize,
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    LifelineRow(
+                        available = state.lifelinesRemaining,
+                        onUse = { pendingLifeline = it },
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    state.question?.let { q ->
+                        HexQuestionCard(text = q.text)
+                        Spacer(Modifier.height(8.dp))
+                        q.options.forEachIndexed { i, opt ->
+                            val isEliminated = i in state.eliminatedOptions
+                            StitchAnswerButton(
+                                label = ('A' + i).toString(),
+                                text = opt,
+                                isEliminated = isEliminated,
+                                isCorrect = state.revealedCorrectOption == i,
+                                isWrong = state.lastAnswerCorrect == false && state.selectedOption == i,
+                                enabled = state.status == GameStatus.InProgress && state.lastAnswerCorrect == null && !state.answered,
+                                onClick = {
+                                    if (pendingAnswerIndex == null) {
+                                        pendingAnswerIndex = i
+                                    }
+                                },
+                            )
+                        }
+                    }
+                    Spacer(Modifier.height(4.dp))
+                    state.audiencePoll?.let { poll -> AudiencePollBar(poll = poll) }
+                    state.expertAnswer?.let { Text("Expert suggests: ${'A' + it}", color = Gold, style = MaterialTheme.typography.labelSmall) }
+                    state.phoneAFriendAnswer?.let { Text("Friend suggests: ${'A' + it}", color = Gold, style = MaterialTheme.typography.labelSmall) }
+                }
+            }
+        } else {
+            // === MOBILE LAYOUT ===
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Camera strip with HUD bar overlaid on top
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp)
-                        .clip(RoundedCornerShape(24.dp))
-                        .background(SurfaceContainerLow.copy(alpha = 0.6f))
-                        .border(1.dp, OnSurfaceVariant.copy(alpha = 0.1f), RoundedCornerShape(24.dp))
-                        .padding(horizontal = 16.dp),
-                    contentAlignment = Alignment.Center,
+                        .height(300.dp),
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Text(
-                            text = "RADIANCE ARENA",
-                            color = Primary.copy(alpha = 0.8f),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 11.sp,
-                            letterSpacing = 2.sp,
-                        )
-                        CountdownTimer(seconds = state.timeRemaining)
-                        Text(
-                            text = formatPrize(state.prize),
-                            color = Gold,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 13.sp,
-                        )
-                    }
+                    LiveCameraBackground()
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.35f)),
+                    )
+                    HudBarMobile(
+                        timeRemaining = state.timeRemaining,
+                        prize = state.prize,
+                        onLifelineClick = { showLifelineDrawer = true },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.TopCenter)
+                            .statusBarsPadding()
+                            .padding(horizontal = 12.dp)
+                            .padding(top = 4.dp),
+                    )
                 }
 
-                Spacer(Modifier.height(6.dp))
-
-                // === Lifeline Row (squared glass buttons) ===
-                LifelineRow(
-                    available = state.lifelinesRemaining,
-                    onUse = { pendingLifeline = it },
-                )
-
-                Spacer(Modifier.height(8.dp))
-
-                state.question?.let { q ->
-                    HexQuestionCard(text = q.text)
-                    Spacer(Modifier.height(8.dp))
-
-                    q.options.forEachIndexed { i, opt ->
-                        val isEliminated = i in state.eliminatedOptions
-                        StitchAnswerButton(
-                            label = ('A' + i).toString(),
-                            text = opt,
-                            isEliminated = isEliminated,
-                            isCorrect = state.revealedCorrectOption == i,
-                            isWrong = state.lastAnswerCorrect == false && state.selectedOption == i,
-                            enabled = state.status == GameStatus.InProgress && state.lastAnswerCorrect == null && !state.answered,
-                            onClick = { viewModel.selectOption(i) },
-                        )
-                    }
-                }
-
-                Spacer(Modifier.height(4.dp))
-
-                state.audiencePoll?.let { poll ->
-                    AudiencePollBar(poll = poll)
-                }
-                state.expertAnswer?.let { Text("Expert suggests: ${'A' + it}", color = Gold, style = MaterialTheme.typography.labelSmall) }
-                state.phoneAFriendAnswer?.let { Text("Friend suggests: ${'A' + it}", color = Gold, style = MaterialTheme.typography.labelSmall) }
-
-                Spacer(Modifier.height(4.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    if (state.lastAnswerCorrect == true && state.status == GameStatus.InProgress) {
-                        Button(
-                            onClick = viewModel::nextQuestion,
-                            colors = ButtonDefaults.buttonColors(containerColor = Gold, contentColor = OnPrimary),
-                        ) {
-                            Text(stringResource(R.string.cta_continue), fontWeight = FontWeight.Bold)
+                // Scrollable content below camera
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 12.dp)
+                        .navigationBarsPadding()
+                        .padding(top = 8.dp, bottom = 4.dp),
+                ) {
+                    state.question?.let { q ->
+                        HexQuestionCard(text = q.text)
+                        Spacer(Modifier.height(8.dp))
+                        q.options.forEachIndexed { i, opt ->
+                            val isEliminated = i in state.eliminatedOptions
+                            StitchAnswerButton(
+                                label = ('A' + i).toString(),
+                                text = opt,
+                                isEliminated = isEliminated,
+                                isCorrect = state.revealedCorrectOption == i,
+                                isWrong = state.lastAnswerCorrect == false && state.selectedOption == i,
+                                enabled = state.status == GameStatus.InProgress && state.lastAnswerCorrect == null && !state.answered,
+                                onClick = {
+                                    if (pendingAnswerIndex == null) {
+                                        pendingAnswerIndex = i
+                                    }
+                                },
+                            )
                         }
                     }
-                    OutlinedButton(onClick = { showQuitDialog = true }) {
-                        Text(stringResource(R.string.cta_quit))
-                    }
-                }
-            }
 
-            if (showQuitDialog) {
-                QuitConfirmation(
-                    prize = state.prize,
-                    level = state.level,
-                    onConfirm = { viewModel.quit(); showQuitDialog = false },
-                    onDismiss = { showQuitDialog = false },
-                )
+                    Spacer(Modifier.height(8.dp))
+
+                    PrizeLadder(
+                        currentLevel = state.level,
+                        safeZones = setOf(5, 10),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+
+                    Spacer(Modifier.height(4.dp))
+
+                    state.audiencePoll?.let { poll -> AudiencePollBar(poll = poll) }
+                    state.expertAnswer?.let { Text("Expert suggests: ${'A' + it}", color = Gold, style = MaterialTheme.typography.labelSmall) }
+                    state.phoneAFriendAnswer?.let { Text("Friend suggests: ${'A' + it}", color = Gold, style = MaterialTheme.typography.labelSmall) }
+                }
             }
         }
 
-        if (state.status == GameStatus.Won) {
-            WinnerOverlay(
+        // Lifeline drawer overlay
+        AnimatedVisibility(
+            visible = showLifelineDrawer,
+            enter = slideInHorizontally { it },
+            exit = slideOutHorizontally { it },
+        ) {
+            Row(modifier = Modifier.fillMaxSize()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f)
+                        .background(Color.Black.copy(alpha = 0.5f))
+                        .clickable { showLifelineDrawer = false },
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(220.dp)
+                        .background(SurfaceContainerHigh)
+                        .padding(16.dp),
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Text(
+                            text = "LIFELINES",
+                            color = OnSurface,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            fontFamily = SoraFont,
+                        )
+                        LifelineType.entries.forEach { type ->
+                            val enabled = type in state.lifelinesRemaining
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(48.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(
+                                        if (enabled) SurfaceContainerHighest.copy(alpha = 0.7f)
+                                        else SurfaceContainerHighest.copy(alpha = 0.3f)
+                                    )
+                                    .border(
+                                        1.dp,
+                                        if (enabled) OnSurfaceVariant.copy(alpha = 0.2f) else OnSurfaceVariant.copy(alpha = 0.1f),
+                                        RoundedCornerShape(12.dp),
+                                    )
+                                    .then(if (enabled) Modifier.clickable {
+                                        pendingLifeline = type
+                                        showLifelineDrawer = false
+                                    } else Modifier),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(
+                                    text = lifelineLabel(type),
+                                    color = if (enabled) OnSurface else OnSurfaceVariant.copy(alpha = 0.3f),
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 14.sp,
+                                )
+                            }
+                        }
+
+                        Spacer(Modifier.weight(1f))
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(Error.copy(alpha = 0.15f))
+                                .border(1.dp, Error.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
+                                .clickable { showQuitDialog = true; showLifelineDrawer = false },
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = "QUIT GAME",
+                                color = Error,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        if (showQuitDialog) {
+            QuitConfirmation(
                 prize = state.prize,
-                score = state.score,
-                onExit = { onExit(GameStatus.Won, state.prize, state.score, state.level) },
+                level = state.level,
+                onConfirm = { viewModel.quit(); showQuitDialog = false },
+                onDismiss = { showQuitDialog = false },
             )
         }
 
@@ -223,11 +393,260 @@ fun GameScreen(
             )
         }
 
+        if (pendingAnswerIndex != null && state.status == GameStatus.InProgress) {
+            AnswerConfirmDialog(
+                label = ('A' + pendingAnswerIndex!!).toString(),
+                text = state.question?.options?.get(pendingAnswerIndex!!) ?: "",
+                onConfirm = {
+                    viewModel.selectOption(pendingAnswerIndex!!)
+                    pendingAnswerIndex = null
+                },
+                onDismiss = { pendingAnswerIndex = null },
+            )
+        }
+
+        if (showCelebration && state.lastAnswerCorrect == true) {
+            CorrectAnswerCelebration(
+                prize = state.prize,
+                onDismiss = { showCelebration = false },
+            )
+        }
+
+        if (state.status == GameStatus.Won) {
+            WinnerOverlay(
+                prize = state.prize,
+                score = state.score,
+                onExit = { onExit(GameStatus.Won, state.prize, state.score, state.level) },
+            )
+        }
+
         if (state.status == GameStatus.Lost) {
             GameOverOverlay(
                 prize = state.prize,
                 onPlayAgain = { viewModel.startGame() },
                 onHome = { onExit(GameStatus.Lost, state.prize, state.score, state.level) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun HudBar(
+    timeRemaining: Int,
+    prize: Int,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(48.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .background(SurfaceContainerLow.copy(alpha = 0.6f))
+            .border(1.dp, OnSurfaceVariant.copy(alpha = 0.1f), RoundedCornerShape(24.dp))
+            .padding(horizontal = 16.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(
+                text = "RADIANCE ARENA",
+                color = Primary.copy(alpha = 0.8f),
+                fontWeight = FontWeight.Bold,
+                fontSize = 11.sp,
+                letterSpacing = 2.sp,
+            )
+            CountdownTimer(seconds = timeRemaining)
+            Text(
+                text = formatPrize(prize),
+                color = Gold,
+                fontWeight = FontWeight.Bold,
+                fontSize = 13.sp,
+            )
+        }
+    }
+}
+
+@Composable
+private fun HudBarMobile(
+    timeRemaining: Int,
+    prize: Int,
+    onLifelineClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(48.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .background(SurfaceContainerLow.copy(alpha = 0.6f))
+            .border(1.dp, OnSurfaceVariant.copy(alpha = 0.1f), RoundedCornerShape(24.dp))
+            .padding(horizontal = 16.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(
+                text = "RADIANCE ARENA",
+                color = Primary.copy(alpha = 0.8f),
+                fontWeight = FontWeight.Bold,
+                fontSize = 11.sp,
+                letterSpacing = 2.sp,
+            )
+            CountdownTimer(seconds = timeRemaining)
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(
+                    text = formatPrize(prize),
+                    color = Gold,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 13.sp,
+                )
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Primary.copy(alpha = 0.2f))
+                        .border(1.dp, Primary.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
+                        .clickable(onClick = onLifelineClick),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = "LL",
+                        color = Primary,
+                        fontWeight = FontWeight.Black,
+                        fontSize = 12.sp,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AnswerConfirmDialog(
+    label: String,
+    text: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = SurfaceContainerHigh,
+        title = {
+            Text(
+                text = "Confirm Answer",
+                color = OnSurface,
+                fontWeight = FontWeight.Bold,
+            )
+        },
+        text = {
+            Column {
+                Text(
+                    text = "You selected:",
+                    color = OnSurfaceVariant,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Primary.copy(alpha = 0.1f))
+                        .border(1.dp, Primary.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .background(Gold, RoundedCornerShape(8.dp)),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = label,
+                            color = OnPrimary,
+                            fontWeight = FontWeight.Black,
+                            fontSize = 14.sp,
+                        )
+                    }
+                    Spacer(Modifier.width(12.dp))
+                    Text(
+                        text = text,
+                        color = OnSurface,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 14.sp,
+                    )
+                }
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = "This action cannot be undone.",
+                    color = OnSurfaceVariant.copy(alpha = 0.6f),
+                    style = MaterialTheme.typography.labelSmall,
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(containerColor = Gold, contentColor = OnPrimary),
+            ) {
+                Text("Lock In", fontWeight = FontWeight.Bold)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel", color = OnSurface)
+            }
+        },
+    )
+}
+
+@Composable
+private fun CorrectAnswerCelebration(
+    prize: Int,
+    onDismiss: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.55f))
+            .clickable(onClick = onDismiss),
+        contentAlignment = Alignment.Center,
+    ) {
+        FireworksAnimation()
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(32.dp),
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        Brush.verticalGradient(listOf(Gold, GoldDark)),
+                        RoundedCornerShape(20.dp),
+                    )
+                    .padding(horizontal = 32.dp, vertical = 12.dp),
+            ) {
+                Text(
+                    text = "CORRECT!",
+                    color = OnPrimary,
+                    fontWeight = FontWeight.Black,
+                    fontSize = 28.sp,
+                    letterSpacing = 4.sp,
+                    fontFamily = SoraFont,
+                )
+            }
+            Spacer(Modifier.height(12.dp))
+            Text(
+                text = "+\u20B9${formatPrize(prize)} CREDITED",
+                color = Gold,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
             )
         }
     }
@@ -269,7 +688,6 @@ private fun LifelineRow(
                 )
             }
         }
-        // Quit button
         Box(
             modifier = Modifier
                 .size(52.dp)
@@ -628,6 +1046,7 @@ private fun WinnerOverlay(
             .clickable(enabled = false) {},
         contentAlignment = Alignment.Center,
     ) {
+        FireworksAnimation()
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(32.dp),
@@ -717,7 +1136,7 @@ private fun GameOverOverlay(
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text = formatPrize(prize),
+                    text = formatPrizeFull(prize),
                     color = Gold,
                     fontSize = 36.sp,
                     fontWeight = FontWeight.Black,
@@ -745,10 +1164,12 @@ private fun GameOverOverlay(
 }
 
 private fun formatPrize(amount: Int): String = when {
-    amount >= 10_000_000 -> "\u20B9${amount / 10_000_000}Cr"
-    amount >= 100_000 -> "\u20B9${amount / 1_000}K"
-    else -> "\u20B9$amount"
+    amount >= 10_000_000 -> "${amount / 10_000_000}Cr"
+    amount >= 100_000 -> "${amount / 1_000}K"
+    else -> "$amount"
 }
+
+private fun formatPrizeFull(amount: Int): String = "\u20B9$amount"
 
 private class ParallelogramShape(private val cornerInset: Float) : androidx.compose.ui.graphics.Shape {
     override fun createOutline(
