@@ -1,8 +1,16 @@
 package com.ishan.kbc.ui
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,28 +20,31 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.ishan.kbc.domain.model.GameStatus
 import com.ishan.kbc.data.local.PreferencesManager
-import com.ishan.kbc.ui.auth.AuthTab
+import com.ishan.kbc.domain.model.GameStatus
 import com.ishan.kbc.ui.auth.AuthViewModel
 import com.ishan.kbc.ui.auth.LoginScreen
 import com.ishan.kbc.ui.auth.RegisterScreen
 import com.ishan.kbc.ui.achievements.AchievementScreen
+import com.ishan.kbc.ui.components.AppBottomBar
+import com.ishan.kbc.ui.components.AppTopBar
+import com.ishan.kbc.ui.components.BOTTOM_NAV_ITEMS
 import com.ishan.kbc.ui.daily.DailyChallengeScreen
 import com.ishan.kbc.ui.fff.FffScreen
 import com.ishan.kbc.ui.game.GameScreen
-import com.ishan.kbc.ui.preshow.PreShowScreen
 import com.ishan.kbc.ui.game.PostGameScreen
 import com.ishan.kbc.ui.home.HomeScreen
 import com.ishan.kbc.ui.leaderboard.LeaderboardScreen
 import com.ishan.kbc.ui.matchhistory.MatchHistoryScreen
 import com.ishan.kbc.ui.multiplayer.MultiplayerLobbyScreen
-import com.ishan.kbc.ui.tournament.TournamentScreen
+import com.ishan.kbc.ui.preshow.PreShowScreen
 import com.ishan.kbc.ui.profile.ProfileScreen
 import com.ishan.kbc.ui.settings.SettingsScreen
 import com.ishan.kbc.ui.shop.ShopScreen
 import com.ishan.kbc.ui.splash.SplashScreen
 import com.ishan.kbc.ui.splash.SplashViewModel
+import com.ishan.kbc.ui.tournament.TournamentScreen
+import com.ishan.kbc.ui.wallet.WalletScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -45,7 +56,7 @@ object Routes {
     const val SPLASH = "splash"
     const val LOGIN = "login"
     const val REGISTER = "register"
-    const val HOME = "home"
+    const val MAIN = "main"
     const val GAME = "game"
     const val DAILY = "daily"
     const val LEADERBOARD = "leaderboard"
@@ -82,14 +93,14 @@ fun KbcRoot(
     val isAuthed by rootViewModel.isAuthed.collectAsState()
     val startDest = when (isAuthed) {
         null -> Routes.SPLASH
-        true -> Routes.HOME
+        true -> Routes.MAIN
         false -> Routes.SPLASH
     }
     NavHost(navController = nav, startDestination = startDest) {
         composable(Routes.SPLASH) {
             SplashScreen(
                 onComplete = {
-                    val next = if (isAuthed == true) Routes.HOME else Routes.LOGIN
+                    val next = if (isAuthed == true) Routes.MAIN else Routes.LOGIN
                     nav.navigate(next) { popUpTo(Routes.SPLASH) { inclusive = true } }
                 },
                 viewModel = hiltViewModel<SplashViewModel>(),
@@ -99,11 +110,7 @@ fun KbcRoot(
             LoginScreen(
                 viewModel = authViewModel,
                 onAuthenticated = {
-                    nav.navigate(Routes.HOME) { popUpTo(Routes.LOGIN) { inclusive = true } }
-                },
-                onGoRegister = {
-                    authViewModel.setTab(AuthTab.SignUp)
-                    nav.navigate(Routes.LOGIN) { popUpTo(Routes.LOGIN) { inclusive = true } }
+                    nav.navigate(Routes.MAIN) { popUpTo(Routes.LOGIN) { inclusive = true } }
                 },
             )
         }
@@ -111,30 +118,51 @@ fun KbcRoot(
             RegisterScreen(
                 viewModel = authViewModel,
                 onAuthenticated = {
-                    nav.navigate(Routes.HOME) { popUpTo(Routes.LOGIN) { inclusive = true } }
+                    nav.navigate(Routes.MAIN) { popUpTo(Routes.LOGIN) { inclusive = true } }
                 },
                 onBack = { nav.popBackStack() },
             )
         }
-        composable(Routes.HOME) {
-            HomeScreen(
-                onPlay = { nav.navigate(Routes.GAME) },
-                onPreShow = { nav.navigate(Routes.PRE_SHOW) },
-                onFff = { nav.navigate(Routes.FFF) },
-                onDaily = { nav.navigate(Routes.DAILY) },
-                onAchievements = { nav.navigate(Routes.ACHIEVEMENTS) },
-                onMatchHistory = { nav.navigate(Routes.MATCH_HISTORY) },
-                onTournament = { nav.navigate(Routes.TOURNAMENT) },
-                onLeaderboard = { nav.navigate(Routes.LEADERBOARD) },
-                onMultiplayer = { nav.navigate(Routes.MULTIPLAYER) },
-                onShop = { nav.navigate(Routes.SHOP) },
-                onProfile = { nav.navigate(Routes.PROFILE) },
-                onSettings = { nav.navigate(Routes.SETTINGS) },
-                onLogout = {
-                    authViewModel.logout()
-                    nav.navigate(Routes.LOGIN) { popUpTo(0) }
-                },
-            )
+        composable(Routes.MAIN) {
+            var bottomNavIndex by rememberSaveable { mutableIntStateOf(0) }
+
+            Column(modifier = Modifier.fillMaxSize()) {
+                AppTopBar(
+                    walletBalance = "$25,000",
+                    onProfileClick = { bottomNavIndex = 3 },
+                )
+
+                Box(modifier = Modifier.weight(1f)) {
+                    when (bottomNavIndex) {
+                        0 -> HomeScreen(
+                            onPlay = { nav.navigate(Routes.GAME) },
+                            onPreShow = { nav.navigate(Routes.PRE_SHOW) },
+                            onFff = { nav.navigate(Routes.FFF) },
+                            onDaily = { nav.navigate(Routes.DAILY) },
+                            onAchievements = { nav.navigate(Routes.ACHIEVEMENTS) },
+                            onMatchHistory = { nav.navigate(Routes.MATCH_HISTORY) },
+                            onTournament = { nav.navigate(Routes.TOURNAMENT) },
+                            onLeaderboard = { bottomNavIndex = 1 },
+                            onMultiplayer = { nav.navigate(Routes.MULTIPLAYER) },
+                            onShop = { nav.navigate(Routes.SHOP) },
+                            onProfile = { bottomNavIndex = 3 },
+                            onSettings = { nav.navigate(Routes.SETTINGS) },
+                            onLogout = {
+                                authViewModel.logout()
+                                nav.navigate(Routes.LOGIN) { popUpTo(0) }
+                            },
+                        )
+                        1 -> LeaderboardScreen(onBack = { bottomNavIndex = 0 })
+                        2 -> WalletScreen()
+                        3 -> ProfileScreen(onBack = { bottomNavIndex = 0 })
+                    }
+                }
+
+                AppBottomBar(
+                    selectedIndex = bottomNavIndex,
+                    onItemSelected = { bottomNavIndex = it },
+                )
+            }
         }
         composable(Routes.GAME) {
             GameScreen(
@@ -209,7 +237,7 @@ fun KbcRoot(
                     nav.navigate(Routes.GAME) { popUpTo(Routes.POST_GAME) { inclusive = true } }
                 },
                 onHome = {
-                    nav.navigate(Routes.HOME) { popUpTo(Routes.POST_GAME) { inclusive = true } }
+                    nav.navigate(Routes.MAIN) { popUpTo(Routes.POST_GAME) { inclusive = true } }
                 },
             )
         }

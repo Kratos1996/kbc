@@ -2,7 +2,7 @@ package com.ishan.kbc.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ishan.kbc.domain.repository.AuthRepository
+import com.ishan.kbc.domain.usecase.AuthUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,7 +28,7 @@ data class AuthUiState(
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository,
+    private val authUseCase: AuthUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AuthUiState())
@@ -52,7 +52,7 @@ class AuthViewModel @Inject constructor(
         }
         _state.update { it.copy(isLoading = true, error = null) }
         viewModelScope.launch {
-            authRepository.login(s.emailOrUsername.trim(), s.password)
+            authUseCase.login(s.emailOrUsername.trim(), s.password)
                 .onSuccess { _state.update { it.copy(isLoading = false, success = true) } }
                 .onFailure { e -> _state.update { it.copy(isLoading = false, error = e.message ?: "Login failed") } }
         }
@@ -66,7 +66,7 @@ class AuthViewModel @Inject constructor(
         }
         _state.update { it.copy(isLoading = true, error = null) }
         viewModelScope.launch {
-            authRepository.register(s.email.trim(), s.username.trim(), s.password, s.displayName.takeIf { it.isNotBlank() })
+            authUseCase.register(s.email.trim(), s.username.trim(), s.password, s.displayName.takeIf { it.isNotBlank() })
                 .onSuccess { _state.update { it.copy(isLoading = false, success = true) } }
                 .onFailure { e -> _state.update { it.copy(isLoading = false, error = e.message ?: "Registration failed") } }
         }
@@ -75,7 +75,7 @@ class AuthViewModel @Inject constructor(
     fun loginWithGoogle() {
         _state.update { it.copy(isLoading = true, error = null) }
         viewModelScope.launch {
-            authRepository.login("google_stub", "google_stub")
+            authUseCase.login("google_stub", "google_stub")
                 .onSuccess { _state.update { it.copy(isLoading = false, success = true) } }
                 .onFailure { e -> _state.update { it.copy(isLoading = false, error = e.message ?: "Google sign-in failed") } }
         }
@@ -84,7 +84,7 @@ class AuthViewModel @Inject constructor(
     fun loginWithFacebook() {
         _state.update { it.copy(isLoading = true, error = null) }
         viewModelScope.launch {
-            authRepository.login("facebook_stub", "facebook_stub")
+            authUseCase.login("facebook_stub", "facebook_stub")
                 .onSuccess { _state.update { it.copy(isLoading = false, success = true) } }
                 .onFailure { e -> _state.update { it.copy(isLoading = false, error = e.message ?: "Facebook sign-in failed") } }
         }
@@ -98,7 +98,7 @@ class AuthViewModel @Inject constructor(
         }
         _state.update { it.copy(isLoading = true, error = null) }
         viewModelScope.launch {
-            authRepository.login(s.email.ifBlank { s.emailOrUsername }.trim(), "otp_stub")
+            authUseCase.login(s.email.ifBlank { s.emailOrUsername }.trim(), "otp_stub")
                 .onSuccess { _state.update { it.copy(isLoading = false, success = true) } }
                 .onFailure { e -> _state.update { it.copy(isLoading = false, error = e.message ?: "OTP send failed") } }
         }
@@ -118,7 +118,7 @@ class AuthViewModel @Inject constructor(
     }
 
     fun logout() {
-        viewModelScope.launch { authRepository.logout() }
+        viewModelScope.launch { authUseCase.logout() }
     }
 
     fun consumeSuccess() = _state.update { it.copy(success = false) }

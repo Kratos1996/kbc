@@ -1,12 +1,12 @@
 package com.ishan.kbc.ui.auth
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,12 +16,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -39,7 +40,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -53,14 +53,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ishan.kbc.R
-import com.ishan.kbc.ui.theme.Background
+import com.ishan.kbc.ui.components.ArenaBackground
 import com.ishan.kbc.ui.theme.Gold
 import com.ishan.kbc.ui.theme.GoldDark
 import com.ishan.kbc.ui.theme.OnPrimary
 import com.ishan.kbc.ui.theme.OnSurface
 import com.ishan.kbc.ui.theme.OnSurfaceVariant
 import com.ishan.kbc.ui.theme.Primary
-import com.ishan.kbc.ui.theme.PrimaryContainer
 import com.ishan.kbc.ui.theme.SurfaceContainerHighest
 import com.ishan.kbc.ui.theme.SurfaceContainerLow
 
@@ -68,7 +67,6 @@ import com.ishan.kbc.ui.theme.SurfaceContainerLow
 fun LoginScreen(
     viewModel: AuthViewModel,
     onAuthenticated: () -> Unit,
-    onGoRegister: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -83,40 +81,22 @@ fun LoginScreen(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        Box(modifier = Modifier.fillMaxSize().background(Background))
-
-        // Ambient glows
-        Box(modifier = Modifier.fillMaxSize()) {
-            Box(
-                modifier = Modifier
-                    .size(350.dp)
-                    .align(Alignment.TopStart)
-                    .offset(x = -80.dp, y = -80.dp)
-                    .background(Primary.copy(alpha = 0.07f))
-                    .clip(CircleShape)
-                    .scale(2f)
-            )
-            Box(
-                modifier = Modifier
-                    .size(400.dp)
-                    .align(Alignment.BottomEnd)
-                    .offset(x = 100.dp, y = 100.dp)
-                    .background(PrimaryContainer.copy(alpha = 0.06f))
-                    .clip(CircleShape)
-                    .scale(2f)
-            )
-        }
+        ArenaBackground()
 
         Column(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = stringResource(R.string.app_name),
+                text = "RADIANCE ARENA",
                 style = MaterialTheme.typography.displayMedium,
-                color = Gold,
-                letterSpacing = 4.sp,
-                fontWeight = FontWeight.ExtraBold,
+                color = Primary,
+                letterSpacing = 6.sp,
+                fontWeight = FontWeight.Black,
             )
             Spacer(Modifier.height(4.dp))
             Text(
@@ -132,10 +112,10 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(24.dp))
                     .background(SurfaceContainerLow.copy(alpha = 0.85f))
+                    .border(1.dp, Primary.copy(alpha = 0.15f), RoundedCornerShape(24.dp))
                     .padding(24.dp),
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    // Custom animated tabs
                     AuthTabs(
                         selectedTab = state.tab,
                         onTabSelected = viewModel::setTab,
@@ -187,16 +167,28 @@ fun LoginScreen(
             }
 
             Spacer(Modifier.height(20.dp))
-            // Social logins
-            Text(
-                text = stringResource(R.string.login_or_continue_with),
-                style = MaterialTheme.typography.labelMedium,
-                color = OnSurfaceVariant,
-            )
-            Spacer(Modifier.height(12.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+
+            // OR divider
+            Row(
+                modifier = Modifier.fillMaxWidth(0.8f),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(modifier = Modifier.weight(1f).height(1.dp).background(OnSurfaceVariant.copy(alpha = 0.15f)))
+                Text(
+                    text = "OR ACCESS VIA",
+                    color = OnSurfaceVariant.copy(alpha = 0.5f),
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Medium,
+                    letterSpacing = 2.sp,
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                )
+                Box(modifier = Modifier.weight(1f).height(1.dp).background(OnSurfaceVariant.copy(alpha = 0.15f)))
+            }
+
+            Spacer(Modifier.height(16.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                 SocialButton(icon = R.drawable.ic_google, label = "Google", onClick = viewModel::loginWithGoogle)
-                SocialButton(icon = R.drawable.ic_facebook, label = "Facebook", onClick = viewModel::loginWithFacebook)
+                SocialButton(icon = R.drawable.ic_facebook, label = "Facebook", onClick = viewModel::loginWithFacebook, facebook = true)
                 SocialButton(icon = R.drawable.ic_phone, label = "Phone", onClick = viewModel::sendOtp)
             }
         }
@@ -219,11 +211,6 @@ private fun AuthTabs(
         Row(modifier = Modifier.fillMaxWidth()) {
             AuthTab.entries.forEach { tab ->
                 val isSelected = selectedTab == tab
-                val bgAlpha by animateFloatAsState(
-                    targetValue = if (isSelected) 1f else 0f,
-                    animationSpec = tween(300),
-                    label = "tabBg",
-                )
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -270,6 +257,14 @@ private fun LoginForm(
             onValueChange = onEmailOrUsername,
             label = { Text(stringResource(R.string.hint_email)) },
             singleLine = true,
+            leadingIcon = {
+                Text(
+                    text = "@",
+                    color = Primary.copy(alpha = 0.7f),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                )
+            },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next,
@@ -284,6 +279,12 @@ private fun LoginForm(
             onValueChange = onPassword,
             label = { Text(stringResource(R.string.hint_password)) },
             singleLine = true,
+            leadingIcon = {
+                Text(
+                    text = "\uD83D\uDD12",
+                    fontSize = 18.sp,
+                )
+            },
             visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 IconButton(onClick = onTogglePassword) {
@@ -322,9 +323,8 @@ private fun LoginForm(
             )
         }
 
-        // 3D Gold Login button
         GoldButton(
-            text = stringResource(R.string.cta_login),
+            text = "ENTER ARENA",
             onClick = onLogin,
             enabled = !isLoading,
         )
@@ -337,7 +337,6 @@ private fun LoginForm(
             )
         }
         Spacer(Modifier.height(16.dp))
-        // OTP option
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
@@ -478,26 +477,28 @@ private fun GoldButton(
             pressedElevation = 2.dp,
         ),
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(goldBrush, RoundedCornerShape(14.dp)),
-        )
         Text(
             text = text,
             color = OnPrimary,
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.labelLarge,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(goldBrush, RoundedCornerShape(14.dp))
+                .wrapContentSize(Alignment.Center),
         )
     }
 }
 
 @Composable
-private fun SocialButton(icon: Int, label: String, onClick: () -> Unit) {
+private fun SocialButton(icon: Int, label: String, onClick: () -> Unit, facebook: Boolean = false) {
+    val bgColor = if (facebook) Color(0xFF1877F2).copy(alpha = 0.1f) else SurfaceContainerHighest.copy(alpha = 0.6f)
+    val borderColor = if (facebook) Color(0xFF1877F2).copy(alpha = 0.3f) else SurfaceContainerHighest
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(12.dp))
-            .background(SurfaceContainerHighest.copy(alpha = 0.6f))
+            .background(bgColor)
+            .border(1.dp, borderColor, RoundedCornerShape(12.dp))
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center,
@@ -506,7 +507,7 @@ private fun SocialButton(icon: Int, label: String, onClick: () -> Unit) {
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = label,
-                tint = OnSurface,
+                tint = if (facebook) Color(0xFF1877F2) else OnSurface,
                 modifier = Modifier.size(24.dp),
             )
             Spacer(Modifier.height(4.dp))

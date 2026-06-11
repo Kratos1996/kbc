@@ -24,8 +24,13 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,13 +54,11 @@ import com.ishan.kbc.domain.model.Milestone
 import com.ishan.kbc.ui.components.PulseGlowProgress
 import com.ishan.kbc.ui.theme.Gold
 import com.ishan.kbc.ui.theme.GoldDark
-import com.ishan.kbc.ui.theme.JetBrainsMonoFont
 import com.ishan.kbc.ui.theme.OnPrimary
 import com.ishan.kbc.ui.theme.OnSurface
 import com.ishan.kbc.ui.theme.OnSurfaceVariant
 import com.ishan.kbc.ui.theme.Primary
 import com.ishan.kbc.ui.theme.PrimaryContainer
-import com.ishan.kbc.ui.theme.SoraFont
 import com.ishan.kbc.ui.theme.SurfaceContainerHigh
 import com.ishan.kbc.ui.theme.SurfaceContainerHighest
 import com.ishan.kbc.ui.theme.SurfaceContainerLow
@@ -77,12 +80,22 @@ fun AchievementScreen(
         ) {
             Spacer(Modifier.height(24.dp))
 
-            Text(
-                text = stringResource(R.string.achievement_title),
-                style = MaterialTheme.typography.headlineMedium,
-                color = OnSurface,
-                fontWeight = FontWeight.Black,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null,
+                        tint = OnSurface
+                    )
+                }
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    text = stringResource(R.string.achievement_title),
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = OnSurface,
+                    fontWeight = FontWeight.Black,
+                )
+            }
             Text(
                 text = stringResource(R.string.achievement_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
@@ -117,17 +130,7 @@ fun AchievementScreen(
                     .clip(RoundedCornerShape(6.dp))
                     .background(SurfaceContainerHighest)
                     .border(1.dp, SurfaceVariant.copy(alpha = 0.3f), RoundedCornerShape(6.dp)),
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth(state.totalMastery)
-                        .background(
-                            Brush.horizontalGradient(listOf(PrimaryContainer, Primary)),
-                            RoundedCornerShape(6.dp),
-                        ),
-                )
-            }
+            )
 
             Spacer(Modifier.height(24.dp))
 
@@ -194,16 +197,17 @@ private fun AchievementBadge(
     achievement: Achievement,
     onClick: () -> Unit,
 ) {
-    val bgBrush = if (achievement.isEarned)
-        Brush.verticalGradient(listOf(PrimaryContainer.copy(alpha = 0.4f), SurfaceContainerHigh))
-    else
-        Brush.verticalGradient(listOf(SurfaceVariant.copy(alpha = 0.4f), SurfaceContainerHigh.copy(alpha = 0.3f)))
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(bgBrush)
+            .then(
+                if (achievement.isEarned) {
+                    Modifier.background(Brush.verticalGradient(listOf(PrimaryContainer.copy(alpha = 0.4f), SurfaceContainerHigh)))
+                } else {
+                    Modifier.background(Brush.verticalGradient(listOf(SurfaceVariant.copy(alpha = 0.4f), SurfaceContainerHigh.copy(alpha = 0.3f))))
+                }
+            )
             .border(
                 1.dp,
                 if (achievement.isEarned) Primary.copy(alpha = 0.3f) else SurfaceVariant.copy(alpha = 0.2f),
@@ -217,11 +221,12 @@ private fun AchievementBadge(
             modifier = Modifier
                 .size(80.dp)
                 .clip(HexClip())
-                .background(
-                    if (achievement.isEarned)
-                        Brush.verticalGradient(listOf(PrimaryContainer, SurfaceContainerHigh))
-                    else
-                        SurfaceVariant.copy(alpha = 0.5f),
+                .then(
+                    if (achievement.isEarned) {
+                        Modifier.background(Brush.verticalGradient(listOf(PrimaryContainer, SurfaceContainerHigh)))
+                    } else {
+                        Modifier.background(SurfaceVariant.copy(alpha = 0.5f))
+                    }
                 )
                 .border(
                     1.5.dp,
@@ -355,11 +360,12 @@ private fun AchievementDetailModal(
                 modifier = Modifier
                     .size(120.dp)
                     .clip(HexClip())
-                    .background(
-                        if (achievement.isEarned)
-                            Brush.verticalGradient(listOf(PrimaryContainer, SurfaceContainerHigh))
-                        else
-                            SurfaceVariant.copy(alpha = 0.5f),
+                    .then(
+                        if (achievement.isEarned) {
+                            Modifier.background(Brush.verticalGradient(listOf(PrimaryContainer, SurfaceContainerHigh)))
+                        } else {
+                            Modifier.background(SurfaceVariant.copy(alpha = 0.5f))
+                        }
                     )
                     .border(
                         2.dp,
@@ -469,18 +475,17 @@ private fun AchievementDetailModal(
                         contentColor = OnPrimary,
                     ),
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .background(
-                                Brush.horizontalGradient(listOf(Gold, GoldDark)),
-                                RoundedCornerShape(14.dp),
-                            ),
-                    )
                     Text(
                         "Share to Society",
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.horizontalGradient(listOf(Gold, GoldDark)),
+                                RoundedCornerShape(14.dp),
+                            )
+                            .wrapContentSize(Alignment.Center)
                     )
                 }
             } else {

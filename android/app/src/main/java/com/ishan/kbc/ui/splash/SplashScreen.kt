@@ -8,13 +8,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,8 +24,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,11 +36,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.ishan.kbc.R
-import com.ishan.kbc.ui.theme.Background
+import com.ishan.kbc.ui.components.ArenaBackground
 import com.ishan.kbc.ui.theme.Primary
-import com.ishan.kbc.ui.theme.PrimaryContainer
 import com.ishan.kbc.ui.theme.SecondaryContainer
 import com.ishan.kbc.ui.theme.SecondaryFixed
 import com.ishan.kbc.ui.theme.SurfaceContainerLowest
@@ -62,13 +65,13 @@ fun SplashScreen(
     }
 
     // Pulse animation state
-    val logoScale = remember { mutableStateOf(1f) }
+    var logoScale by remember { mutableFloatStateOf(1f) }
     LaunchedEffect(Unit) {
         while (true) {
             delay(1500)
-            logoScale.value = 1.02f
+            logoScale = 1.02f
             delay(1500)
-            logoScale.value = 1f
+            logoScale = 1f
         }
     }
 
@@ -76,30 +79,12 @@ fun SplashScreen(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        Box(modifier = Modifier.fillMaxSize().background(Background))
-
-        Box(modifier = Modifier.fillMaxSize()) {
-            Box(
-                modifier = Modifier
-                    .size(400.dp)
-                    .align(Alignment.TopStart)
-                    .offset(x = (-100).dp, y = (-100).dp)
-                    .background(Primary.copy(alpha = 0.06f))
-                    .clip(CircleShape)
-                    .graphicsLayer { scaleX = 2f; scaleY = 2f },
-            )
-            Box(
-                modifier = Modifier
-                    .size(500.dp)
-                    .align(Alignment.BottomEnd)
-                    .offset(x = 100.dp, y = 100.dp)
-                    .background(PrimaryContainer.copy(alpha = 0.08f))
-                    .clip(CircleShape)
-                    .graphicsLayer { scaleX = 2f; scaleY = 2f },
-            )
-        }
+        ArenaBackground()
 
         Column(
+            modifier = Modifier
+                .statusBarsPadding()
+                .navigationBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -107,8 +92,8 @@ fun SplashScreen(
                 modifier = Modifier
                     .size(200.dp)
                     .graphicsLayer {
-                        scaleX = logoScale.value
-                        scaleY = logoScale.value
+                        scaleX = logoScale
+                        scaleY = logoScale
                     }
                     .background(Primary.copy(alpha = 0.05f), CircleShape)
                     .padding(16.dp),
@@ -166,10 +151,5 @@ fun SplashScreen(
             }
         }
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.3f)),
-        )
     }
 }

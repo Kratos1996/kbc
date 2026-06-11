@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -35,7 +36,6 @@ import com.ishan.kbc.ui.theme.GoldDark
 import com.ishan.kbc.ui.theme.OnPrimary
 import com.ishan.kbc.ui.theme.OnSurface
 import com.ishan.kbc.ui.theme.OnSurfaceVariant
-import com.ishan.kbc.ui.theme.PrimaryContainer
 import com.ishan.kbc.ui.theme.SafeZone
 import com.ishan.kbc.ui.theme.SurfaceContainerHigh
 import com.ishan.kbc.ui.theme.SurfaceContainerLow
@@ -127,20 +127,19 @@ fun PostGameScreen(
                     ),
                     elevation = ButtonDefaults.buttonElevation(6.dp, 2.dp),
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .background(
-                                androidx.compose.ui.graphics.Brush.horizontalGradient(
-                                    listOf(Gold, GoldDark)
-                                ),
-                                RoundedCornerShape(14.dp),
-                            ),
-                    )
                     Text(
                         text = stringResource(R.string.post_play_again),
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                androidx.compose.ui.graphics.Brush.horizontalGradient(
+                                    listOf(Gold, GoldDark),
+                                ),
+                                RoundedCornerShape(14.dp),
+                            )
+                            .wrapContentSize(Alignment.Center)
                     )
                 }
 

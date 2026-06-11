@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ishan.kbc.domain.model.UserProfile
 import com.ishan.kbc.domain.model.UserStats
-import com.ishan.kbc.domain.repository.ProfileRepository
+import com.ishan.kbc.domain.usecase.ProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -29,7 +29,7 @@ data class ProfileUiState(
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val repository: ProfileRepository,
+    private val profileUseCase: ProfileUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileUiState())
@@ -42,8 +42,8 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val (p, s) = coroutineScope {
-                    val pa = async { repository.me() }
-                    val sa = async { repository.stats() }
+                    val pa = async { profileUseCase.me() }
+                    val sa = async { profileUseCase.stats() }
                     pa.await() to sa.await()
                 }
                 p.onSuccess { prof ->
@@ -78,7 +78,7 @@ class ProfileViewModel @Inject constructor(
         if (_state.value.saving) return
         _state.update { it.copy(saving = true) }
         viewModelScope.launch {
-            repository.update(
+            profileUseCase.update(
                 displayName = _state.value.draftDisplayName.takeIf { it.isNotBlank() },
                 avatarUrl = _state.value.draftAvatarUrl.takeIf { it.isNotBlank() },
             )

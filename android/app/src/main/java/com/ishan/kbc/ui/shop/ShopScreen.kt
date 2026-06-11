@@ -81,8 +81,7 @@ fun ShopScreen(
                         ProductCard(
                             product = p,
                             purchasing = state.purchasingId == p.id,
-                            onBuy = { viewModel.buy(p) },
-                        )
+                        ) { viewModel.buy(p) }
                     }
                 }
             }
@@ -126,7 +125,7 @@ private fun ProductCard(product: Product, purchasing: Boolean, onBuy: () -> Unit
                     style = MaterialTheme.typography.labelSmall,
                 )
             }
-            if (product.coins != null && product.coins > 0) {
+            if ((product.coins != null && product.coins > 0)) {
                 Spacer(Modifier.height(4.dp))
                 Text(
                     stringResource(R.string.shop_coins, product.coins),

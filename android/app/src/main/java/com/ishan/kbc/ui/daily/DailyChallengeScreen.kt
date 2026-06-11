@@ -98,12 +98,11 @@ private fun PlayingView(
                 label = ('A' + i).toString(),
                 text = opt,
                 selected = chosen,
-                onClick = { viewModel.selectOption(i) },
-            )
+            ) { viewModel.selectOption(i) }
         }
         Spacer(Modifier.height(12.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            val isLast = state.currentIndex == state.questions.size - 1
+            val isLast = (state.currentIndex == state.questions.size - 1)
             val canAdvance = state.answers.containsKey(q.id) && !state.submitting
             Button(
                 onClick = { viewModel.next() },

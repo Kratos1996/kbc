@@ -19,10 +19,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +34,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -111,44 +110,41 @@ fun FffScreen(
                         item = item,
                         isSelected = isSelected,
                         selectionOrder = if (isSelected) orderIndex + 1 else null,
-                        enabled = state.result == null && !state.finished,
-                        onClick = { viewModel.selectItem(item.id) },
-                    )
+                        enabled = (state.result == null && !state.finished),
+                    ) { viewModel.selectItem(item.id) }
                     Spacer(Modifier.height(10.dp))
                 }
 
                 Spacer(Modifier.height(20.dp))
 
-                val canSubmit = state.selectedOrder.size == 4 && state.result == null && !state.finished
-                Button(
-                    onClick = { viewModel.submit() },
-                    enabled = canSubmit,
-                    modifier = Modifier.fillMaxWidth(0.7f).height(60.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = SurfaceContainerHigh.copy(alpha = 0.8f),
-                        contentColor = OnSurface,
-                        disabledContainerColor = SurfaceContainerHigh.copy(alpha = 0.3f),
-                    ),
-                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .background(
-                                if (canSubmit) Brush.horizontalGradient(listOf(Gold, GoldDark))
-                                else Color.Transparent,
-                                RoundedCornerShape(16.dp),
-                            ),
-                    )
-                    Text(
-                        text = stringResource(R.string.fff_submit),
-                        fontWeight = FontWeight.Black,
-                        fontSize = 20.sp,
-                        letterSpacing = 4.sp,
-                        color = if (canSubmit) OnPrimary else OnSurfaceVariant,
-                    )
-                }
+                    val canSubmit = state.selectedOrder.size == 4 && state.result == null && !state.finished
+                    Button(
+                        onClick = { viewModel.submit() },
+                        enabled = canSubmit,
+                        modifier = Modifier.fillMaxWidth(0.7f).height(60.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = OnPrimary,
+                            disabledContainerColor = SurfaceContainerHigh.copy(alpha = 0.3f),
+                        ),
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.fff_submit),
+                            fontWeight = FontWeight.Black,
+                            fontSize = 20.sp,
+                            letterSpacing = 4.sp,
+                            color = if (canSubmit) OnPrimary else OnSurfaceVariant,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .then(
+                                    if (canSubmit) Modifier.background(Brush.horizontalGradient(listOf(Gold, GoldDark)), RoundedCornerShape(16.dp))
+                                    else Modifier,
+                                )
+                                .wrapContentSize(Alignment.Center),
+                        )
+                    }
 
                 Spacer(Modifier.height(16.dp))
 
@@ -309,7 +305,7 @@ private fun HexFffOptionCard(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = if (isSelected && selectionOrder != null) "$selectionOrder" else item.label,
+                    text = if (isSelected && selectionOrder != null) selectionOrder.toString() else item.label,
                     color = labelColor,
                     fontWeight = FontWeight.Black,
                     fontSize = 16.sp,
@@ -366,7 +362,7 @@ private fun FffResultOverlay(
             )
             Text(
                 text = result.userOrder.joinToString(" → ") { idx ->
-                    result.correctOrder.indexOf(idx).let { pos -> "${('A' + pos)}" }
+                    result.correctOrder.indexOf(idx).let { pos -> ('A' + pos).toString() }
                 },
                 color = if (result.correct) Gold else Error.copy(alpha = 0.7f),
                 style = MaterialTheme.typography.titleMedium,
@@ -383,30 +379,29 @@ private fun FffResultOverlay(
                 style = MaterialTheme.typography.titleMedium,
             )
             Spacer(Modifier.height(32.dp))
-            Button(
-                onClick = onRetry,
-                modifier = Modifier.fillMaxWidth(0.6f).height(52.dp),
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent,
-                    contentColor = OnPrimary,
-                ),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
-            ) {
-                Box(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .background(
-                            Brush.horizontalGradient(listOf(Gold, GoldDark)),
-                            RoundedCornerShape(14.dp),
-                        ),
-                )
-                Text(
-                    text = stringResource(R.string.fff_retry),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                )
-            }
+                Button(
+                    onClick = onRetry,
+                    modifier = Modifier.fillMaxWidth(0.6f).height(52.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = OnPrimary,
+                    ),
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.fff_retry),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.horizontalGradient(listOf(Gold, GoldDark)),
+                                RoundedCornerShape(14.dp),
+                            )
+                            .wrapContentSize(Alignment.Center)
+                    )
+                }
             Spacer(Modifier.height(12.dp))
             Button(
                 onClick = onBack,

@@ -14,18 +14,27 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +44,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -43,6 +53,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -50,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ishan.kbc.R
+import com.ishan.kbc.ui.components.ArenaBackground
 import com.ishan.kbc.ui.theme.Error
 import com.ishan.kbc.ui.theme.Gold
 import com.ishan.kbc.ui.theme.GoldDark
@@ -64,6 +76,7 @@ import com.ishan.kbc.ui.theme.SurfaceContainerHigh
 import com.ishan.kbc.ui.theme.SurfaceContainerHighest
 import com.ishan.kbc.ui.theme.SurfaceContainerLow
 import com.ishan.kbc.ui.theme.SurfaceContainerLowest
+import java.util.Locale
 
 @Composable
 fun PreShowScreen(
@@ -75,25 +88,42 @@ fun PreShowScreen(
 
     LaunchedEffect(Unit) { viewModel.start() }
 
-    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        ArenaBackground()
         ParticleBackground()
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .statusBarsPadding()
+                .navigationBarsPadding()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.height(24.dp))
 
-            Text(
-                text = "RADIANCE ARENA",
-                style = MaterialTheme.typography.headlineSmall,
-                color = Primary,
-                fontWeight = FontWeight.Black,
-                letterSpacing = 6.sp,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null,
+                        tint = OnSurface
+                    )
+                }
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    text = "RADIANCE ARENA",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Primary,
+                    fontWeight = FontWeight.Black,
+                    letterSpacing = 6.sp,
+                )
+            }
 
             Spacer(Modifier.height(28.dp))
 
@@ -122,30 +152,31 @@ fun PreShowScreen(
                         textAlign = TextAlign.Center,
                     )
                     Spacer(Modifier.height(20.dp))
-                    Button(
-                        onClick = onEnterArena,
-                        modifier = Modifier.fillMaxWidth(0.8f).height(60.dp),
-                        shape = RoundedCornerShape(14.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = OnPrimary,
-                        ),
-                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 12.dp),
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .matchParentSize()
-                                .background(
-                                    Brush.horizontalGradient(listOf(Gold, GoldDark)),
-                                    RoundedCornerShape(14.dp),
-                                ),
-                        )
-                        Text(
-                            text = stringResource(R.string.preshow_join),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
-                            letterSpacing = 2.sp,
-                        )
+                    AnimatedBorder(modifier = Modifier.fillMaxWidth(0.8f)) {
+                        Button(
+                            onClick = onEnterArena,
+                            modifier = Modifier.fillMaxWidth().height(60.dp),
+                            shape = RoundedCornerShape(14.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent,
+                                contentColor = OnPrimary,
+                            ),
+                            elevation = ButtonDefaults.buttonElevation(defaultElevation = 12.dp),
+                        ) {
+                            Text(
+                                text = stringResource(R.string.preshow_join),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp,
+                                letterSpacing = 2.sp,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(
+                                        Brush.horizontalGradient(listOf(Gold, GoldDark)),
+                                        RoundedCornerShape(14.dp),
+                                    )
+                                    .wrapContentSize(Alignment.Center)
+                            )
+                        }
                     }
                 }
             }
@@ -166,7 +197,7 @@ fun PreShowScreen(
                                 color = OnSurfaceVariant,
                             )
                             Text(
-                                text = "$${String.format("%,.2f", state.prizePool)}",
+                                text = "$${String.format(Locale.US, "%,.2f", state.prizePool)}",
                                 style = MaterialTheme.typography.headlineSmall,
                                 color = Gold,
                                 fontWeight = FontWeight.Bold,
@@ -303,6 +334,64 @@ fun PreShowScreen(
                 }
             }
 
+            Spacer(Modifier.height(12.dp))
+
+            GlassPanel(modifier = Modifier.fillMaxWidth().height(200.dp)) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Box(
+                            modifier = Modifier
+                                .size(56.dp)
+                                .clip(CircleShape)
+                                .background(Primary.copy(alpha = 0.2f))
+                                .border(1.5.dp, Primary.copy(alpha = 0.4f), CircleShape),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = "\u25B6",
+                                color = Primary,
+                                fontSize = 24.sp,
+                            )
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        Text(
+                            text = "Live Studio Warm-up",
+                            style = MaterialTheme.typography.titleSmall,
+                            color = OnSurface,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Text(
+                            text = "Host: Master Oracle & Special Guests",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = OnSurfaceVariant,
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .offset(x = (-8).dp, y = (-8).dp)
+                            .background(Error.copy(alpha = 0.2f), RoundedCornerShape(4.dp))
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                modifier = Modifier
+                                    .size(6.dp)
+                                    .clip(CircleShape)
+                                    .background(Error),
+                            )
+                            Spacer(Modifier.width(4.dp))
+                            Text(
+                                text = "LIVE",
+                                color = Error,
+                                fontSize = 8.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
+                }
+            }
+
             Spacer(Modifier.height(96.dp))
         }
     }
@@ -310,21 +399,60 @@ fun PreShowScreen(
 
 @Composable
 private fun ParticleBackground() {
+    val transition = rememberInfiniteTransition(label = "particles")
+    val phase by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 8000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "particlePhase",
+    )
+
     Canvas(modifier = Modifier.fillMaxSize()) {
         val w = size.width; val h = size.height
         drawIntoCanvas { c ->
-            repeat(40) {
-                val x = (Math.random() * w).toFloat()
-                val y = (Math.random() * h).toFloat()
-                val r = (Math.random() * 2 + 1).toFloat()
-                val alpha = (Math.random() * 0.3).toFloat()
-                val color = if (Math.random() > 0.5) Color(0xFF7000FF) else Color(0xFFFFE16D)
-                c.nativeCanvas.drawCircle(x, y, r, android.graphics.Paint().apply {
-                    this.alpha = (alpha * 255).toInt()
-                    this.color = color.hashCode()
-                })
+            val paint = android.graphics.Paint().apply { isAntiAlias = true }
+            val seed = (phase * 10).toInt()
+            val rng = java.util.Random(seed.toLong())
+            repeat(60) {
+                val x = ((rng.nextFloat() * w + phase * 0.5f) % w).toFloat()
+                val y = ((rng.nextFloat() * h + phase * 0.3f) % h).toFloat()
+                val r = (rng.nextFloat() * 2 + 1).toFloat()
+                val alpha = (rng.nextFloat() * 0.3).toFloat()
+                val color = if (rng.nextBoolean()) Color(0xFF7000FF) else Color(0xFFFFE16D)
+                paint.alpha = (alpha * 255).toInt()
+                paint.color = color.toArgb()
+                c.nativeCanvas.drawCircle(x, y, r, paint)
             }
         }
+    }
+}
+
+@Composable
+private fun AnimatedBorder(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    val transition = rememberInfiniteTransition(label = "pulse-border")
+    val pulseAlpha by transition.animateFloat(
+        initialValue = 0.4f,
+        targetValue = 0.9f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 2000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = "pulseAlpha",
+    )
+    Box(
+        modifier = modifier.drawBehind {
+            drawRoundRect(
+                color = Gold.copy(alpha = pulseAlpha),
+                cornerRadius = CornerRadius(14f, 14f),
+                style = Stroke(width = 2f),
+            )
+        },
+        contentAlignment = Alignment.Center,
+    ) {
+        content()
     }
 }
 

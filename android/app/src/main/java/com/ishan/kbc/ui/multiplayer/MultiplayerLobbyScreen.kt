@@ -58,7 +58,7 @@ fun MultiplayerLobbyScreen(
         }
         Spacer(Modifier.height(12.dp))
         TabRow(selectedTabIndex = state.tab.ordinal) {
-            MpTab.values().forEach { tab ->
+            MpTab.entries.forEach { tab ->
                 Tab(
                     selected = state.tab == tab,
                     onClick = { viewModel.setTab(tab) },

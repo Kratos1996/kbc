@@ -3,7 +3,7 @@ package com.ishan.kbc.ui.multiplayer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ishan.kbc.domain.model.MpMatch
-import com.ishan.kbc.domain.repository.MultiplayerRepository
+import com.ishan.kbc.domain.usecase.MultiplayerUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +25,7 @@ data class MultiplayerUiState(
 
 @HiltViewModel
 class MultiplayerViewModel @Inject constructor(
-    private val repository: MultiplayerRepository,
+    private val multiplayerUseCase: MultiplayerUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MultiplayerUiState())
@@ -43,7 +43,7 @@ class MultiplayerViewModel @Inject constructor(
         if (_state.value.loading) return
         _state.update { it.copy(loading = true, error = null) }
         viewModelScope.launch {
-            repository.createAsync()
+            multiplayerUseCase.createAsync()
                 .onSuccess { match -> _state.update { it.copy(loading = false, createdMatch = match) } }
                 .onFailure { e -> _state.update { it.copy(loading = false, error = e.message) } }
         }
@@ -54,7 +54,7 @@ class MultiplayerViewModel @Inject constructor(
         if (code.isBlank() || _state.value.loading) return
         _state.update { it.copy(loading = true, error = null) }
         viewModelScope.launch {
-            repository.joinAsync(code)
+            multiplayerUseCase.joinAsync(code)
                 .onSuccess { match -> _state.update { it.copy(loading = false, joinedMatch = match) } }
                 .onFailure { e -> _state.update { it.copy(loading = false, error = e.message) } }
         }

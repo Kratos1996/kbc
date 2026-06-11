@@ -3,12 +3,12 @@ package com.ishan.kbc.ui.matchhistory
 import com.ishan.kbc.domain.model.MatchEntry
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,8 +18,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -67,12 +71,22 @@ fun MatchHistoryScreen(
     ) {
         Spacer(Modifier.height(24.dp))
 
-        Text(
-            text = stringResource(R.string.match_history_title),
-            style = MaterialTheme.typography.headlineLarge,
-            color = Gold,
-            fontWeight = FontWeight.Black,
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = onBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = null,
+                    tint = Gold
+                )
+            }
+            Spacer(Modifier.width(8.dp))
+            Text(
+                text = stringResource(R.string.match_history_title),
+                style = MaterialTheme.typography.headlineLarge,
+                color = Gold,
+                fontWeight = FontWeight.Black,
+            )
+        }
         Text(
             text = stringResource(R.string.match_history_subtitle),
             style = MaterialTheme.typography.bodyMedium,
@@ -367,7 +381,7 @@ private fun StatsCard(winRate: Float, totalEarnings: Int) {
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 Text(
-                    "$${totalEarnings}",
+                    "$totalEarnings",
                     color = Gold,
                     fontWeight = FontWeight.Bold,
                 )

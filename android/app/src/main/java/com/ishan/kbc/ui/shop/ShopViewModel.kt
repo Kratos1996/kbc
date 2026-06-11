@@ -6,7 +6,7 @@ import com.ishan.kbc.analytics.AnalyticsManager
 import com.ishan.kbc.data.billing.BillingManager
 import com.ishan.kbc.data.billing.PurchaseUpdate
 import com.ishan.kbc.domain.model.Product
-import com.ishan.kbc.domain.repository.ShopRepository
+import com.ishan.kbc.domain.usecase.ShopUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,7 +31,7 @@ sealed interface PurchaseResult {
 
 @HiltViewModel
 class ShopViewModel @Inject constructor(
-    private val repository: ShopRepository,
+    private val shopUseCase: ShopUseCase,
     private val billingManager: BillingManager,
     private val analytics: AnalyticsManager,
 ) : ViewModel() {
@@ -51,7 +51,7 @@ class ShopViewModel @Inject constructor(
                     null -> Unit
                     is PurchaseUpdate.Completed -> {
                         analytics.purchase(update.productId)
-                        val verifyResult = repository.verify(update.productId, update.purchaseToken)
+                        val verifyResult = shopUseCase.verify(update.productId, update.purchaseToken)
                         verifyResult.onSuccess {
                             _state.update { it.copy(purchasingId = null, lastResult = PurchaseResult.Success) }
                         }.onFailure { e ->
@@ -75,7 +75,7 @@ class ShopViewModel @Inject constructor(
     fun load() {
         _state.update { it.copy(loading = true, error = null) }
         viewModelScope.launch {
-            repository.products()
+            shopUseCase.products()
                 .onSuccess { products -> _state.update { it.copy(loading = false, products = products) } }
                 .onFailure { e -> _state.update { it.copy(loading = false, error = e.message) } }
         }

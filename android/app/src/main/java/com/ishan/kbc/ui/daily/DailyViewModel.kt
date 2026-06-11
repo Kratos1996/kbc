@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ishan.kbc.analytics.AnalyticsManager
 import com.ishan.kbc.domain.model.DailySubmitResult
 import com.ishan.kbc.domain.model.Question
-import com.ishan.kbc.domain.repository.DailyRepository
+import com.ishan.kbc.domain.usecase.DailyUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,7 +33,7 @@ data class DailyUiState(
 
 @HiltViewModel
 class DailyViewModel @Inject constructor(
-    private val repository: DailyRepository,
+    private val dailyUseCase: DailyUseCase,
     private val analytics: AnalyticsManager,
 ) : ViewModel() {
 
@@ -45,7 +45,7 @@ class DailyViewModel @Inject constructor(
     fun load() {
         _state.update { it.copy(loading = true, error = null, result = null) }
         viewModelScope.launch {
-            repository.submissionToday()
+            dailyUseCase.submissionToday()
                 .onSuccess { sub ->
                     if (sub != null) {
                         _state.update {
@@ -57,7 +57,7 @@ class DailyViewModel @Inject constructor(
                         }
                         return@launch
                     }
-                    repository.today()
+                    dailyUseCase.today()
                         .onSuccess { challenge ->
                             _state.update {
                                 it.copy(
@@ -100,7 +100,7 @@ class DailyViewModel @Inject constructor(
         val dailyId = s.dailyId ?: return
         viewModelScope.launch {
             _state.update { it.copy(submitting = true, error = null) }
-            repository.submit(dailyId, s.answers.toList())
+            dailyUseCase.submit(dailyId, s.answers.toList())
                 .onSuccess { res ->
                     analytics.dailyCompleted(res.score)
                     _state.update {

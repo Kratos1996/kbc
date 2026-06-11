@@ -1,6 +1,5 @@
 package com.ishan.kbc.ui.tournament
 
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -21,13 +20,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
@@ -84,7 +88,17 @@ fun TournamentScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp),
         ) {
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(12.dp))
+
+            IconButton(onClick = onBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = null,
+                    tint = OnSurface
+                )
+            }
+
+            Spacer(Modifier.height(8.dp))
 
             // Hero section
             Box(
@@ -237,8 +251,7 @@ fun TournamentScreen(
                     subtitle = "Radiance Points Entry",
                     icon = "RP",
                     selected = state.selectedEntry == EntryMethod.RadiancePoints,
-                    onClick = { viewModel.selectEntry(EntryMethod.RadiancePoints) },
-                )
+                ) { viewModel.selectEntry(EntryMethod.RadiancePoints) }
                 Spacer(Modifier.height(8.dp))
                 EntryOption(
                     title = "Gold Pass",
@@ -249,7 +262,6 @@ fun TournamentScreen(
                 )
                 Spacer(Modifier.height(20.dp))
 
-                val btnColor = if (state.isRegistered) Primary else Gold
                 Button(
                     onClick = { viewModel.register() },
                     enabled = !state.isRegistering,
@@ -262,15 +274,6 @@ fun TournamentScreen(
                     ),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .background(
-                                if (state.isRegistered) Brush.horizontalGradient(listOf(PrimaryContainer, Primary))
-                                else Brush.horizontalGradient(listOf(Gold, GoldDark)),
-                                RoundedCornerShape(16.dp),
-                            ),
-                    )
                     if (state.isRegistering) {
                         CircularProgressIndicator(
                             color = OnPrimary,
@@ -284,6 +287,14 @@ fun TournamentScreen(
                             fontWeight = FontWeight.Black,
                             fontSize = 18.sp,
                             letterSpacing = 3.sp,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    if (state.isRegistered) Brush.horizontalGradient(listOf(PrimaryContainer, Primary))
+                                    else Brush.horizontalGradient(listOf(Gold, GoldDark)),
+                                    RoundedCornerShape(16.dp),
+                                )
+                                .wrapContentSize(Alignment.Center)
                         )
                     }
                 }

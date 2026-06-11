@@ -3,7 +3,7 @@ package com.ishan.kbc.ui.matchhistory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ishan.kbc.domain.model.MatchEntry
-import com.ishan.kbc.domain.repository.MatchHistoryRepository
+import com.ishan.kbc.domain.usecase.MatchHistoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +21,7 @@ data class MatchHistoryState(
 
 @HiltViewModel
 class MatchHistoryViewModel @Inject constructor(
-    private val matchHistoryRepository: MatchHistoryRepository,
+    private val matchHistoryUseCase: MatchHistoryUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MatchHistoryState())
@@ -29,7 +29,7 @@ class MatchHistoryViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            matchHistoryRepository.getHistory()
+            matchHistoryUseCase.getHistory()
                 .onSuccess { data ->
                     _state.update {
                         it.copy(

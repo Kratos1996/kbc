@@ -3,7 +3,7 @@ package com.ishan.kbc.ui.achievements
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ishan.kbc.domain.model.Achievement
-import com.ishan.kbc.domain.repository.AchievementRepository
+import com.ishan.kbc.domain.usecase.AchievementUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +22,7 @@ data class AchievementState(
 
 @HiltViewModel
 class AchievementViewModel @Inject constructor(
-    private val achievementRepository: AchievementRepository,
+    private val achievementUseCase: AchievementUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AchievementState())
@@ -30,7 +30,7 @@ class AchievementViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            achievementRepository.getAchievements()
+            achievementUseCase.getAchievements()
                 .onSuccess { data ->
                     _state.update {
                         it.copy(

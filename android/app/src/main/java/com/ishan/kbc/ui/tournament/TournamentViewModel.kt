@@ -38,8 +38,9 @@ class TournamentViewModel @Inject constructor() : ViewModel() {
 
     fun startCountdown() {
         timer?.cancel()
-        var totalSec = _state.let { it.days * 86400 + it.hours * 3600 + it.minutes * 60 + it.seconds }
-        timer = object : CountDownTimer((totalSec * 1000).toLong(), 1000) {
+        val s = _state.value
+        val totalSec = (s.days * 86400L + s.hours * 3600L + s.minutes * 60L + s.seconds)
+        timer = object : CountDownTimer(totalSec * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val rem = millisUntilFinished / 1000
                 _state.update {

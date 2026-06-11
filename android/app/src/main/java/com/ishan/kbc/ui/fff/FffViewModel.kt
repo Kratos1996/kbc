@@ -7,7 +7,7 @@ import com.ishan.kbc.audio.SoundManager
 import com.ishan.kbc.domain.model.FffItem
 import com.ishan.kbc.domain.model.FffQuestion
 import com.ishan.kbc.domain.model.FffResult
-import com.ishan.kbc.domain.repository.FffRepository
+import com.ishan.kbc.domain.usecase.FffUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,7 +28,7 @@ data class FffUiState(
 @HiltViewModel
 class FffViewModel @Inject constructor(
     private val soundManager: SoundManager,
-    private val fffRepository: FffRepository,
+    private val fffUseCase: FffUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(FffUiState())
@@ -43,7 +43,7 @@ class FffViewModel @Inject constructor(
 
     fun start() {
         viewModelScope.launch {
-            fffRepository.getRandomQuestion()
+            fffUseCase.getRandomQuestion()
                 .onSuccess { q ->
                     _state.value = FffUiState(question = q, timeRemaining = q.timeLimitSec, loading = false)
                     startTimer(q.timeLimitSec)

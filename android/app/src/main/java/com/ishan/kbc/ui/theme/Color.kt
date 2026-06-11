@@ -40,7 +40,7 @@ val SecondaryContainer = Color(0xFFFFDB3C)
 val OnSecondaryContainer = Color(0xFF725F00)
 val OnSecondaryFixed = Color(0xFF221B00)
 val OnSecondaryFixedVariant = Color(0xFF544600)
-val SecondaryFixed = Color(0xFFFE16D)
+val SecondaryFixed = Color(0xFFFFE16D)
 val SecondaryFixedDim = Color(0xFFE9C400)
 
 // Tertiary - Deep Purple
